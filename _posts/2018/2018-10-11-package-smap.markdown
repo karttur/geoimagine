@@ -3,6 +3,7 @@ layout: post
 title: Package: smap
 modified: '2018-10-10 T18:17:25.000Z'
 categories: package
+packageurl: geoimagine-smap
 excerpt: "Package for managing SMAP data"
 tags:
   - Python package
