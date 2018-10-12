@@ -21,4 +21,4 @@ search_omit: true
 
 title
 excerpt
-and
+tand
