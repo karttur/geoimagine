@@ -4,7 +4,7 @@ title: Package: gis (geographic inforamtion systems))
 modified: '2018-10-11 T18:17:25.000Z'
 categories: package
 packageurl: geoimagine-ktpands
-excerpt: "Package for creating and re-projecting spatial data"
+excerpt: "Package for creating and re-projecting spatial datasets"
 tags:
   - Python package
   - SMAP
