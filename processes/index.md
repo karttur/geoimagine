@@ -11,6 +11,13 @@ share: true
 
 <ul class="post-list">
 {% for post in site.categories.process %}
+  HIPPO
+    {% include process.html post=post %}
+{% endfor %}  
+</ul>
+
+<ul class="post-list">
+{% for post in site.categories.process %}
     {% if post.rootprocid == "smapproc" %}
       {% include process.html post=post %}
     {% endif %}
