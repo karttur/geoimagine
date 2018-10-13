@@ -12,7 +12,7 @@ share: true
 <ul class="post-list">
 {% for post in site.categories.process %}
     {% if post.rootprocid == "smapproc" %}
-      {{ post.subprocid }}
+      {% include process.html post=post %}
     {% endif %}
 {% endfor %}  
 </ul>
