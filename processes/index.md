@@ -1,8 +1,9 @@
 ---
-layout: page
+layout: resume
 title: Processes
 excerpt: "An archive of processes"
 search_omit: true
+share: true
 ---
 
 <h1 class='foot-description'></h1>
