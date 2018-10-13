@@ -9,13 +9,16 @@ share: true
 <h1 class='foot-description'></h1>
 <h1 class='foot-description'>SMAP processes</h1>
 
+
+CLIPPO
 <ul class="post-list">
 {% for post in site.categories.process %}
   HIPPO
-    {% include process.html post=post %}
+  {% include process.html post=post %}
 {% endfor %}  
 </ul>
 
+BLIPPO
 <ul class="post-list">
 {% for post in site.categories.process %}
     {% if post.rootprocid == "smapproc" %}
@@ -23,7 +26,7 @@ share: true
     {% endif %}
 {% endfor %}  
 </ul>
-
+TRIPPO
 <h1 class='foot-description'></h1>
 <h1 class='foot-description'>SMAP processes</h1>
 
