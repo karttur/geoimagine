@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Process: createschema
+title: createschema
 modified: '2018-10-10 T18:17:25.000Z'
 categories: process
 rootprocid: setup_db

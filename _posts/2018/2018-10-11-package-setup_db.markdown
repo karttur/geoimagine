@@ -1,6 +1,6 @@
 ---
 layout: resume
-title: Package: setup_db
+title: setup_db
 modified: '2018-10-09 T18:17:25.000Z'
 categories: package
 packageurl: geoimagine-setup_db

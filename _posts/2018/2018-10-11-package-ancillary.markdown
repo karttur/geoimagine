@@ -1,6 +1,6 @@
 ---
 layout: resume
-title: Package: ancillary
+title: ancillary
 modified: '2018-10-11 T18:17:25.000Z'
 categories: package
 packageurl: geoimagine-ancillary

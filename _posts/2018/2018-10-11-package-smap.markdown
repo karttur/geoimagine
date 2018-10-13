@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Package: smap
+title: smap
 modified: '2018-10-10 T18:17:25.000Z'
 categories: package
 packageurl: geoimagine-smap

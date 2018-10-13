@@ -1,6 +1,6 @@
 ---
 layout: resume
-title: Package: ktpandas
+title: ktpandas
 modified: '2018-10-11 T18:17:25.000Z'
 categories: package
 packageurl: geoimagine-ktpands

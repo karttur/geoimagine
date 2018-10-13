@@ -1,6 +1,6 @@
 ---
 layout: resume
-title: Package: kartturmain
+title: kartturmain
 modified: '2018-10-11 T18:17:25.000Z'
 categories: package
 packageurl: geoimagine-ktpands
