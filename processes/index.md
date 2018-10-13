@@ -16,3 +16,14 @@ share: true
     {% endif %}
 {% endfor %}  
 </ul>
+
+<h1 class='foot-description'></h1>
+<h1 class='foot-description'>SMAP processes</h1>
+
+<ul class="post-list">
+{% for post in site.categories.process %}
+    {% if post.rootprocid == "setup_db" %}
+      {% include process.html post=post %}
+    {% endif %}
+{% endfor %}  
+</ul>
