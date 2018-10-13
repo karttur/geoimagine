@@ -8,11 +8,10 @@ search_omit: true
 <h1 class='foot-description'></h1>
 <h1 class='foot-description'>SMAP processes</h1>
 
-{% for post in site.categories.journal %}
-  {% if post.projectid == "process" %}
+<ul class="post-list">
+{% for post in site.categories.process %}
     {% if post.rootprocid == "smapproc" %}
-      {% include publication.html post=post %}
+      {{ post.subprocid }}
     {% endif %}
-  {% endif %}
 {% endfor %}  
 </ul>
