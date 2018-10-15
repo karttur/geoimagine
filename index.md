@@ -12,9 +12,9 @@ The Framework offers a semi-automated processing of spatial data, mainly intende
 
 To search for a particular package or a process, use these links to browse the content of Karttur's GeoImagine Framework:
 
-- [Python pckages](../packages)
-- [Root processes](../rootprocesses)
-- [Sub processes](../subprocesses)
+- [Python pckages](/packages)
+- [Root processes](/rootprocesses)
+- [Sub processes](/subprocesses)
 
 
 <h1>Blog<h1>
