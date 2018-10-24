@@ -14,25 +14,22 @@ figure2B: ts-mdsl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 figure2C: ts-losl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 figure2D: ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 
----
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+[Introduction](#introduction)
+[GRACE](#grace)
+[Python Package](#python-package)
+[Data access and download](#data-access-and-download)
+[Organizing the dataset](#organizing-the-dataset)
+[Filling missing data](#filling-missing-data)
+[Average solutions](#average-solutions)
+[Seasonal signal extraction](#seasonal-signal-extraction)
+[Resample temporal resolution](#resample-temporal-resolution)
+[Trend estimation](#trend-estimation)
+[Significant changes and trends](#significant-changes-and-trends)
+[Palette for GRACE](#palette-for-grace)
+[Scaling for color map](#scaling-for-color-map)
+[Export color map](#export-color-map)
 
-- [Introduction](#introduction)
-- [GRACE](#grace)
-	- [Python Package](#python-package)
-	- [Data access and download](#data-access-and-download)
-	- [Organizing the dataset](#organizing-the-dataset)
-	- [Filling missing data](#filling-missing-data)
-	- [Average solutions](#average-solutions)
-	- [Seasonal signal extraction](#seasonal-signal-extraction)
-	- [Resample temporal resolution](#resample-temporal-resolution)
-		- [Trend estimation](#trend-estimation)
-	- [Significant changes and trends](#significant-changes-and-trends)
-	- [Palette for GRACE](#palette-for-grace)
-	- [Scaling for color map](#scaling-for-color-map)
-	- [Export color map](#export-color-map)
 
-<!-- /TOC -->
 # Introduction
 
 This post goes through the steps needed to produce colored maps of the trends in global water storage using data from the [GRACE (Gravity Recovery and Climate Experiment)](https://grace.jpl.nasa.gov) mission. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework.
