@@ -15,7 +15,6 @@ figure2C: ts-losl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 figure2D: ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 ---
 
-
 # Introduction
 
 This post goes through the steps needed to produce colored maps of the trends in global water storage using data from the [GRACE (Gravity Recovery and Climate Experiment)](https://grace.jpl.nasa.gov) mission. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework.
@@ -119,6 +118,7 @@ The GRACE monthly dataset of equivalent water thickness has some gaps. The proce
 As note above, the recommendation is to use the average of the three solutions for the monthly equivalent water depth (CSR, GFZ and JPL). The process <span class='package'>average3ancillarytimeseries</span> will do this for you.
 
 ```
+<?xml version='1.0' encoding='utf-8'?>
 <manageprocess>
 	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '\*' plotid = '\*' system = 'ancillary'></userproj>
 	<period startyear = "2002" startmonth='04' endyear = "2017" endmonth='01' timestep='MS'></period>
