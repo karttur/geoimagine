@@ -38,9 +38,9 @@ The GeoImagine Framework includes a package for specific GRACE processing: [geoi
 
 ## Data access and download
 
-THe GRACE data is freely available from [GRACE TELLUS](https://grace.jpl.nasa.gov/data/get-data/). The data is available as ftp, and as the dataset is small and the experiment finished, I download the data using an FTP client ([Filezilla](https://filezilla-project.org)).
+THe GRACE data is freely available from [GRACE TELLUS](https://grace.jpl.nasa.gov/data/get-data/). The data are available through ftp, and as the dataset is small and the experiment finished, I download the data using an FTP client ([Filezilla](https://filezilla-project.org)).
 
-The data is available as NetCDF files, as GeoTIFF images and as ASCII text files. Karttur's GeoImagine Framework can import any of these formats, but the specific GRACE importer that solves the projection of the GRACE data on the fly use the ASCII data as input. When downloading the data, just keep the same folder structure as the online resource.
+The data can be downloaded as NetCDF files, as GeoTIFF images and as ASCII text files. Karttur's GeoImagine Framework can import any of these formats, but the specific GRACE importer that solves the projection of the GRACE data on the fly use the ASCII data as input. When downloading the data, just keep the same folder structure as the online resource.
 
 ## Organizing the dataset
 
