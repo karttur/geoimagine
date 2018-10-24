@@ -276,6 +276,8 @@ The process <span class='package'>signiftrendsancillary</span> combines the MK t
 
 ## Palette for GRACE
 
+![Grace palette]({{ site.commonurl }}/images/cmwater-annual-stats-a_avg-grace-ave_precipln.png)
+{: .pull-right}
 If you want to produce color maps showing the GRACE data and the results of your trend analysis, you need to create the palette(s) to use. All palettes must be saved to the database before use, with the process <span class='package'>addrasterpalette</span>.
 Looking at the color ramp of the online GRACE data at the [official homepage](), I set the following palette:
 
