@@ -42,23 +42,23 @@ This post goes through the steps needed to produce colored maps of the trends in
 
 The Gravity Recovery and Climate Experiment (GRACE) was built around two identical satellites orbiting the Earth. Traveling with a fixed distance in between them the gravitational pull caused minute changes in the vertical elevations between the two satellites. This change can be used for estimating the gravitational pull. Short term (days to months) changes in the gravitation is primarily related to the Earth's water reservoirs over land, ice and oceans, and earthquakes and crustal deformations.
 
-I use GRACE TELLUS [Level-3 data grids of monthly surface mass changes](https://grace.jpl.nasa.gov/data/monthly-mass-grids/) to detect trends in water storage on land. The GRACE data that I use represent the changes in equivalent water thickness relative to a time-mean baseline. There are three different solutions for the calculations of equivalent water thickness, respectively produced by CSR (Center for Space Research at University of Texas, Austin), GFZ (GeoforschungsZentrum Potsdam) and JPL JPL (Jet Propulsion Laboratory). You can use any of these solutions, or combine them, but the official recommendation is that [users obtain all three data center's solutions (JPL, CSR, GFZ) and simply average them](https://grace.jpl.nasa.gov/data/choosing-a-solution/).
+I use GRACE TELLUS [Level-3 data grids of monthly surface mass changes](https://grace.jpl.nasa.gov/data/monthly-mass-grids/) to detect trends in water storage on land. The GRACE data that I use represent the changes in equivalent water thickness relative to a time-mean baseline. There are three different solutions for the calculations of equivalent water thickness, respectively produced by CSR (Center for Space Research at University of Texas, Austin), GFZ (GeoforschungsZentrum Potsdam) and JPL (Jet Propulsion Laboratory). You can use any of these solutions, but the official recommendation is that [users obtain all three data center's solutions (JPL, CSR, GFZ) and simply average them](https://grace.jpl.nasa.gov/data/choosing-a-solution/).
 
 This blog summarises how the processing is done using Karttur´s GeoImagine Framework.
 
 ## Python Package
 
-The GeoImagine framework includes a package for specific GRACE processing: [geoimagine.grace](#). However, also several other packages in the Framework are needed for repeating the steps below.
+The GeoImagine Framework includes a package for specific GRACE processing: [geoimagine.grace](#). However, also several other packages in the Framework are needed for repeating the steps below.
 
 ## Data access and download
 
-THe GRACE data is freely available from [GRACE TELLUS] (https://grace.jpl.nasa.gov/data/get-data/). The data is available as ftp, and as the dataset is small and the experiment finished, I download the data using an FTP client ([Filezilla](https://filezilla-project.org)).
+THe GRACE data is freely available from [GRACE TELLUS](https://grace.jpl.nasa.gov/data/get-data/). The data is available as ftp, and as the dataset is small and the experiment finished, I download the data using an FTP client ([Filezilla](https://filezilla-project.org)).
 
 The data is available as NetCDF files, as GeoTIFF images and as ASCII text files. Karttur's GeoImagine Framework can import any of these formats, but the specific GRACE importer that solves the projection of the GRACE data on the fly use the ASCII data as input. When downloading the data, just keep the same folder structure as the online resource.
 
 ## Organizing the dataset
 
-The GRACE dataset available online is not projected in the usual manner, but starts at the Greenwich Meridian and then extends eastwards. It wraps the dateline and the last column again ends at the Greenwich Meridian. To solve the projection on the fly when organizing GRACE data, use the process <span class='process'>OrganizeGrace</span> (only works on the ASCII data). This process is a subclass to <span class='process'>OrganizeAncillary</span>, and uses the same xml structure:
+The GRACE dataset available online is not projected in the usual manner, but starts at the Greenwich Meridian and then extends eastwards. It wraps the dateline and the last column again ends at the Greenwich Meridian. To solve the projection on the fly when organizing GRACE data, use the process <span class='package'>OrganizeGrace</span> (only works on the ASCII data). This process is a subclass to <span class='package'>OrganizeAncillary</span>, and uses the same xml structure:
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -92,13 +92,13 @@ The GRACE dataset available online is not projected in the usual manner, but sta
 	</process>
 ```
 
-The process <span class='process'>OrganizeAncillary</span> translates the raw GRACE data to organized and projected GeoTIFF layers.
+The process <span class='package'>OrganizeAncillary</span> translates the raw GRACE data to organized and projected GeoTIFF layers.
 
 If you want to use all the solutions for equivalent water thickness (CST, GFZ and JPL) you have to define three import processes (can be done in the same xml file).
 
 ## Filling missing data
 
-The GRACE monthly dataset of equivalent water thickness has some gaps. The process <span class='process'>mendancillarytimeseries</span>fills the gap. The default method for filling data is linear interpolation.
+The GRACE monthly dataset of equivalent water thickness has some gaps. The process <span class='package'>mendancillarytimeseries</span> fills the gaps. The default method for filling data is linear interpolation.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -129,7 +129,7 @@ The GRACE monthly dataset of equivalent water thickness has some gaps. The proce
 
 ## Average solutions
 
-As note above, the recommendation is to use the average of the three solutions for the monthly equivalent water depth (CSR, GFZ and JPL). The process <span class='process'>average3ancillarytimeseries</span> will do this for you.
+As note above, the recommendation is to use the average of the three solutions for the monthly equivalent water depth (CSR, GFZ and JPL). The process <span class='package'>average3ancillarytimeseries</span> will do this for you.
 
 ```
 <manageprocess>
@@ -164,7 +164,7 @@ As note above, the recommendation is to use the average of the three solutions f
 
 ## Seasonal signal extraction
 
-The process <span class='process'>extractseasonancillary</span> extracts the seasonal mean for each season in the dataset (monthly periods for the GRACE data). This process is not needed for the analysis of the GRACE data. To work, the period must include full years only.
+The process <span class='package'>extractseasonancillary</span> extracts the seasonal mean for each season in the dataset (monthly periods for the GRACE data). This process is not needed for the analysis of the GRACE data. To work, the period must include full years only.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -188,7 +188,7 @@ The process <span class='process'>extractseasonancillary</span> extracts the sea
 
 ## Resample temporal resolution
 
-In this example we are just going to look at the annual changes in water equivalent thickness using the GRACE data. To do that you must resample the monthly signals to an annual signal. The process for this is <span class='process'>resampletsancillary</span>
+In this example we are just going to look at the annual changes in water equivalent thickness using the GRACE data. To do that you must resample the monthly signals to an annual signal. The process for this is <span class='package'>resampletsancillary</span>
 
  For the GRACE data, that describes the relative change, it does not really matter if you resample using the average annual signal or sum up the monthly signals to an annual sum. In the example I have resampled to annual average.
 
@@ -214,7 +214,7 @@ In this example we are just going to look at the annual changes in water equival
 
 ### Trend estimation
 
-In this example the trend of the changes in equivalent water thickness will be done using the annual average GRACE data. The process for this is <span class='process'>trendtsancillary</span>. At time of writing, it can use two different linear methods for estimating the trend Ordinarly Least Sqaure (OLS) and Theil-Sen (TS). For determining the significance of the change in the linear trend the process uses the Mann-Kendall (MK) test. The script is set up so that you just state 'ols' or 'mk', and then the additional analysis follow along. With 'ols' given you also get the random mean square error ('rmse') and the correlations coefficient ('r2'), and with 'mk' you get the Theil-Sen regression (median and at 95 % confidence limits for upper and lower change). The script can also calculate the long term average and standard devations. The xml parameters below generate all the output options presently available:
+In this example the trend of the changes in equivalent water thickness will be done using the annual average GRACE data. The process for this is <span class='package'>trendtsancillary</span>. At time of writing, it can use two different linear methods for estimating the trend Ordinarly Least Sqaure (OLS) and Theil-Sen (TS). For determining the significance of the change in the linear trend the process uses the Mann-Kendall (MK) test. The script is set up so that you just state 'ols' or 'mk', and then the additional analysis follow along. With 'ols' given you also get the random mean square error ('rmse') and the correlations coefficient ('r2'), and with 'mk' you get the Theil-Sen regression (median and at 95 % confidence limits for upper and lower change). The script can also calculate the long term average and standard devations. The xml parameters below generate all the output options presently available:
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -242,7 +242,7 @@ In this example the trend of the changes in equivalent water thickness will be d
 
 ## Significant changes and trends
 
-The process <span class='process'>signiftrendsancillary</span> combines the MK test estimates of absolute changes over the defined period. Two layers are produced, one showing the changes for all areas, and one showing only areas with statistically significant changes.
+The process <span class='package'>signiftrendsancillary</span> combines the MK test estimates of absolute changes over the defined period. Two layers are produced, one showing the changes for all areas, and one showing only areas with statistically significant changes.
 
 ```
 <manageprocess>
@@ -272,7 +272,7 @@ The process <span class='process'>signiftrendsancillary</span> combines the MK t
 
 ## Palette for GRACE
 
-If you want to produce color maps showing the GRACE data and the results of your trend analysis, you need to create the palette(s) to use. All palettes must be saved to the database before use, with the process <span class='process'>addrasterpalette</span>.
+If you want to produce color maps showing the GRACE data and the results of your trend analysis, you need to create the palette(s) to use. All palettes must be saved to the database before use, with the process <span class='package'>addrasterpalette</span>.
 Looking at the color ramp of the online GRACE data at the [official homepage](), I set the following palette:
 
 ```
@@ -300,7 +300,7 @@ Looking at the color ramp of the online GRACE data at the [official homepage](),
 
 ## Scaling for color map
 
-To produce a color map, you need to scale your original map to range between 0 and 255, and then assign the palette. By default, Karttur´s GeoImagine Framework assumes that null (nodata) will equal 255, and that the values 251 to 254 represent colors for overlays, frames and text etc. Values in the range 0 to 250 represents the thematic feature of the layer. The process <span class='process'>createscaling</span> adds the scaling to the database.
+To produce a color map, you need to scale your original map to range between 0 and 255, and then assign the palette. By default, Karttur´s GeoImagine Framework assumes that null (nodata) will equal 255, and that the values 251 to 254 represent colors for overlays, frames and text etc. Values in the range 0 to 250 represents the thematic feature of the layer. The process <span class='package'>createscaling</span> adds the scaling to the database.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -361,7 +361,7 @@ To produce a color map, you need to scale your original map to range between 0 a
 
 ## Export color map
 
-having defined a palette and the scaling for the different layers, you can export the layers as color maps (colored GeoTiff images). The process for doing that is <span class='process'>exporttobyteancillary</class>.
+having defined a palette and the scaling for the different layers, you can export the layers as color maps (colored GeoTiff images). The process for doing that is <span class='package'>exporttobyteancillary</class>.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
