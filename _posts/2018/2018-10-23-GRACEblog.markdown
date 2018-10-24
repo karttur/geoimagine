@@ -9,6 +9,10 @@ date: '2018-10-23 T18:17:25.000Z'
 comments: true
 share: true
 figure1: avg-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
+figure2A: ols-sl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
+figure2B: ts-mdsl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
+figure2C: ts-losl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
+figure2D: ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 
 ---
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
@@ -401,3 +405,15 @@ having defined a palette and the scaling for the different layers, you can expor
 	</process>
 </runprocess>
 ```
+
+<figure class="half">
+	<img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2A].file }}"
+
+	<img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2B].file }}"
+
+  <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2C].file }}"
+
+	<img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2D].file }}"
+
+	<figcaption>Maps of the change in water equicvalent thickenss 2003 to 2016. The top row shows the Ordinary Least Square (OLS) slope and the Theil-Sen (TS) median slope. The bottom row shows the lower and higher 95 % confidence limit for TS slope. </figcaption>
+</figure>
