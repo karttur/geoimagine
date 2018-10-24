@@ -706,3 +706,9 @@ tropwetlandmap:
     caption: Wetlands
     credit: null
     source: null
+avg-grace-ave_ave-cmwater_global_2003-2016_RL05-filled:
+    file: avg-grace-ave_ave-cmwater_global_2003-2016_RL05-filled.jpg
+    author: Average GRACE water equivalent thickness 2003-2016
+    caption: Wetlands
+    credit: null
+    source: null

@@ -8,6 +8,8 @@ image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-23 T18:17:25.000Z'
 comments: true
 share: true
+figure1: avg-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
+
 ---
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
@@ -30,6 +32,11 @@ share: true
 # Introduction
 
 This post goes through the steps needed to produce colored maps of the trends in global water storage using data from the [GRACE (Gravity Recovery and Climate Experiment)](https://grace.jpl.nasa.gov) mission. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework.
+
+<figure>
+<img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure1].file }}">
+<figcaption> {{ site.data.images[page.figure1].caption }} </figcaption>
+</figure>
 
 # GRACE
 
