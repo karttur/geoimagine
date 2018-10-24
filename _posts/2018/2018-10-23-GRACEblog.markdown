@@ -34,7 +34,7 @@ This blog summarises how the processing is done using Karttur´s GeoImagine Fram
 
 ## Python Package
 
-The GeoImagine Framework includes a package for specific GRACE processing: [geoimagine.grace](#). However, also several other packages in the Framework are needed for repeating the steps below.
+The GeoImagine Framework includes a package for specific GRACE processing: [geoimagine-grace](https://github.com/karttur/geoimagine-grace/). However, also several other packages in the Framework are needed for repeating the steps below.
 
 ## Data access and download
 
@@ -289,6 +289,8 @@ If you want to produce color maps showing the GRACE data and the results of your
 ## Scaling for color map
 
 To produce a color map, you need to scale your original map to range between 0 and 255, and then assign the palette. By default, Karttur´s GeoImagine Framework assumes that null (nodata) will equal 255, and that the values 251 to 254 represent colors for overlays, frames and text etc. Values in the range 0 to 250 represents the thematic feature of the layer. The process <span class='package'>createscaling</span> adds the scaling to the database.
+
+The GRACE data is strongly skewed because of the glacier melt in Greenland and West Antarctica. The melting of the glaciers causes a loss in water and thus is gravitational pull. Using a linear scale for representing the global change in water equivalent thickness that included the melting glacier thus becomes tricky, I choose to use a solution where I use a power function to capture both large and small changes. This, however, can be deceptive but you need to choose some legend scaling in order to show your map.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
