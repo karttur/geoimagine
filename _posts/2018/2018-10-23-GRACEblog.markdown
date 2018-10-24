@@ -13,21 +13,7 @@ figure2A: ols-sl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 figure2B: ts-mdsl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 figure2C: ts-losl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 figure2D: ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-
-[Introduction](#introduction)
-[GRACE](#grace)
-[Python Package](#python-package)
-[Data access and download](#data-access-and-download)
-[Organizing the dataset](#organizing-the-dataset)
-[Filling missing data](#filling-missing-data)
-[Average solutions](#average-solutions)
-[Seasonal signal extraction](#seasonal-signal-extraction)
-[Resample temporal resolution](#resample-temporal-resolution)
-[Trend estimation](#trend-estimation)
-[Significant changes and trends](#significant-changes-and-trends)
-[Palette for GRACE](#palette-for-grace)
-[Scaling for color map](#scaling-for-color-map)
-[Export color map](#export-color-map)
+---
 
 
 # Introduction
@@ -273,10 +259,9 @@ The process <span class='package'>signiftrendsancillary</span> combines the MK t
 
 ## Palette for GRACE
 
-![Grace palette]({{ site.commonurl }}/images/cmwater-annual-stats-a_avg-grace-ave_precipln.png)
-{: .pull-right}
-If you want to produce color maps showing the GRACE data and the results of your trend analysis, you need to create the palette(s) to use. All palettes must be saved to the database before use, with the process <span class='package'>addrasterpalette</span>.
-Looking at the color ramp of the online GRACE data at the [official homepage](), I set the following palette:
+![Grace palette]({{ site.commonurl }}/images/cmwater-annual-stats-a_avg-grace-ave_precipln.png){: .pull-right}
+
+If you want to produce color maps showing the GRACE data and the results of your trend analysis, you need to create the palette(s) to use. All palettes must be saved to the database before use, with the process <span class='package'>addrasterpalette</span>. Looking at the color ramp of the online GRACE data at the [official homepage](), I set the following palette:
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
