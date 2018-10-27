@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Karttur's GeoImageine Framework
-excerpt: "Introduction to Karttur's GeoImageine Framework"
+title: Karttur's GeoImagine Framework
+excerpt: "Introduction to Karttur's GeoImagine Framework"
 image: rainfall-delta_3B43_trmm_2001-2016_mk-z-ts-model
 search_omit: true
 ---
