@@ -1,9 +1,11 @@
 ---
 layout: page
-title: Packages
-excerpt: "An archive of packages in Katturs's GeoImagine Framework"
+title: Python packages
+excerpt: "An archive of python packages in Katturs's GeoImagine Framework"
 search_omit: true
 ---
+
+Karttur´s GeoImagine Framework is built around a set of Python Packages. Most packages depend on other packages. The core packages for installing and setting up the geospatial processing framework are available for download. Instructions for how to setup Karttur´s GeoImagine Framework are under development and available [here](../../../blog/blog-import-project-eclipse/). 
 
 <ul class="post-list">
 {% for post in site.categories.package %}
