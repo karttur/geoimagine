@@ -3,7 +3,7 @@ layout: post
 title: Processing of SMAP data
 modified: '2018-10-25 T18:17:25.000Z'
 categories: blog
-excerpt: "Processing GRACE data using Karttur's GeoImagine Framework"
+excerpt: "Processing SMAP data using Karttur's GeoImagine Framework"
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-25 T18:17:25.000Z'
 comments: true

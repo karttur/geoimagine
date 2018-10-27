@@ -1,9 +1,9 @@
 ---
 layout: post
-title: Processing of SMAP data
+title: Defining SMAP layers to process
 modified: '2018-10-24 T18:17:25.000Z'
 categories: blog
-excerpt: "Processing GRACE data using Karttur's GeoImagine Framework"
+excerpt: "Set the SMAP template database table for products and layers."
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-24 T18:17:25.000Z'
 comments: true
