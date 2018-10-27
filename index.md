@@ -6,7 +6,7 @@ image: rainfall-delta_3B43_trmm_2001-2016_mk-z-ts-model
 search_omit: true
 ---
 
-Karttur's GeoImageine Framework is built in Python using the Eclipse Integrated Development Environment (IDE) and postreSQL as database. The setup of the IDE with all its components is covered in the [Setup IDE Blog](https://karttur.github.io/setup-ide/).
+Karttur's GeoImagine Framework is built in Python using the Eclipse Integrated Development Environment (IDE) and postreSQL as database. The setup of the IDE with all its components is covered in the [Setup IDE Blog](https://karttur.github.io/setup-ide/).
 
 The Framework offers a semi-automated processing of spatial data, mainly intended for Big Data satellite image processing. Everything in the framework is done using object oriented processes. Even the definition of the processes themselves use the same processing routines as all other processes. The processes are assembled in root groups, where each root process group is associated with either a particular data source, or particular kind of process (e.g. timeseries processing or export to layouts, backup etc). Most root processes are represented by specific python packages.
 
