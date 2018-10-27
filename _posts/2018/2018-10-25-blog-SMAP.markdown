@@ -26,9 +26,9 @@ This post goes through the steps needed to produce colored maps of the global so
 
 # SMAP
 
-The Soil Moisture Active Passive (SMAP) mission aimed at estimating soil moisture using a combination of active and passive microwave sensors. The active sensors only worked for a couple of months, and the original SMAP combined active and passive data was only captured from 13 april 2015 to 7 july 2015.
+The Soil Moisture Active Passive (SMAP) mission aimed at estimating soil moisture using a combination of active and passive microwave sensors. The active sensors only worked for a couple of months, and the original SMAP combined active and passive data are only available from 13 april 2015 to 7 july 2015.
 
-The passive microwave instrument on SMAP original spatial resolution is 36 km, and has been operational continuously since then.
+The passive microwave instrument on SMAP original spatial resolution is 36 km, and has been operational continuously since March 2015.
 
 More recently, algorithmic development allowed a 9 km enhanced product based on the passive sensor. Combined with the Sentinel-I active microwave sensor (C-band) a new enhanced active-passive product has also become recently available.
 
@@ -38,7 +38,7 @@ This blog summarises how the processing is done using Karttur´s GeoImagine Fram
 
 The GeoImagine Framework includes a package for specific SMAP processing: [geoimagine-smap](https://github.com/karttur/geoimagine-smap/). However, also several other packages in the Framework are needed for repeating the steps below.
 
-The package includes a stand alone module <span class='module'>???</span> that can be used to adding records to the SMAP database table on templates. The templates table is required when extracting and organizing SMAP data. The templates defin both whihc layers to extract, how to name them and where to svae them.
+The package includes a stand alone module <span class='module'>???</span> that can be used for adding records to the SMAP database table on templates. The templates table is required when extracting and organizing SMAP data. The templates define both which layers to extract, how to name them and where to save them.
 
 You can accept the default templates that are installed with the Framework database, or you can redefine the dataasbe using the <span class='module'>???</span> module.
 
@@ -68,13 +68,13 @@ I have tried to find some library or database that lists the data available in t
 
 Before running the process <span class='package'>SearchSmapProducts</span> you must have the credentials for accessing [https://earthdata.nasa.gov](https://earthdata.nasa.gov) in a <span class='file'>,netrc</span> file, with the username corresponding to the one given in the xml file ('YourEarthDataUser').
 
-The processes will the drill down into [https://earthdata.nasa.gov](https://earthdata.nasa.gov) and load all the available data as html coded files. By default the process wil put all the html files under the path "smap/source/yyyy.mm.dd" un the volume identified in the xml file. The files are ordinary html files, but with the ".html" extension omitted.
+The processes will the drill down into [https://earthdata.nasa.gov](https://earthdata.nasa.gov) and load all the available data as html coded files. By default the process svaes all the html files under the path <span class='file'>../smap/source/yyyy.mm.dd/</span> under the volume identified in the xml file. The files are ordinary html files, but with the <span class='file'>.html</span> extension omitted.
 
 To actually transfer the content of the downloaded files you must run the process <span class='package'>SmapSearchToDB</span>
 
 ## Transfer search to database
 
-To transfer the search results to the database you must run the process <span class='package'>SmapSearchToDB</span>. It reads the html files, extracts the required inforamtion and transfers it to the database. When finished it moves the html file to a sub-folder called "done". If, for some reason, you delete your database all you need to do is to take all the html files under the <span class='file'>done</span> sub-folder and move them one level up and then re-run <span class='package'>SmapSearchToDB</span>.
+To transfer the search results to the database you must run the process <span class='package'>SmapSearchToDB</span>. It reads the html files, extracts the required information and transfers it to the database. When finished it moves the html file to a sub-folder called "done". If, for some reason, you delete your database all you need to do is to take all the html files under the <span class='file'>done</span> sub-folder and move them one level up and then re-run <span class='package'>SmapSearchToDB</span>.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -112,364 +112,53 @@ When downloading the SMAP HDF5 files you can either let the process download on 
 
 If you did not set parameter _asscript_, including setting it to False, the process with produce a script file that you must run manually. You can also copy the script to another machine (with better internet connection) and run the script from there. THe machine you run from must have a <span class='file'>.netrc</span> file with your EarthData credentials. And the volume indicated in the xml must either exists on the machine from which you download, or you need to edit the script to reflect a volume that is available on the machine from which you download.
 
-## Organizing the dataset
+## Extracting SMAP layers
 
-The GRACE dataset available online is not projected in the usual manner, but starts at the Greenwich Meridian and then extends eastwards. It wraps the dateline and the last column again ends at the Greenwich Meridian. To solve the projection on the fly when organizing GRACE data, use the process <span class='package'>OrganizeGrace</span> (only works on the ASCII data). This process is a subclass to <span class='package'>OrganizeAncillary</span>, and uses the same xml structure:
+Tee SMAP data retrieved by Karttur´s GeoImagine Framework are as HDF5 files. The layers included in each HDF5 file, as well as metadata, can be accessed using <span class='terminalapp'><gdalinfo/span>.
 
+<span class='terminal'>gdalinfo path/to/smap/hdf5file.H5</span>
+
+In Karttur's GeoImagine Framework the layers to extract are defined in the database, in the table "templates" under the "smap" schema. The tempaltes table also define the celltype, cellnull, projection and the path wher to store the extracted layer.
+
+### The EASEGRID projection
+
+All the SMAP data layers are projected using EASEGRID 2.0, and comes in three varietes:
+
+- A global cylidrical EASE grid (EPSG:3410)
+- A northern polar EASE grid ()
+- A southern polar EASE grid ()
+
+As with all other data imported to KArttur's Geominagine Framework, the basic projection is kept, and only changed when data from different systems are combined (i.e. you can combine SMAP with MODIS by transferring the SMAP EASE GRID DATA TO MODIS sinusoidal grids).
+
+It is best to use the EPSG code when working with the SMAP data But the EASEGRID 2.0 projection required that proj4 is at elast version 4.8.You need to check that out. Otherwise you can use the proj4 direct definition:
+
+```
+prof4
+```
+
+If you look in the module <span class='module'>hdf5_2_geotff.py</span>, you can alter between defining the projection using proj4 and the EPSG code.
+
+The process <span class='package'>extractSmapHdf</span> extracts the layers you want from the HDF5 files.
 ```
 <?xml version='1.0' encoding='utf-8'?>
-<organize>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
-	<period timestep='allscenes'></period>
-	<process processid ='OrganizeGrace' dsversion = '3.0'>
-		<parameters
-			solutionset = 'JPL'
-			dsversion = "RL05"
-			accessdate = "20181018"
-			dataurl = "https://grace.jpl.nasa.gov/data/get-data/"
-			metaurl="https://grace.jpl.nasa.gov/data/get-data/"
-			title = "GRACE global data"
-			label = "GRACE (Gravity Recovery and Climate Experiment) global data"
-
-		> </parameters>   	 
-		<srcpath volume = "Karttur3tb/ANCILIMPORT" hdrfiletype = "gz" datfiletype = "txt"></srcpath>
-		<dstpath volume = "Karttur3tb" hdrfiletype = "tif" datfiletype = "tif"></dstpath>
-		<srcraw id="grace-jpl"
-			datadir ='GRACE/ascii'
-			theme = "hydrology"
-			subtheme = "gravitywater"
-			title = "GRACE global data"
-			label = "GRACE (Gravity Recovery and Climate Experiment) global data"
-		></srcraw>
-		<dstcomp>
-			<grace-jpl source = "NASA-GRACE" product = "jpl-cmwater" folder = "cmwater" band = "grace-jpl" prefix = "grace-jpl" suffix = "RL05" scalefac = "1" offsetadd = "0" dataunit = "cm" celltype = 'Float32' cellnull = '32767' measure ='R' masked='Y'>
-			</grace-jpl>
-		</dstcomp>
+<searchdatapool>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
+	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2020' endmonth = '10' endday = '010' timestep='1D'></period>
+	<process processid ='extractSmapHdf' dsversion = '1.3'>
+		<parameters product="SPL3SMP" version="005" exploded ='False' remoteuser='YourEartDataUser' serverurl="https://n5eil01u.ecs.nsidc.org/"></parameters>
+		<dstpath volume = "Karttur3tb"></dstpath>
 	</process>
+</searchdatapool>
 ```
 
-The process <span class='package'>OrganizeAncillary</span> translates the raw GRACE data to organized and projected GeoTIFF layers.
+The process <span class='package'>extractSmapHdf</span> will identift missing HDF5 files on the fly, and create a shell script file that, if exectured, will download the missing files. Thus you have to gice your remote unser for EARtData. If you do not have any user for EarthData and will not use the script, you can enter any name.
 
-If you want to use all the solutions for equivalent water thickness (CST, GFZ and JPL) you have to define three import processes (can be done in the same xml file).
+## Temporal resampling
 
-## Filling missing data
+The SMAP data that I use are delivered as daily timesteps. For some of the analysis and modeling that I do, the daily timestep is the best solution. But for comparing with e.g. climate data, vegetation growth, or other satellite images like MODIS, I prefer to resample the SMAP data. A lot on the processing I do either rely on weekly to biweekly, or monthly timesteps. MODIS products typically represent 8 or 16 day intervals, the old crop-climate data from AVHRR images usually come as thre (3) monthly periods, and a lot of climate data is available using monthly aggregated data.
 
-The GRACE monthly dataset of equivalent water thickness has some gaps. The process <span class='package'>mendancillarytimeseries</span> fills the gaps. The default method for filling data is linear interpolation.
+All this can be done using Karttur's GeoImagine Framework, with the help of the <span class='package'>Pandas</package>. <span class='package'>Pandas</package> is widely used for handling timeseries data in Pyghon, and is part of Anaconda. It can be a bit slow to use for resampling, and for some of the reampling I have written numba JIT (Just In Time) compiled scripts.
 
-```
-<?xml version='1.0' encoding='utf-8'?>
-<manageprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
-	<period startyear = "2002" startmonth='04' endyear = "2017" endmonth='01' timestep='MS'></period>
+### Resampling to 8 or 16 day intervals
 
-	<!-- mendanciltimeseries (TimeSeries) -->
-	<process processid ='mendancillarytimeseries'>
-		<overwrite>Y</overwrite>
-		<delete>N</delete>
-		<parameters></parameters>
-
-		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
-		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
-		<srccomp>
-			<grace-jpl source = "NASA-GRACE" product = "jpl-cmwater" folder = "cmwater" band = "grace-jpl" prefix = "grace-jpl" suffix = "RL05">
-			</grace-jpl>
-		</srccomp>
-
-		<dstcomp>
-			<grace-jpl band = "grace-jpl" prefix = "grace-jpl" suffix = "RL05-filled">
-			</grace-jpl>
-		</dstcomp>
-	</process>
-</manageprocess>
-```
-
-## Average solutions
-
-As note above, the recommendation is to use the average of the three solutions for the monthly equivalent water depth (CSR, GFZ and JPL). The process <span class='package'>average3ancillarytimeseries</span> will do this for you.
-
-```
-<?xml version='1.0' encoding='utf-8'?>
-<manageprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '\*' plotid = '\*' system = 'ancillary'></userproj>
-	<period startyear = "2002" startmonth='04' endyear = "2017" endmonth='01' timestep='MS'></period>
-
-	<!-- mendanciltimeseries (TimeSeries) -->
-	<process processid ='average3ancillarytimeseries'>
-		<overwrite>Y</overwrite>
-		<delete>N</delete>
-		<parameters copycomp ='grace-gfz' acceptmissing ='False'></parameters>
-
-		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
-		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
-		<srccomp>
-			<grace-jpl source = "NASA-GRACE" product = "jpl-cmwater" folder = "cmwater" band = "grace-jpl" prefix = "grace-jpl" suffix = "RL05-filled">
-			</grace-jpl>
-			<grace-csr source = "NASA-GRACE" product = "csr-cmwater" folder = "cmwater" band = "grace-csr" prefix = "grace-csr" suffix = "RL05-filled">
-			</grace-csr>
-			<grace-gfz source = "NASA-GRACE" product = "gfz-cmwater" folder = "cmwater" band = "grace-gfz" prefix = "grace-gfz" suffix = "RL05-filled">
-			</grace-gfz>
-		</srccomp>
-
-		<dstcomp>
-			<grace-ave product = "ave-cmwater" band = "grace-ave" prefix = "grace-ave" suffix = "RL05-filled">
-			</grace-ave>
-		</dstcomp>
-	</process>
-
-</manageprocess>
-```
-
-## Seasonal signal extraction
-
-The process <span class='package'>extractseasonancillary</span> extracts the seasonal mean for each season in the dataset (monthly periods for the GRACE data). This process is not needed for the analysis of the GRACE data. To work, the period must include full years only.
-
-```
-<?xml version='1.0' encoding='utf-8'?>
-<runprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
-	<period startyear = "2003" startmonth='01' endyear = "2016" endmonth='12' timestep='MS'></period>
-
-	<!-- seasonaltrendcorr annual indexes and trends-->
-	<process processid = 'extractseasonancillary' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters trend = 'kernel' kernel='0.012,0.191,0.492,1.0,0.492,0.191,0.012'></parameters>
-		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
-		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
-		<srccomp>
-			<grace-ave source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater" band = "grace-ave" prefix = "grace-ave" suffix = "RL05-filled">
-			</grace-ave>
-		</srccomp>
-	</process>		
-</runprocess>
-```
-
-## Resample temporal resolution
-
-In this example we are just going to look at the annual changes in water equivalent thickness using the GRACE data. To do that you must resample the monthly signals to an annual signal. The process for this is <span class='package'>resampletsancillary</span>
-
- For the GRACE data, that describes the relative change, it does not really matter if you resample using the average annual signal or sum up the monthly signals to an annual sum. In the example I have resampled to annual average.
-
-```
-<?xml version='1.0' encoding='utf-8'?>
-<runprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
-	<period startyear = "2003" startmonth='01' endyear = "2016" endmonth='12' timestep='MS'></period>
-
-	<!-- seasonaltrendcorr annual indexes and trends-->
-	<process processid = 'resampletsancillary' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters method = 'avg' ></parameters>
-		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
-		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
-		<srccomp>
-			<grace-ave source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater" band = "grace-ave" prefix = "grace-ave" suffix = "RL05-filled">
-			</grace-ave>
-		</srccomp>
-	</process>		
-</runprocess>
-```
-
-### Trend estimation
-
-In this example the trend of the changes in equivalent water thickness will be done using the annual average GRACE data. The process for this is <span class='package'>trendtsancillary</span>. At time of writing, it can use two different linear methods for estimating the trend Ordinarly Least Sqaure (OLS) and Theil-Sen (TS). For determining the significance of the change in the linear trend the process uses the Mann-Kendall (MK) test. The script is set up so that you just state 'ols' or 'mk', and then the additional analysis follow along. With 'ols' given you also get the random mean square error ('rmse') and the correlations coefficient ('r2'), and with 'mk' you get the Theil-Sen regression (median and at 95 % confidence limits for upper and lower change). The script can also calculate the long term average and standard devations. The xml parameters below generate all the output options presently available:
-
-```
-<?xml version='1.0' encoding='utf-8'?>
-<runprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
-	<period startyear = "2003" endyear = "2016" timestep='AS'></period>
-
-	<!-- seasonaltrendcorr annual indexes and trends-->
-	<process processid = 'trendtsancillary' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters method = 'avg' ></parameters>
-		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
-		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
-		<srccomp>
-			<grace-ave source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual" band = "grace-ave" prefix = "grace-ave" suffix = "RL05-filled">
-			</grace-ave>
-		</srccomp>
-		<stats id = 'avg' band = "avg"></stats>
-		<stats id= 'std' band = "std"></stats>
-		<stats id= 'mk' band = "mk"></stats>
-		<stats id= 'ols' band = "ols"></stats>
-	</process>		
-</runprocess>
-```
-
-## Significant changes and trends
-
-The process <span class='package'>signiftrendsancillary</span> combines the MK test estimates of absolute changes over the defined period. Two layers are produced, one showing the changes for all areas, and one showing only areas with statistically significant changes.
-
-```
-<manageprocess>
-
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
-	<period startyear = "2003" endyear = "2016" timestep='timespan-A'></period>
-
-	<process processid = 'signiftrendsancillary' version = '1.3'>
-		<overwrite>True</overwrite>
-
-		<parameters basename='grace-ave' threshold = '1.96'></parameters>		
-		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
-		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
-		<srccomp>		
-			<mk-z-grace-ave id = 'significance' source = "NASA-GRACE" product = "ave-cmwater" folder = 'cmwater-annual-trend-A' band = "mk-z-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
-			</mk-z-grace-ave>
-
-			<ts-mdsl-grace-ave id = 'slope' source = "NASA-GRACE" product = "ave-cmwater" folder = 'cmwater-annual-trend-A' band = "ts-mdsl-grace-ave" prefix = "ts-mdsl-grace-ave" suffix = "RL05-filled">
-			</ts-mdsl-grace-ave>
-
-			<ts-ic-grace-ave id = 'intercept' source = "NASA-GRACE" product = "ave-cmwater" folder = 'cmwater-annual-trend-A' band = "ts-ic-grace-ave" prefix = "ts-ic-grace-ave" suffix = "RL05-filled">
-			</ts-ic-grace-ave>		
-		</srccomp>
-		</process>
-</manageprocess>
-```
-
-## Palette for GRACE
-
-![Grace palette]({{ site.commonurl }}/images/cmwater-annual-stats-a_avg-grace-ave_grace.png){: .pull-right}
-
-If you want to produce color maps showing the GRACE data and the results of your trend analysis, you need to create the palette(s) to use. All palettes must be saved to the database before use, with the process <span class='package'>addrasterpalette</span>. Looking at the color ramp of the online GRACE data at the [official homepage](), I set the following palette:
-
-```
-<?xml version='1.0' encoding='utf-8'?>
-<palette>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
-	<path></path>
-	<!-- addrasterpalette preciplinear-->
-	<process processid = 'addrasterpalette'>
-		<overwrite>Y</overwrite>
-		<delete>N</delete>
-		<parameters palette = 'grace' compid='grace'>
-			<setcolor id = '0' red = '96' green ='0' blue='0' alpha ='0' label='0' hint='0' ></setcolor>				
-			<setcolor id = '63' red = '204' green ='74' blue='70' alpha ='0' label='25' hint='NA' ></setcolor>			
-			<setcolor id = '125' red = '224' green ='224' blue='224' alpha ='0' label='50' hint='50' ></setcolor>
-			<setcolor id = '187' red = '60' green ='170' blue='190' alpha ='0' label='75' hint='NA' ></setcolor>
-			<setcolor id = '250' red = '4' green ='4' blue='110' alpha ='0' label='100' hint='100' ></setcolor>
-			<setcolor id = '253' red = '240' green ='240' blue='132' alpha ='0' label='dry (0)' hint='NA' ></setcolor>
-			<setcolor id = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
-			<setcolor id = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
-		</parameters>			
-	</process>
-</palette>
-```
-
-## Scaling for color map
-
-To produce a color map, you need to scale your original map to range between 0 and 255, and then assign the palette. By default, Karttur´s GeoImagine Framework assumes that null (nodata) will equal 255, and that the values 251 to 254 represent colors for overlays, frames and text etc. Values in the range 0 to 250 represents the thematic feature of the layer. The process <span class='package'>createscaling</span> adds the scaling to the database.
-
-The GRACE data is strongly skewed because of the glacier melt in Greenland and West Antarctica. The melting of the glaciers causes a loss in water and thus is gravitational pull. Using a linear scale for representing the global change in water equivalent thickness that included the melting glacier thus becomes tricky, I choose to use a solution where I use a power function to capture both large and small changes. This, however, can be deceptive but you need to choose some legend scaling in order to show your map.
-
-```
-<?xml version='1.0' encoding='utf-8'?>
-<scaling>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
-
-
-	<!-- Create scaling -->
-
-	<!-- NOTE THE ID IS OLNLY USED IN THE SCRIPTING SO IT CAN HAVE (UNIQUE) DUMMY VALUES HERE -->
-	<!-- GRACE monthly cmwater-->
-	<process processid = 'createscaling' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters mirror0 ='True' scalefac='22' power='0.4'></parameters>			
-    	<comp id = '1' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-stats-A" band = 'avg-grace-ave' suffix = "RL05-filled"></comp>    	
-	</process>
-
-	<!-- GRACE annual average cmwater -->
-	<process processid = 'createscaling' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters mirror0 ='True' scalefac='5' power='0.67'></parameters>			
-    	<comp id = '1' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-stats-A" band = 'avg-grace-ave' suffix = "RL05-filled"></comp>    	
-		<comp id = '2' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-stats-A" band = 'std-grace-ave' suffix = "RL05-filled"></comp>    	
-		<comp id = '3' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = 'ts-ic-grace-ave' suffix = "RL05-filled"></comp>    	
-		<comp id = '4' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = 'ols-ic-grace-ave' suffix = "RL05-filled"></comp>    	
-	</process>
-
-
-	<!-- GRACE mk-z trend -->
-	<process processid = 'createscaling' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters scalefac='20' offsetadd='125'></parameters>			
-    	<comp id = '1' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = 'mk-z-grace-ave' suffix = "RL05-filled"></comp>    	
-	</process>
-
-	<process processid = 'createscaling' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters mirror0 ='True' scalefac='15' power='0.67'></parameters>
-		<comp id = '1' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = 'ts-mdsl-grace-ave' suffix = "RL05-filled"></comp>    	
-		<comp id = '2' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = 'ts-losl-grace-ave' suffix = "RL05-filled"></comp>    		
-    	<comp id = '3' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = 'ts-hisl-grace-ave' suffix = "RL05-filled"></comp>    	
-		<comp id = '4' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = 'ols-sl-grace-ave' suffix = "RL05-filled"></comp>    	
-	</process>
-
-	<process processid = 'createscaling' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters mirror0 ='True' scalefac='10' ></parameters>
-		<comp id = '1' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = 'ols-rmse-grace-ave' suffix = "RL05-filled"></comp>    	
-	</process>
-
-	<process processid = 'createscaling' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters scalefac='100'></parameters>			
-    	<comp id = '1' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = 'ols-r2-grace-ave' suffix = "RL05-filled"></comp>    	
-	</process>
-</scaling>
-```
-
-## Export color map
-
-having defined a palette and the scaling for the different layers, you can export the layers as color maps (colored GeoTiff images). The process for doing that is <span class='package'>exporttobyteancillary</class>.
-
-```
-<?xml version='1.0' encoding='utf-8'?>
-<runprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
-	<period startyear = "2003" endyear = "2016" timestep='timespan-A'></period>
-
-	<!-- exporttobyte palette: grace -->
-	<process processid = 'exporttobyteancillary' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters palette= 'grace'></parameters>		
-		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
-		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>    	
-		<srccomp>
-			<avg-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-stats-A" band = "avg-grace-ave" prefix = "avg-grace-ave" suffix = "RL05-filled">
-			</avg-grace-ave>
-			<std-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-stats-A" band = "std-grace-ave" prefix = "std-grace-ave" suffix = "RL05-filled">
-			</std-grace-ave>
-			<ts-mdsl-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ts-mdsl-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
-			</ts-mdsl-grace-ave>
-			<ts-hisl-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ts-hisl-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
-			</ts-hisl-grace-ave>
-			<ts-losl-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ts-losl-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
-			</ts-losl-grace-ave>
-			<ts-ic-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ts-ic-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
-			</ts-ic-grace-ave>
-			<ols-sl-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ols-sl-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
-			</ols-sl-grace-ave>
-			<ols-ic-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ols-ic-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
-			</ols-ic-grace-ave>
-			<ols-r2-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ols-r2-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
-			</ols-r2-grace-ave>
-			<ols-rmse-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ols-rmse-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
-			</ols-rmse-grace-ave>
-
-		</srccomp>
-	</process>
-</runprocess>
-```
-
-<figure class="half">
-	<img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2A].file }}">
-
-	<img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2B].file }}">
-
-  <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2C].file }}">
-
-	<img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2D].file }}">
-
-	<figcaption>Maps of the change in water equicvalent thickenss 2003 to 2016. The top row shows the Ordinary Least Square (OLS) slope and the Theil-Sen (TS) median slope. The bottom row shows the lower and higher 95 % confidence limit for TS slope. </figcaption>
-</figure>
+To be completed
