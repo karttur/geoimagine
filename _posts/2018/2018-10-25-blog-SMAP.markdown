@@ -161,4 +161,9 @@ All this can be done using Karttur's GeoImagine Framework, with the help of the 
 
 ### Resampling to 8 or 16 day intervals
 
+The process <span class='package'>resampletssmap</span> can be used for any temporal resampling of SMAP data. To resample to 16 day intervals, with 8 day jumps, the following parameterization:
+
+```
+```
+
 To be completed
