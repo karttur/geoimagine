@@ -5,7 +5,7 @@ soil-moisture-avg_SPL3SMP_global_2015121-2018345_005:
     credit: null
     source: null
     width: 800
-    hieght: 336
+    height: 336
 soil-moisture-avg_SPL3SMP_global_2015-2018@16D_005:
     file: soil-moisture-avg_SPL3SMP_global_2015-2018@16D_005.mp4
     author: Thomas Gumbricht
@@ -13,4 +13,4 @@ soil-moisture-avg_SPL3SMP_global_2015-2018@16D_005:
     credit: null
     source: null
     width: 800
-    hieght: 336
+    height: 336
