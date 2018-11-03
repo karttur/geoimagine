@@ -17,29 +17,6 @@ movie1: soil-moisture-avg_SPL3SMP_global_2015121-2018345_005
 movie2: soil-moisture-avg_SPL3SMP_global_2015-2018@16D_005
 ---
 
-##### SMAP #####
-
-#Create palettes for smap
-#smap_createpalettes_v80.xml
-
-#Create legend for smap
-#smap_createlegends_v80.xml
-
-#Create scaling for smap compids
-#smap_createscaling_v80.xml
-
-#Create movie clock
-#smap_createmovieclock.xml
-
-smap_ExporttoByte_Daily_v80.xml
-smap_ExporttoByte_16D_v80.xml
-#smap_movieframes_16D_v80.xml
-#smap_movieclock_16D_v80.xml
-#smap_ExporttoByte_16D-sesn_v80.xml
-#smap_movieframes_16D-sesn_v80.xml
-#smap_movieclock_16D-sesn_v80.xml
-
-
 # Introduction
 
 This post goes through the steps needed to produce maps of the global soil moisture conditions as captured by the [Soil Moisture Active Passive ( SMAP)](https://smap.jpl.nasa.gov) mission. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework.
