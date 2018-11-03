@@ -151,7 +151,7 @@ As note above, the recommendation is to use the average of the three solutions f
 
 ## Seasonal signal extraction
 
-The process <span class='package'>extractseasonancillary</span> extracts the seasonal mean for each season in the dataset (monthly periods for the GRACE data). This process is not needed for the analysis of the GRACE data. To work, the period must include full years only.
+The process <span class='package'>extractseasonancillary</span> extracts the seasonal mean for each season in the dataset (monthly periods for the GRACE data). This process is not needed for the analysis of the GRACE data.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
