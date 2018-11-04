@@ -1,7 +1,7 @@
 soil-moisture-avg_SPL3SMP_global_2015121-2018345_005:
     file: soil-moisture-avg_SPL3SMP_global_2015121-2018345_005.mp4
     author: Thomas Gumbricht
-    caption: 16 day composites of soil moisture from SMAP
+    caption: SMAP estimated soil moisture 2015 to 2018 (16 day composites)
     credit: null
     source: null
     width: 800
@@ -9,7 +9,7 @@ soil-moisture-avg_SPL3SMP_global_2015121-2018345_005:
 soil-moisture-avg_SPL3SMP_global_2015-2018@16D_005:
     file: soil-moisture-avg_SPL3SMP_global_2015-2018@16D_005.mp4
     author: Thomas Gumbricht
-    caption: Force-filled seasonal 16D soil moisture from SMAP (averaage 2015 to 2018)
+    caption: Force-filled seasonal (16 day interval) soil moisture from SMAP (average 2015 to 2018)
     credit: null
     source: null
     width: 800
