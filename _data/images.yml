@@ -736,10 +736,16 @@ ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled:
     caption:
     credit: null
     source: null
+soil-moisture-avg_SPL3SMP_global_2016009_005:
+    file: soil-moisture-avg_SPL3SMP_global_2016009_005.jpg
+    author: Thomas Gumbricht
+    caption: Average soil moisture (vol/vol) for days 1 to 16 in 2016. 
+    credit: null
+    source: null
 soil-moisture-avg_SPL3SMP_global_2015-2018@D001_005:
     file: soil-moisture-avg_SPL3SMP_global_2015-2018@D001_005.jpg
     author: Thomas Gumbricht
-    caption:
+    caption: Average soil moisture (vol/vol) for day of year 1 to 16 2015 to 2018. Estimates in arctic regions are derived from interpolation of unfrozen (summer) conditions.
     credit: null
     source: null
 soil-moisture-am_SPL3SMP_global_20160122_005:
@@ -756,12 +762,6 @@ soil-moisture-pm_SPL3SMP_global_20160122_005:
     source: null
 soil-moisture-avg_SPL3SMP_global_20160122_005:
     file: soil-moisture-avg_SPL3SMP_global_20160122_005.jpg
-    author: Thomas Gumbricht
-    caption:
-    credit: null
-    source: null
-soil-moisture-avg_SPL3SMP_global_2015-2018@D001_005:
-    file: soil-moisture-avg_SPL3SMP_global_2015-2018@D001_005.jpg
     author: Thomas Gumbricht
     caption:
     credit: null
