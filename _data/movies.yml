@@ -14,3 +14,19 @@ soil-moisture-avg_SPL3SMP_global_2015-2018@16D_005:
     source: null
     width: 800
     height: 336
+TWIpercent_MCD43A4_h20v10_2001009-2017361_v006-tg01:
+    file: TWIpercent_MCD43A4_h20v10_2001009-2017361_v006-tg01.mp4
+    author: Thomas Gumbricht
+    caption: Force-filled 16 day interval soil moisture from MODIS TWI tile h20v10
+    credit: null
+    source: null
+    width: 800
+    height: 800
+TWIpercent_MCD43A4_h21v08_2001009-2017361_v006-tg01:
+    file: TWIpercent_MCD43A4_h21v08_2001009-2017361_v006-tg01.mp4
+    author: Thomas Gumbricht
+    caption: Force-filled 16 day interval soil moisture from MODIS TWI tile h21v08
+    credit: null
+    source: null
+    width: 800
+    height: 800
