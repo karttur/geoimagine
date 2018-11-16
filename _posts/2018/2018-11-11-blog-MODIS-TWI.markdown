@@ -521,4 +521,4 @@ The second process, <span class='package'>movieclockModisSingleTile</span>, crea
 
 ## Temporal resampling
 
-At this stage you should have a filled time series of MODIS data. You can use the filled time series for analyzing trends and changes as it is, or you can resample it to a more coarse spatial resolution. This section illustrates how to resample the MODIS time series, first to monthly data, and then to annual data. TO BE COMPLETED
+The MODIS TWI time series data has a temporal resolution of 16D. Climate data is not seldom available at monthly resolutions, including for instance climate indexes, precipitation and temperature. To directly compare the MODIS soil moisture data with other monthly time series, the MODIS data must be resampled to a monthly temporal resolution.

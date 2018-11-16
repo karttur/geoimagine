@@ -1,0 +1,15 @@
+---
+layout: package
+categories: package
+date: 2018-11-16
+modified: 2018-11-16
+packageurl: package-zipper
+githuburl: geoimagine-zipper
+packageid: zipper
+title: zipper
+excerpt: Zipping/unzipping processes.
+version: (0, 3, 1)
+image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
+comments: True
+share: True
+---
