@@ -1,7 +1,7 @@
 ---
 layout: rootprocess
 title: Export
-excerpt: Export data
+excerpt: Export spatial data
 rootprocid: Export
 search_omit: True
 share: True

@@ -1,7 +1,7 @@
 ---
 layout: rootprocess
 title: ExtractLayerData
-excerpt: Extracts data from layers and saves to database
+excerpt: Extracts data from layers and saves the results to the database
 rootprocid: ExtractLayerData
 search_omit: True
 share: True

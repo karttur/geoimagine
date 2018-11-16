@@ -1,7 +1,7 @@
 ---
 layout: rootprocess
 title: Ancillary
-excerpt: Process for handling ancillary data
+excerpt: Processes for downloading and organizing ancillary data
 rootprocid: Ancillary
 search_omit: True
 share: True

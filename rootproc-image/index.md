@@ -1,7 +1,7 @@
 ---
 layout: rootprocess
 title: Image
-excerpt: Image processing
+excerpt: Image processing routines
 rootprocid: Image
 search_omit: True
 share: True
