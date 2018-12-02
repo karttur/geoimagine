@@ -58,7 +58,7 @@ I have tried to find some library or database that lists the data available in t
 <?xml version='1.0' encoding='utf-8'?>
 <searchsmap>
 	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '03' startday = '31' endyear = '2015' endmonth = '08' endday = '08' timestep='1D'></period>
+	<period startyear = '2015' startmonth = '03' startday = '31' endyear = '2015' endmonth = '08' endday = '08' timestep='D'></period>
 	<process processid ='SearchSmapProducts' dsversion = '1.3'>
 		<parameters remoteuser='YourEarthDataUser' product="SPL3SMP" version="003" serverurl="https://n5eil01u.ecs.nsidc.org/" ></parameters>
 		<dstpath volume = "Karttur2tb"></dstpath>
@@ -66,9 +66,9 @@ I have tried to find some library or database that lists the data available in t
 </searchsmap>
 ```
 
-Before running the process <span class='package'>SearchSmapProducts</span> you must have the credentials for accessing [https://earthdata.nasa.gov](https://earthdata.nasa.gov) in a <span class='file'>netrc</span> file, with the username corresponding to the one given in the xml file ('YourEarthDataUser').
+Before running the process <span class='package'>SearchSmapProducts</span> you must have the credentials for accessing [https://earthdata.nasa.gov](https://earthdata.nasa.gov) in a <span class='file'>.netrc</span> file, with the username corresponding to the one given in the xml file ('YourEarthDataUser').
 
-The process will drill into [https://earthdata.nasa.gov](https://earthdata.nasa.gov) and load all the available data as html coded files. By default the process saves all the html files under the path <span class='file'>../smap/source/yyyy.mm.dd/</span> under the volume identified in the xml file. The files are ordinary html files, but with the <span class='file'>.html</span> extension omitted.
+The process <span class='package'>SearchSmapProducts</span> will drill into [https://earthdata.nasa.gov](https://earthdata.nasa.gov) and load all the available data as html coded files. By default the process save one html file per date (online sub-folder) under the path <span class='file'>../smap/source/yyyy.mm.dd/</span> on the volume identified in the xml file. The files are ordinary html files, but with the <span class='file'>.html</span> extension omitted.
 
 ## Transfer search to database
 
@@ -78,7 +78,7 @@ To transfer the search results to the GeoImagine Framework database you must run
 <?xml version='1.0' encoding='utf-8'?>
 <searchtodb>
 	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2015' endmonth = '08' endday = '08' timestep='1D'></period>
+	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2015' endmonth = '08' endday = '08' timestep='D'></period>
 
 	<process processid ='SmapSearchToDB' dsversion = '1.3'>
 		<parameters product="SPL3SMAP" version="003"></parameters>
@@ -99,7 +99,7 @@ When downloading the SMAP HDF5 files you can either download the files on the fl
 <?xml version='1.0' encoding='utf-8'?>
 <downloadsmap>
 	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2015' endmonth = '08' endday = '08' timestep='1D'></period>
+	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2015' endmonth = '08' endday = '08' timestep='D'></period>
 
 	<process processid ='DownLoadSmapDaac' dsversion = '1.3'>
 		<parameters remoteuser='YourEarthDataUser' product="SPL3SMAP" version="003" serverurl="https://n5eil01u.ecs.nsidc.org/" ></parameters>
@@ -146,7 +146,7 @@ The process <span class='package'>extractSmapHdf</span> extracts the layers you 
 <?xml version='1.0' encoding='utf-8'?>
 <searchdatapool>
 	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2020' endmonth = '10' endday = '010' timestep='1D'></period>
+	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2020' endmonth = '10' endday = '010' timestep='D'></period>
 	<process processid ='extractSmapHdf' dsversion = '1.3'>
 		<parameters product="SPL3SMP" version="005" exploded ='False' remoteuser='YourEartDataUser' serverurl="https://n5eil01u.ecs.nsidc.org/"></parameters>
 		<dstpath volume = "Karttur3tb"></dstpath>
@@ -164,7 +164,7 @@ The dowloaded daily data for most SMAP L3 products are separated into morning (a
 <?xml version='1.0' encoding='utf-8'?>
 <resampletssmap>
 	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2018' endmonth = '12' endday = '31' timestep='1D'></period>
+	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2018' endmonth = '12' endday = '31' timestep='D'></period>
 	<process processid ='conditionalsmapoverlay' dsversion = '1.3'>
 		<overwrite>True</overwrite>
 		<parameters acceptmissing = 'True' copycomp ='template' targettimestep = '16D' startstep='1' method ='avg' template = 'soil-moisture-am'></parameters>

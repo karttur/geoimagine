@@ -1,28 +1,29 @@
 ---
 layout: post
-title: Accessing TRMM precipitation data
+title: TRMM precipitation data
 modified: '2018-11-01 20:17'
 categories: blog
-excerpt: Accessing TRMM and FAO reference evapotranspiration
+excerpt: Accessing, downloading and organizing TRMM precipitaiton data
 tags:
   - TRMM
-  - FAO reference evapotranspiration
+  - Tropical Rainfall Measurement Mission
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-11-01 22:03'
 comments: true
 share: true
 ---
 
-
 # Introduction
 
-In this post you will order, download and import global precipitation data.
+In this post you will order, download and import global precipitation data from the [Tropical Rainfall Measurement Mission (TRMM)](https://pmm.nasa.gov/trmm).
 
 # TRMM
 
-The Tropical Rainfall Measurement Mission (TRMM) ran for 17 years, from 1998 to 2015 (the radar ceased to function already in October 2014). The monthly precipitation product, [TRMM 3B43](https://mirador.gsfc.nasa.gov/collections/TRMM_3B43__007.shtml) developed from TRMM also makes use of other satellite borne precipitation estimates as well as ground based measurements. The product thus continues, despite that the TRMM instrument is no longer operational.
+The Tropical Rainfall Measurement Mission (TRMM) ran for 17 years, from 1998 to 2015 (the radar ceased to function already in October 2014). The monthly precipitation product, [TRMM 3B43](https://mirador.gsfc.nasa.gov/collections/TRMM_3B43__007.shtml) developed from TRMM also makes use of other satellite borne precipitation estimates as well as ground based measurements. The product thus continues, despite that the TRMM instrument is no longer operational. The multi-satellite 3B42 product will continue to be produced through mid 2019, and then be replaced by [IMERG](https://pmm.nasa.gov/category/keywords/imerg).
 
-### Access TRMM data
+This blog summarises how to process TRMM using Karttur´s GeoImagine Framework. There is no particular TRMM package, the TRMM data is instead handled as ancillary data.
+
+## Access TRMM data
 
 At time of writing TRMM can be download in [different formats from different sources](https://pmm.nasa.gov/data-access/downloads/trmm):
 
@@ -38,7 +39,7 @@ At time of writing TRMM can be download in [different formats from different sou
 
 STORM (https://storm.pps.eosdis.nasa.gov/storm/) is NASA's web interface for publicly available data from the Global Precipitation Measurement (GPM) Mission's Precipitation Processing System (PPS). TRMM is included, along with a lot of other data.
 
-To access the TRMM 3B43 product, click the [PPS Data Access](https://storm.pps.eosdis.nasa.gov/storm/data/Service.jsp?serviceName=Order) link on the STORM front page. You must be registered to access the data. When registered, just give your Email, and then search and define the data you want to access (e.g. TRMM 3B43). Select the all TRMM granules (248 months of data at time of writing). Then select the type of script you want for downloading, FTP script, FTP URL or Python. Submit the request. You will receive an email with instructions on how to access the ordered data.
+To access the TRMM 3B43 product, click the [PPS Data Access link](https://storm.pps.eosdis.nasa.gov/storm/data/Service.jsp?serviceName=Order) on the STORM front page. You must be registered to access the data. When registered, just give your Email, and then search and define the data you want to access (e.g. TRMM 3B43). Select the all TRMM granules (248 months of data at time of writing). Then select the type of script you want for downloading, FTP script, FTP URL or Python. Submit the request. You will receive an email with instructions on how to access the ordered data.
 
 To avoid duplicate downloading I use the Python script, and move it to my folder where I store the original data. I then run the script from that folder, and the script will recognize any duplicate and skip re-downloading.
 
@@ -52,9 +53,9 @@ Trying to retrieve the hdf files in the list, it turns out that the files have b
 
 With 20+ years worth of rainfall maps, manual download would take a very long time. Instructions for how to set up wget or curl for downloading data from GES DISC is found [here](https://disc.gsfc.nasa.gov/information/howto?title=How%20to%20Download%20Data%20Files%20from%20HTTP%20Service%20with%20wget), and summarised for mac osx below.
 
-#### Create .netrc server access
+### Create .netrc server access
 
-For automatic login and to the GES DISC server you need to enter the server, your login and password in a .netrc file. The .netrc can be placed in any folder, but unless you put it in your home directory you have to give the path. I put mine in my home directory. Open a <span class='app'>Terminal<spam> window. To make sure you are in your home directory change directory (cd) in a terminal window:
+For automatic login and to the GES DISC server you need to enter the server, your login and password in a .netrc file. The .netrc can be placed in any folder, but unless you put it in your home directory you have to give the path. I put mine in my home directory. Open a <span class='app'>Terminal</span> window. To make sure you are in your home directory change directory (cd) in a terminal window:
 
 <span class='terminal'>cd ~</span>
 
@@ -76,7 +77,7 @@ Then you also need to create a cookie file (in your home directory) called .urs_
 
 <span class='terminal'>touch .urs_cookies</span>
 
-To transfer you credentials from .netrc to .urs_cookies you have to run wget, and (perhaps) give you login and password. While still in the Terminal window, just do a wget for the file used in the [EarthData manual for setting up] wget(https://disc.gsfc.nasa.gov/information/howto?title=How%20to%20Download%20Data%20Files%20from%20HTTP%20Service%20with%20wget)
+To transfer you credentials from .netrc to .urs_cookies you have to run wget, and (perhaps) give you login and password. While still in the Terminal window, just do a wget for the file used in the [EarthData manual for setting up wget](https://disc.gsfc.nasa.gov/information/howto)
 
 <span class='terminal'>$ wget --load-cookies ~/.urs_cookies --save-cookies ~/.urs_cookies --keep-session-cookies https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2_MONTHLY/M2TMNXSLV.5.12.4/1981/MERRA2_100.tavgM_2d_slv_Nx.198101.nc4
 </span>
@@ -87,9 +88,9 @@ If you open .urs_cookies,
 
 You should see that it has been filled with text.
 
-#### Python script for automatic downloads
+### Python script for automatic downloads
 
-On the [EarthData manual page for setting up] wget(https://disc.gsfc.nasa.gov/information/howto?title=How%20to%20Download%20Data%20Files%20from%20HTTP%20Service%20with%20wget) different options for listing and downloading data are given. But I choose to write a small Python script for better control, also avoiding downloading files that I already have on my local system. I already got the list of all the files I want to download from the Mirador server, and I will use that list to step through all files.
+On the [EarthData How To manual page for setting up wget](https://disc.gsfc.nasa.gov/information/howto?title=How%20to%20Download%20Data%20Files%20from%20HTTP%20Service%20with%20wget) different options for listing and downloading data are given. But I choose to write a small Python script for better control, also avoiding downloading files that I already have on my local system. I already got the list of all the files I want to download from the Mirador server, and I will use that list to step through all files.
 
 ```
 import os
@@ -117,12 +118,12 @@ if __name__ == "__main__":
 
 The script opens the file (from Mirador) that lists all the urls (server side files) that I want to download. The script then changes "http" to "http" and creates the wget command (cmd) for downloading, including setting the cookies file with your credentials, and then also steers the download to the destination folder. If the file already exists in the destination folder, it is not downloaded again.
 
-### Extract TRMM hdf data
+## Extract TRMM hdf data
 
-Karttur's GeoImagine Framework has a special import process for TRMM data. The process uses a combination of GDAL and numpy for rearraning the layers in the TRMM <span class='file'>.hdf</span> file on the fly. The core GDAL call for extracting the TRMM data is here:
+Karttur's GeoImagine Framework has a special process for extracting and importing the data layers from the TRMM hdf files. The process uses a combination of GDAL and numpy for rearraning the layers in the TRMM <span class='file'>.hdf</span> file on the fly. The core GDAL call for extracting the TRMM data is here:
 
 ```
-    oscmd =                               '/Library/Frameworks/GDAL.framework/Versions/1.11/Programs/gdal_translate HDF4_SDS:UNKNOWN:"%(in)s"' %{'in':srcFPN}
+    oscmd = '/Library/Frameworks/GDAL.framework/Versions/2.1/Programs/gdal_translate HDF4_SDS:UNKNOWN:"%(in)s"' %{'in':srcFPN}
     if band == 'trmm-3b43v7-precip':
         oscmd = '%(cmd)s:0:precipitation %(tmp)s' %{'cmd':oscmd, 'tmp':tmpFPN}
     elif band == 'trmm-3b43v7-relerr':
@@ -137,79 +138,91 @@ Karttur's GeoImagine Framework has a special import process for TRMM data. The p
 
 where band is identifying the three actual layers included in each TRMM <span class='file'>hdf</span> file.
 
-You then have to create a projection (EPSG: 4326) and set the geotransformation (-180, 0.25, 0, 50, 0, -0.25) and import the data etc.
+### Extract TRMM using Karttur GeoImagine
 
-#### Extract TRMM using Karttur GeoImagine
-
+The extraction of TRMM hdf files is part of the process <span class='package'>organizeancillary</span>
 To extract the data using Karttur´s Geoimagine framework, create the following xml file for importing data for 1998 and 1999:
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <organize>
-	<userproject userid = 'thomasg' projectid = 'karttur' tractid= 'system' siteid = '*' plotid = '*' system = 'system'></userproject>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
 	<period startyear = '1998' startmonth = '1' startday = '1' endyear = '1999' endmonth = '12' endday = '01'  timestep='monthlyday'></period>
-	<path></path>
 
 	<process processid ='organizeancillary' version = '3.0'>
-		<parameters epsg = '4326'
-			dsinst = 'NASA'
-			dsname  = '3B43'
+		<parameters importdef='trmm'
+			epsg = '4326'
+			instid = 'NASA'
+			dsname  = '3b43'
 			dsversion = "7"
+			accessdate = "20181104"
 			regionid = 'trmm'
 			regioncat = 'global'
 			replacestr = 'YYYYMMDD'
 			replacetag = 'yyyymmdd'
-			datadir ='NASA/GES-DISC/3B43v7'
-			datafile =''
-			dataurl = "https://disc.gsfc.nasa.gov/precipitation/documentation/TRMM_README/TRMM_3B43_readme.shtml"
-			metapath ="NASA/GES-DISC/README.TRMM_V7.pdf"  
-    		metaurl="https://disc.gsfc.nasa.gov/precipitation/documentation/TRMM_README/TRMM_3B43_readme.shtml"
-    		title = "TRMM and Other Data Precipitation Product 3B43"
-    		label = "TRMM and Other Data Precipitation Product 3B43"
-		> </parameters>
+			dataurl = "https://disc.gsfc.nasa.gov/precipitation/documentation/trmm_README/trmm_3b43_readme.shtml"
+			metapath ="NASA/GES-DISC/README.trmm_V7.pdf"  
+    		metaurl="https://disc.gsfc.nasa.gov/precipitation/documentation/trmm_README/trmm_3b43_readme.shtml"
+    		title = "trmm and Other Data Precipitation Product 3b43"
+    		label = "trmm and Other Data Precipitation Product 3b43"
+		> </parameters>			
 		<overwrite>N</overwrite>
 		<delete>N</delete>
-		<srcpath mainpath = "/Volumes/WETLAND/ANCILRAW" scenes = 'false' division = 'tiles' hdrfiletype = "HDF" datfiletype = "trmm"></srcpath>
-		<tarpath mainpath = "/Volumes/WETLAND/ANCILLARY" scenes = 'false' division = 'region' hdrfiletype = "tif" datfiletype = "tif"></tarpath>
 
-		<rawin
-			datadir = "NASA/GES-DISC/3B43v7"
-    		datafile = "3B43.YYYYMMDD.7"
-    		datalayer = "precipitation"
-    		accessedate = "20170624"
-    		theme = "rainfall"
-    		subtheme = "rainfall"
-    		copyright = ""
-    	></rawin>
-    	<compout source = "TRMM" product = "3B43" folder = "rainfall-original" band = "TRMM-3B43v7-precip" prefix = "rainfall" suffix = "_v7" scalefac = "1" offsetadd = "0" dataunit = "mm/month" celltype = 'Int16' cellnull = '-32768' measure = 'R'></compout>
+		<srcpath volume = "Pegasus6/ANCILIMPORT" hdrfiletype = "HDF" datfiletype = "trmm"></srcpath>
+		<dstpath volume = "OPUS" hdrfiletype = "tif" datfiletype = "tif"></dstpath>
 
-		<rawin
-			datadir = "NASA/GES-DISC/3B43v7"
-    		datafile = "3B43.YYYYMMDD.7"
-    		datalayer = "precip-relerr"
-    		accessedate = "20170624"
-    		theme = "precipitation"
-    		subtheme = "precipitation error"
-    		copyright = ""
-    	></rawin>
-    	<compout source = "TRMM" product = "3B43" folder = "rainfall-original" band = "TRMM-3B43v7-relerr" prefix = "rainfall-relerr" suffix = "_v7" scalefac = "1" offsetadd = "0" dataunit = "mm/month" celltype = 'Int16' cellnull = '-32768' measure = 'R'></compout>
+		<srcraw id="trmm-3b43v7-precip"
+			datadir ='trmm'
+			datafile = "3b43.YYYYMMDD.7"
+			datalayer = "precipitation"
+    		accessdate = "20181104"
+			theme = "climate"
+			subtheme = "precipitation"
+			copyright =""
+			title = "Monthly Precipitation"
+			label = "Monthly Precipitation"
+		></srcraw>
+		<dstcomp>
+			<trmm-3b43v7-precip source = "trmm" product = "3b43" folder = "rainfall-original" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7" scalefac = "1" offsetadd = "0" dataunit = "mm/month" celltype = 'Int16' cellnull = '-32768' measure = 'R' masked='Y'>
+			</trmm-3b43v7-precip>
+		</dstcomp>
 
-		<rawin
-			datadir = "NASA/GES-DISC/3B43v7"
-    		datafile = "3B43.YYYYMMDD.7"
-    		datalayer = "precip-relerr"
-    		accessedate = "20170624"
-    		theme = "rainfall"
-    		subtheme = "gauge weight"
-    		copyright = ""
-    	></rawin>
-    	<compout source = "TRMM" product = "3B43" folder = "rainfall-original" band = "TRMM-3B43v7-gauge-weight" prefix = "rainfall-gauge-weight" suffix = "_v7" scalefac = "1" offsetadd = "0" dataunit = "percent" celltype = 'Byte' cellnull = '255' measure = 'R'></compout>
+		<srcraw id="trmm-3b43v7-relerr"
+			datadir ='trmm'
+			datafile = "3b43.YYYYMMDD.7"
+			datalayer = "precip-relerr"
+    		accessdate = "20181104"
+			theme = "climate"
+			subtheme = "precipitation error"
+			copyright =""
+			title = "Monthly Precipitation error"
+			label = "Monthly Precipitation error"
+		></srcraw>
+		<dstcomp>
+			<trmm-3b43v7-relerr source = "trmm" product = "3b43" folder = "rainfall-original" band = "trmm-3b43v7-relerr" prefix = "rainfall-relerr" suffix = "v7" scalefac = "1" offsetadd = "0" dataunit = "mm/month" celltype = 'Int16' cellnull = '-32768' measure = 'R' masked='Y'>
+			</trmm-3b43v7-relerr>
+		</dstcomp>
 
+		<srcraw id="trmm-3b43v7-gauge-weight"
+			datadir ='trmm'
+			datafile = "3b43.YYYYMMDD.7"
+			datalayer = "precip-gauge-weight"
+    		accessdate = "20181104"
+			theme = "climate"
+			subtheme = "gauge weight"
+			copyright =""
+			title = "Monthly Precipitation error"
+			label = "Monthly Precipitation error"
+		></srcraw>
+		<dstcomp>
+			<trmm-3b43v7-gauge-weight source = "trmm" product = "3b43" folder = "rainfall-original" band = "trmm-3b43v7-gauge-weight" prefix = "rainfall-gauge-weight" suffix = "v7" scalefac = "1" offsetadd = "0" dataunit = "percent" celltype = 'Byte' cellnull = '255' measure = 'R' masked='Y'>
+			</trmm-3b43v7-gauge-weight>
+		</dstcomp>
 		<yyyymmdd type = 'copydatum'>
 			<compinattribute>datafile</compinattribute>
 			<xcompinattribute>dataset</xcompinattribute>
 			<xcompoutattribute>yyyydoy</xcompoutattribute>
-			<replacex key = '01' compinreplace = 'jan' compoutreplace = '01'></replacex>
 		</yyyymmdd>
 	</process>
 
@@ -218,60 +231,445 @@ To extract the data using Karttur´s Geoimagine framework, create the following 
 
 Because the file naming of the TRMM 3B43 product is different for the period 2000 - 2010 compared to dates before and after, you have to create 3 separate xml files for downloading the data (1998-1999, 2000-2010 and 2011-2017).
 
-I choose to put the extracted TRMM data in a separate folder "rainfall-original" because a few dates include nodata, and I want to get of them as explained in the next section.
+I choose to put the extracted TRMM data in a separate folder "rainfall-original" because a few dates include nodata, and I want to get rid of them as explained in the next section.
 
-### Cleaning the TRMM dataset
+## Replacing NoData
 
-To get rid of nodata, I created another script. To run that script create the following xml file:
+To get rid of nodata, I created another process <span class='package'>mendancillarytimeseries</span>. To run that script create the following xml file:
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <manageprocess>
-	<userproject userid = 'karttur' projectid = 'karttur' tractid= 'trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproject>
-	<path></path>
-	<period startyear = "1998" endyear = "2017" timestep='monthlyday'></period>
-
-
-	<!-- mendtimeseries (TimeSeries) -->
-	<process processid ='mendtimeseries'>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = '1998' startmonth = '01' startday = '01' endyear = '2018' endmonth = '08' endday = '01'  timestep='monthlyday'></period>
+	<process processid ='mendancillarytimeseries'>
 		<overwrite>Y</overwrite>
 		<delete>N</delete>
 		<parameters></parameters>
-
-		<srcpath mainpath = "/Volumes/WETLAND/ANCILLARY" scenes = 'false'  division = 'region' hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
-		<tarpath mainpath = "/Volumes/WETLAND/ANCILLARY" scenes = 'false'  division = 'region' hdrfiletype = 'tif' datfiletype = 'tif'></tarpath>
-		<compin source = "TRMM" product = "3B43" folder = "rainfall-original" band = "TRMM-3B43v7-precip" prefix = "rainfall" suffix = "_v7"></compin>
-		<compout source = "TRMM" product = "3B43" folder = "rainfall" band = "TRMM-3B43v7-precip" prefix = "rainfall" suffix = "_v7"></compout>
-
+		<srcpath volume = "OPUS" hdrfiletype = "tif" datfiletype = "tif"></srcpath>
+		<dstpath volume = "OPUS" hdrfiletype = "tif" datfiletype = "tif"></dstpath>
+		<srccomp>
+			<trmm-3b43v7-precip source = "trmm" product = "3b43" folder = "rainfall-original" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7" >
+			</trmm-3b43v7-precip>
+		</srccomp>
+		<dstcomp>
+			<trmm-3b43v7-precip  band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7-filled">
+			</trmm-3b43v7-precip>
+		</dstcomp>
+	</process>
 </manageprocess>
 ```
 
 The process loads the complete dataset and checks one cell at the time, any nodata is replaced by the interpolated values from adjacent dates.
 
-### Masking land areas
+## Renaming and editing the date format
 
-The TRMM data covers both land and water, but for this project I am only interested in the rainfall over land. Instead of using a spatial dataset for land masses, I use the refET data to identify land. This has the advantage of also assuring that the regions with valid data in both datasets overlap exactly.
+The original TRMM data have filenames that include the date of acquisition, but with the month represented by the first day of the month. In Karttur´s GeoImaginge Framework, data representing a month is denoted by year + month (YYYYMM). The Framework code for this date format is "M" (or "MS" in agreement with the Pandas conding). (The Framework can use the first day of each month for representing monthly data, with the code "montlhyday").
 
-Also this is implemented in Karttur's GeoImagine framework.
+To change the date format YYYYMMDD ("monthlyday") to YYYYMM ("M"), run the process <span class='package'>MonthlyDayToMonthlyAncillary</span>:
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<manageprocess>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = '1998' startmonth = '01' startday = '01' endyear = '2018' endmonth = '08' endday = '01'  timestep='monthlyday'></period>
+	<process processid ='MonthlyDayToMonthlyAncillary'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters></parameters>
+		<srcpath volume = "OPUS" hdrfiletype = "tif" datfiletype = "tif"></srcpath>
+		<dstpath volume = "OPUS" hdrfiletype = "tif" datfiletype = "tif"></dstpath>
+		<srccomp>
+			<trmm-3b43v7-precip  source = "trmm" product = "3b43" folder = "rainfall-original" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7-filled">
+			</trmm-3b43v7-precip>
+		</srccomp>
+		<dstcomp>
+			<trmm-3b43v7-precip  source = "trmm" product = "3b43" folder = "rainfall" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7-f">
+			</trmm-3b43v7-precip>
+		</dstcomp>
+	</process>
+</manageprocess>
+```
+
+## Resample to annual summary
+
+The TRMM product that is used in this post, 3B43, represents monthly time steps. For trend analysis you are going to use annual data, and you must thus first resample, or sum up, the monthly data. This is done with the process <span class='package'>resampletsancillary</span>:
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <runprocess>
-	<userproject userid = 'karttur' projectid = 'karttur' tractid= 'trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproject>
+
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = "1998" startmonth='01' endyear = "2017" endmonth='12' timestep='M'></period>
+	<process processid = 'resampletsancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters method = 'sum' targettimestep = 'A' ></parameters>
+		<srcpath volume = "OPUS" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "OPUS" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-3b43v7-precip  source = "trmm" product = "3b43" folder = "rainfall" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7-f" >
+			</trmm-3b43v7-precip>
+		</srccomp>
+		<dstcomp>
+			<trmm-3b43v7-precip band = "trmm-3b43v7-precip" suffix = "auto" dataunit = 'mm/yr'>
+			</trmm-3b43v7-precip>
+		</dstcomp>
+	</process>
+</runprocess>
+```
+
+## Analyse precipitation trend
+
+From the annual data of summed precipitation, calculate the trend using both Ordinary Least Square (OLS) regression, and Theil-Sen regression along with a Mann-Kendall test using the processes <span class='package'>trendtsancillary</span> (see the [GRACE post](../blog-GRACE/) for details).
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<runprocess>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = "1998" endyear = "2017" timestep='A'></period>
+	<process processid = 'trendtsancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters method = 'avg' ></parameters>
+		<srcpath volume = "OPUS" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "OPUS" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-3b43v7-precip  source = "trmm" product = "3b43" folder = "rainfall-A" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7-f-A">
+			</trmm-3b43v7-precip>
+		</srccomp>
+		<stats id = 'avg' band = "avg"></stats>
+		<stats id= 'std' band = "std"></stats>
+		<stats id= 'mk' band = "mk"></stats>
+		<stats id= 'ols' band = "ols"></stats>
+	</process>		
+</runprocess>
+```
+
+## Preciptation palettes
+
+Precipitation vary greatly both in time and space, and creating a good palette and scaling for precipitation must consider that. Using a linear scale covering the full range of (global) precipitation will result in skewed layouts. At least for global data, you need to apply some transformation, either as pre-process or when setting the palette, or a combination of both. The default Karttur palette for precipitation comes in two versions, one for linear data, and one for logarithmic data. The former can, however, also be used after applying a power function as part of the layout export process (<span class='package'>exporttobyte</class>).
+
+Because of the relative complexity of the precipitation palettes, the default palettes for precipitation variation and error is defined separately, as is the palette for precipitation change. All the standard precipitation palettes are created from the xml below:
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<palette>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
 	<path></path>
-	<period startyear = "1998" endyear = "2016" timestep='monthlyday'></period>
+
+	<!-- addrasterpalette preciplinear-->
+	<process processid = 'addrasterpalette'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters palette = 'preciplinear' compid='test'>
+			<setcolor id = '0' value = '0' red = '215' green ='76' blue='56' alpha ='0' label='0' hint='0' ></setcolor>				
+			<setcolor id = '25' value = '25' red = '241' green ='115' blue='46' alpha ='0' label='25' hint='NA' ></setcolor>			
+			<setcolor id = '50' value = '50' red = '255' green ='170' blue='51' alpha ='0' label='50' hint='50' ></setcolor>
+			<setcolor id = '75' value = '75' red = '255' green ='222' blue='66' alpha ='0' label='75' hint='NA' ></setcolor>
+			<setcolor id = '100' value = '100' red = '210' green ='251' blue='75' alpha ='0' label='100' hint='100' ></setcolor>
+			<setcolor id = '125' value = '125' red = '138' green ='253' blue='75' alpha ='0' label='125' hint='NA' ></setcolor>
+			<setcolor id = '150' value = '150' red = '90' green ='220' blue='90' alpha ='0' label='150' hint='150' ></setcolor>
+			<setcolor id = '175' value = '175' red = '30' green ='177' blue='125' alpha ='0' label='150' hint='NA' ></setcolor>			
+			<setcolor id = '200' value = '200' red = '10' green ='120' blue='165' alpha ='0' label='175' hint='200' ></setcolor>
+			<setcolor id = '225' value = '225' red = '0' green ='79' blue='140' alpha ='0' label='200' hint='NA' ></setcolor>				
+			<setcolor id = '250' value = '250' red = '0' green ='43' blue='117' alpha ='0' label='200' hint='250' ></setcolor>				
+			<setcolor id = '253' value = '253' red = '240' green ='240' blue='132' alpha ='0' label='dry (0)' hint='NA' ></setcolor>
+			<setcolor id = '254' value = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
+			<setcolor id = '255' value = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
+		</parameters>			
+	</process>
+
+	<!-- addrasterpalette precipln-->
+	<process processid = 'addrasterpalette'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters palette = 'precipln' compid='test'>
+			<setcolor id = '0' value = '0' red = '215' green ='76' blue='56' alpha ='0' label='0' hint='0' ></setcolor>				
+			<setcolor id = '8' value = '8' red = '241' green ='115' blue='46' alpha ='0' label='8' hint='NA' ></setcolor>			
+			<setcolor id = '13' value = '13' red = '255' green ='170' blue='51' alpha ='0' label='13' hint='NA' ></setcolor>
+			<setcolor id = '20' value = '20' red = '255' green ='222' blue='66' alpha ='0' label='20' hint='NA' ></setcolor>
+			<setcolor id = '31' value = '31' red = '210' green ='251' blue='75' alpha ='0' label='31' hint='31' ></setcolor>
+			<setcolor id = '49' value = '49' red = '138' green ='253' blue='75' alpha ='0' label='49' hint='NA' ></setcolor>
+			<setcolor id = '76' value = '76' red = '90' green ='220' blue='90' alpha ='0' label='76' hint='76' ></setcolor>			
+			<setcolor id = '120' value = '120' red = '30' green ='177' blue='125' alpha ='0' label='120' hint='120' ></setcolor>
+			<setcolor id = '188' value = '188' red = '0' green ='90' blue='150' alpha ='0' label='188' hint='188' ></setcolor>				
+			<setcolor id = '250' value = '250' red = '0' green ='43' blue='117' alpha ='0' label='250' hint='250' ></setcolor>				
+			<setcolor id = '253' value = '253' red = '240' green ='240' blue='132' alpha ='0' label='dry (0)' hint='NA' ></setcolor>
+			<setcolor id = '254' value = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
+			<setcolor id = '255' value = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
+		</parameters>			
+	</process>
+
+	<!-- addrasterpalette precipdelta-->
+	<process processid = 'addrasterpalette'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters palette = 'precipdelta' compid='test'>
+			<setcolor id = '0' value = '0' red = '215' green ='76' blue='56' alpha ='0' label='0' hint='%(d)s' ></setcolor>			
+			<setcolor id = '63' value = '63' red = '255' green ='170' blue='51' alpha ='0' label='63' hint='%(d)s' ></setcolor>					
+			<setcolor id = '125' value = '125' red = '224' green ='224' blue='224' alpha ='0' label='125' hint='%(d)s' ></setcolor>
+			<setcolor id = '187' value = '187' red = '30' green ='177' blue='125' alpha ='0' label='188' hint='%(d)s' ></setcolor>
+			<setcolor id = '250' value = '250' red = '0' green ='43' blue='117' alpha ='0' label='250' hint='%(d)s' ></setcolor>
+			<setcolor id = '253' value = '253' red = '245' green ='237' blue='182' alpha ='0' label='253' hint='NA' ></setcolor>
+			<setcolor id = '254' value = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='NA' ></setcolor>
+			<setcolor id = '255' value = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
+		</parameters>			
+	</process>
+
+	<!-- addrasterpalette preciplinearstd-->
+	<process processid = 'addrasterpalette'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters palette = 'preciplinearstd' compid='test'>			
+			<setcolor id = '0' value = '0' red = '224' green ='224' blue='224' alpha ='0' label='0' hint='%(d)s' ></setcolor>
+			<setcolor id = '83' value = '83' red = '210' green ='251' blue='75' alpha ='0' label='83' hint='%(d)s' ></setcolor>
+			<setcolor id = '167' value = '167' red = '30' green ='177' blue='125' alpha ='0' label='167' hint='%(d)s' ></setcolor>
+			<setcolor id = '250' value = '250' red = '0' green ='43' blue='117' alpha ='0' label='250' hint='%(d)s' ></setcolor>
+			<setcolor id = '253' value = '253' red = '245' green ='237' blue='182' alpha ='0' label='253' hint='NA' ></setcolor>
+			<setcolor id = '254' value = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='NA' ></setcolor>
+			<setcolor id = '255' value = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
+		</parameters>			
+	</process>
+
+	<!-- addrasterpalette preciplnstd-->
+	<process processid = 'addrasterpalette'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters palette = 'preciplnstd' compid='test'>				
+			<setcolor id = '0' value = '0' red = '224' green ='224' blue='224' alpha ='0' label='0' hint='%(d)s' ></setcolor>
+			<setcolor id = '8' value = '8' red = '241' green ='115' blue='46' alpha ='0' label='25' hint='NA' ></setcolor>
+			<setcolor id = '13' value = '13' red = '255' green ='170' blue='51' alpha ='0' label='50' hint='NA' ></setcolor>
+			<setcolor id = '20' value = '20' red = '255' green ='222' blue='66' alpha ='0' label='20' hint='NA' ></setcolor>
+			<setcolor id = '31' value = '31' red = '210' green ='251' blue='75' alpha ='0' label='31' hint='31' ></setcolor>
+			<setcolor id = '49' value = '49' red = '138' green ='253' blue='75' alpha ='0' label='49' hint='NA' ></setcolor>
+			<setcolor id = '76' value = '76' red = '90' green ='220' blue='90' alpha ='0' label='76' hint='76' ></setcolor>			
+			<setcolor id = '120' value = '120' red = '30' green ='177' blue='125' alpha ='0' label='120' hint='120' ></setcolor>
+			<setcolor id = '188' value = '188' red = '0' green ='90' blue='150' alpha ='0' label='188' hint='188' ></setcolor>				
+			<setcolor id = '250' value = '250' red = '0' green ='43' blue='117' alpha ='0' label='250' hint='250' ></setcolor>
+			<setcolor id = '253' value = '253' red = '245' green ='237' blue='182' alpha ='0' label='253' hint='NA' ></setcolor>
+			<setcolor id = '254' value = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='NA' ></setcolor>
+			<setcolor id = '255' value = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
+		</parameters>			
+	</process>
+</palette>
+```
+
+## TRMM Color map scaling
+
+For details on setting the scaling see the post on [Processing of GRACE data](../blog-GRACE/).
+
+The annual global tropical precipitation varies from 0 to over 8000 mm. Linearly scaling this range into the byte range of 0-255 is not useful. Some non-linear function is required. Either you can do a logarithmic transformations as a pre-process, or apply a power function on the fly when exporting the data. The scaling for exporint must be preset, and defined in the database prior to export. The process for <span class='package'>createscaling</span> defines a power function for rescaling the TRMM precipitation data on the fly when exporting layout maps.
 
 
-	<!-- staticmasking -->
-	<process processid = 'setmask' version = '1.3'>
-		<parameters staticmask = 'True' mask='landmask-trmm'></parameters>
-		<srcpath mainpath = "/Volumes/CZ/ANCILLARY" scenes = 'false'  division = 'region' hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
-		<tarpath mainpath = "/Volumes/CZ/ANCILLARY" scenes = 'false' division = 'region' hdrfiletype = 'tif' datfiletype = 'tif'></tarpath>
-    	<compin source = "TRMM" product = "3B43" folder = "rainfall" band = "TRMM-3B43v7-precip" prefix = "rainfall" suffix = "_v7"></compin>
-		<compout source = "TRMM" product = "3B43" folder = "rainfall" band = "TRMM-3B43v7-precip-masked" prefix = "rainfall" suffix = "_v7-masked"></compout>
+```
+<?xml version='1.0' encoding='utf-8'?>
+<scaling>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
+
+	<!-- trmm-3b43v7-precip mm/month monthly data-->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters power = '0.65' scalefac='4'></parameters>
+		<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall" band='trmm-3b43v7-precip' suffix = "_v7"></comp>		
+    </process>
+
+	<!-- TRMM annual precip-->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters power = '0.65' scalefac='0.63'></parameters>			
+    	<comp id = '1' source = "TRMM" product = "3B43" band = 'avg-trmm-3b43v7-precip' folder = "rainfall-annual-stats" suffix = "_A"></comp>   
+    	<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-annual-trend" band = 'ts-ic-trmm-3b43v7-precip' suffix = "_A"></comp>
+    	<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-annual-trend" band = 'ols-ic-trmm-3b43v7-precip' suffix = "_A"></comp>
+	</process>
+
+	<!-- TRMM annual std-->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters power = '0.65' scalefac='2.52'></parameters>		
+    	<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-annual-stats" band = 'std-trmm-3b43v7-precip' suffix = "_A"></comp>
+    	<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-annual-trend" band = 'ols-rmse-trmm-3b43v7-precip' suffix = "_A"></comp>    		 	
+	</process>
+
+	<!-- Mann Kendall-->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters scalefac='40' offsetadd='125' ></parameters>			
+    	<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-annual-trend" band = 'mk-z-trmm-3b43v7-precip' suffix = "_A"></comp>    	
+	</process>
+
+	<!-- slope of change-->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters mirror0='True' power='0.76' scalefac='1.88'></parameters>			
+    	<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-annual-trend" band = 'ts-mdsl-trmm-3b43v7-precip' suffix = "_A"></comp>  
+    	<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-annual-trend" band = 'ts-losl-trmm-3b43v7-precip' suffix = "_A"></comp>    	
+  		<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-annual-trend" band = 'ts-upsl-trmm-3b43v7-precip' suffix = "_A"></comp>
+  		<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-annual-trend" band = 'ols-sl-trmm-3b43v7-precip' suffix = "_A"></comp>    	
+	</process>
+
+	<!-- r2-->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters scalefac='100'></parameters>			
+    	<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-annual-trend" band = 'ols-r2-trmm-3b43v7-precip' suffix = "_A"></comp>    	
+	</process>
+
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters power = '0.85' scalefac='0.45' mirror0='True'></parameters>		
+    	<comp id = '1' source = "TRMM" product = "3B43" folder = "rainfall-change" band = 'TRMM-3B43v7-precip-delta' suffix = "_A"></comp>    	
+	</process>
+
+</scaling>
+```
+
+## Export color maps
+
+having defined a palette and the scaling for the different layers, you can export the layers as color maps (colored GeoTiff images). The process for doing that is <span class='package'>exporttobyteancillary</class>.
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<runprocess>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = "2003" endyear = "2016" timestep='timespan-A'></period>
+
+	<!-- exporttobyte palette: grace -->
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'grace'></parameters>		
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>    	
+		<srccomp>
+			<avg-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-stats-A" band = "avg-grace-ave" prefix = "avg-grace-ave" suffix = "RL05-filled">
+			</avg-grace-ave>
+			<std-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-stats-A" band = "std-grace-ave" prefix = "std-grace-ave" suffix = "RL05-filled">
+			</std-grace-ave>
+			<ts-mdsl-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ts-mdsl-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
+			</ts-mdsl-grace-ave>
+			<ts-hisl-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ts-hisl-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
+			</ts-hisl-grace-ave>
+			<ts-losl-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ts-losl-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
+			</ts-losl-grace-ave>
+			<ts-ic-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ts-ic-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
+			</ts-ic-grace-ave>
+			<ols-sl-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ols-sl-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
+			</ols-sl-grace-ave>
+			<ols-ic-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ols-ic-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
+			</ols-ic-grace-ave>
+			<ols-r2-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ols-r2-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
+			</ols-r2-grace-ave>
+			<ols-rmse-grace-ave id='value' source = "NASA-GRACE" product = "ave-cmwater" folder = "cmwater-annual-trend-A" band = "ols-rmse-grace-ave" prefix = "mk-z-grace-ave" suffix = "RL05-filled">
+			</ols-rmse-grace-ave>
+
+		</srccomp>
+	</process>
+</runprocess>
+```
+
+## Defining a movieclock
+
+Details on defining and creating a movieclock within Karttur´s GeoImagine Framework is covered in the post on [SMAP processing](../blog-SMAP/).
+
+An animation requires a pre-defined movieclock (but usually the "default" movieclock is OK), and that the time series data is exported and then converted to movie frames.
+
+A movieclock object defines the colors, types and sizes of the elements building the clock and timeline in the animation.  Basically you do not need to define any of the elements, they are all defaulted. But if you want other widhts, margins, colors etc, all can be set using the process <span class='package'>addmovieclock</span>
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<palette>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
+	<path></path>
+
+	<!-- createmovieclock -->
+	<process processid = 'addmovieclock'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters name = 'default'></parameters>
+	</process>
+</palette>
+```
+
+## Movie frames
+
+To create movie frames, you must first have exported the images, and then you can run the process <span class='package'>movieframesmap</span>.
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<runprocess>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
+	<period startyear = "2015" startmonth='4' startday='23' endyear = "2018" endmonth='12' endday='31' timestep='16D'></period>
+
+	<!-- exporttobyte avg A -->
+	<process processid = 'movieframesmap' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters name = 'smap' width = '800' crop='800,336,0,0' emboss='KARTTUR' embossdims='720,150' embossptsize='100'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath> 	
+		<dstpath volume = "/Users/thomasgumbricht/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>    	
+		<srccomp>			
+			<soil-moisture-avg id = 'layer3' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005">
+			</soil-moisture-avg>
+		</srccomp>
+
+	</process>
+</runprocess>
+```
+
+As default the script produces a shell script file that you must execute manually to produce the movie frames. The advantage with the script file is that you can edit the area of the map to appear in the movie as well as the embossed watermark text. The link to the script file is reported by the process.
+
+## Movie clock
+
+The final step before producing the time series animation is to create the movie-clock that fits with your movie frames. You need to set the dimensions of the movie clock manually as parameters in the process <span class='package'>movieclocksmap</span>.
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<runprocess>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
+	<period startyear = "2015" startmonth='4' startday='23' endyear = "2018" endmonth='12' endday='31' timestep='16D'></period>		
+
+	<!-- exporttobyte avg A -->
+	<process processid = 'movieclocksmap' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters name = 'smap' width = '800'></parameters>		
+		<dstpath volume = "/Users/thomasgumbricht/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>    	
+		<dstcomp>			
+			<soil-moisture-avg id = 'layer3' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005">
+			</soil-moisture-avg>    	
+		</dstcomp>
+	</process>
+</runprocess>
+```
+
+The process <span class='package'>movieclocksmap</span> use a combination of python image processing and <span class='terminalapp'>ImageMagick</span> commands.
+
+The process also produces two shell script files. The first (in the subfolder <span class='file'>frames</span>) overlays the movieclock and the image frames, and the second (in the subfolder <span class='file'>movie</span>) produces the movie using <span class='terminalapp'>ffmpeg</span>.
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<runprocess>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
+	<period startyear = "2015" startmonth='4' startday='23' endyear = "2018" endmonth='12' endday='31' timestep='16D'></period>		
+
+	<!-- exporttobyte avg A -->
+	<process processid = 'movieclocksmap' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters name = 'smap' width = '800'></parameters>		
+		<dstpath volume = "/Users/thomasgumbricht/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>    	
+		<dstcomp>			
+			<soil-moisture-avg id = 'layer3' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005">
+			</soil-moisture-avg>    	
+		</dstcomp>
 	</process>
 
 </runprocess>
 ```
 
-The input data is now ready, and the next blog will handle time series analysis of a single dataset.
+<figure>
+<iframe src="{{ site.commonurl }}/movies/{{ site.data.movies[page.movie1].file }}" width="{{ site.data.movies[page.movie1].width }}" height="{{ site.data.movies[page.movie1].height }}" frameborder="0">
+</iframe>
+<figcaption> {{ site.data.movies[page.movie1].caption }} </figcaption>
+</figure>
+
+<figure>
+<iframe src="{{ site.commonurl }}/movies/{{ site.data.movies[page.movie2].file }}" width="{{ site.data.movies[page.movie2].width }}" height="{{ site.data.movies[page.movie2].height }}" frameborder="0">
+</iframe>
+<figcaption> {{ site.data.movies[page.movie2].caption }} </figcaption>
+</figure>

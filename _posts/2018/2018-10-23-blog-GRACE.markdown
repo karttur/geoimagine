@@ -17,7 +17,7 @@ figure2D: ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 
 # Introduction
 
-This post goes through the steps needed to produce colored maps of the trends in global water storage using data from the [GRACE (Gravity Recovery and Climate Experiment)](https://grace.jpl.nasa.gov) mission. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework.
+This post goes through the steps needed to produce colored maps of the trends in global water storage using data from the [GRACE (Gravity Recovery and Climate Experiment)](https://grace.jpl.nasa.gov) mission. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework as described in the [previous](../blog-import-project-eclipse/) post.
 
 <figure>
 <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure1].file }}">
@@ -26,7 +26,7 @@ This post goes through the steps needed to produce colored maps of the trends in
 
 # GRACE
 
-The Gravity Recovery and Climate Experiment (GRACE) was built around two identical satellites orbiting the Earth. Traveling with a fixed distance in between them the gravitational pull caused minute changes in the vertical elevations between the two satellites. This change can be used for estimating the gravitational pull. Short term (days to months) changes in the gravitation is primarily related to the Earth's water reservoirs over land, ice and oceans, and earthquakes and crustal deformations.
+The Gravity Recovery and Climate Experiment (GRACE) was built around two identical satellites orbiting the Earth. Traveling with a fixed distance in between them the gravitational pull caused minute changes in the vertical elevation difference between the two satellites. This change can be used for estimating the gravitational pull. Short term (days to months) changes in the gravitation is primarily related to the Earth's water reservoirs over land, ice and oceans, and earthquakes and crustal deformations.
 
 I use GRACE TELLUS [Level-3 data grids of monthly surface mass changes](https://grace.jpl.nasa.gov/data/monthly-mass-grids/) to detect trends in water storage on land. The GRACE data that I use represent the changes in equivalent water thickness relative to a time-mean baseline. There are three different solutions for the calculations of equivalent water thickness, respectively produced by CSR (Center for Space Research at University of Texas, Austin), GFZ (GeoforschungsZentrum Potsdam) and JPL (Jet Propulsion Laboratory). You can use any of these solutions, but the official recommendation is that [users obtain all three data center's solutions (JPL, CSR, GFZ) and simply average them](https://grace.jpl.nasa.gov/data/choosing-a-solution/).
 
@@ -38,7 +38,7 @@ The GeoImagine Framework includes a package for specific GRACE processing: [geoi
 
 ## Data access and download
 
-THe GRACE data is freely available from [GRACE TELLUS](https://grace.jpl.nasa.gov/data/get-data/). The data are available through ftp, and as the dataset is small and the experiment finished, I download the data using an FTP client ([Filezilla](https://filezilla-project.org)).
+THe GRACE data is freely available from [GRACE TELLUS](https://grace.jpl.nasa.gov/data/get-data/). The data are available through ftp, and as the dataset is small and the experiment finished, I download the data using an FTP client (for example [Filezilla](https://filezilla-project.org)).
 
 The data can be downloaded as NetCDF files, as GeoTIFF images and as ASCII text files. Karttur's GeoImagine Framework can import any of these formats, but the specific GRACE importer that solves the projection of the GRACE data on the fly use the ASCII data as input. When downloading the data, just keep the same folder structure as the online resource.
 
@@ -201,7 +201,7 @@ In this example we are just going to look at the annual changes in water equival
 
 ### Trend estimation
 
-In this example the trend of the changes in equivalent water thickness will be done using the annual average GRACE data. The process for this is <span class='package'>trendtsancillary</span>. At time of writing, it can use two different linear methods for estimating the trend Ordinarly Least Sqaure (OLS) and Theil-Sen (TS). For determining the significance of the change in the linear trend the process uses the Mann-Kendall (MK) test. The script is set up so that you just state 'ols' or 'mk', and then the additional analysis follow along. With 'ols' given you also get the random mean square error ('rmse') and the correlations coefficient ('r2'), and with 'mk' you get the Theil-Sen regression (median and at 95 % confidence limits for upper and lower change). The script can also calculate the long term average and standard devations. The xml parameters below generate all the output options presently available:
+In this example the trend of the changes in equivalent water thickness will be done using the annual average GRACE data. The process for this is <span class='package'>trendtsancillary</span>. At time of writing, it can use two different linear methods for estimating the trend Ordinarly Least Sqaure (OLS) and Theil-Sen (TS). For determining the significance of the change in the linear trend the process uses the Mann-Kendall (MK) test. The script is set up so that you just state 'ols' or 'mk', and then the additional analysis follow along. With 'ols' given you also get the random mean square error ('rmse') and the correlations coefficient ('r2'), and with 'mk' you get the Theil-Sen regression (median and at 95 % confidence limits for upper and lower change). The script can also calculate the long term average and standard deviations. The xml parameters below generate all the output options presently available:
 
 ```
 <?xml version='1.0' encoding='utf-8'?>

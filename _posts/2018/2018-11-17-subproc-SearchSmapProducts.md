@@ -1,0 +1,35 @@
+---
+layout: subprocess
+categories: subprocess
+date: 2018-11-17
+modified: 2018-11-17
+processurl: subproc-SearchSmapProducts
+title: SearchSmapProducts
+excerpt: Requires setup of wget and EarthData credentials file (called .netrc in user home path)
+image: 
+rootprocid: SMAPProc
+subprocid: SearchSmapProducts
+author: Thomas Gumbricht
+comments: True
+share: True
+---
+
+<h1 class='foot-description'>Process XML structure and parameters</h1>
+```
+For details on parameters see the table below
+<?xml version="1.0" ?>
+<process>
+  <!--Generated from python-->
+  <userproj plotid="yourplotid" projectid="yourprojectid" siteid="yoursiteid" system="systemid" tractid="yourtractid" userid="youruserid"/>
+  <period endday="DD" endmonth="MM" endyear="YYYY" seasonendday="DD" seasonendmonth="MM" seasonstartday="DD" seasonstartmonth="MM" startday="DD" startmonth="MM" startyear="YYYY" timestep="timestep"/>
+  <parameters product="txtstring" serverurl="txtstring" version="txtstring"/>
+  <dstpath volume="txtstring"/>
+</process>
+```
+
+| paramid | parent | element | type | tagorattr | required | default |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| product | process | parameters | text | attribute | yes | SPL3SMP_E |
+| version | process | parameters | text | attribute | yes | 002 |
+| serverurl | process | parameters | text | attribute | yes | https://n5eil01u.ecs.nsidc.org |
+| volume | process | dstpath | text | attribute | yes | --- |
