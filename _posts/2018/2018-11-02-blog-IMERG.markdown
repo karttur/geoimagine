@@ -14,6 +14,6 @@ share: true
 
 # Introduction
 
-Ordering, downloading and organizing IMERG precipitaiton data follow exactly the same steps as the TRMM.
+Ordering, downloading and organizing IMERG precipitaiton data follow exactly the same steps as the TRMM. 
 
 TO BE COMPLETED

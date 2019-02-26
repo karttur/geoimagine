@@ -3,7 +3,7 @@ layout: post
 title: TRMM precipitation data
 modified: '2018-11-01 20:17'
 categories: blog
-excerpt: Accessing, downloading and organizing TRMM precipitaiton data
+excerpt: Accessing, downloading and organizing TRMM precipitation data
 tags:
   - TRMM
   - Tropical Rainfall Measurement Mission
@@ -11,6 +11,7 @@ image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-11-01 22:03'
 comments: true
 share: true
+movie1: rainfall_3b43_trmm_199801-201807_v7-f
 ---
 
 # Introduction
@@ -666,10 +667,4 @@ The process also produces two shell script files. The first (in the subfolder <s
 <iframe src="{{ site.commonurl }}/movies/{{ site.data.movies[page.movie1].file }}" width="{{ site.data.movies[page.movie1].width }}" height="{{ site.data.movies[page.movie1].height }}" frameborder="0">
 </iframe>
 <figcaption> {{ site.data.movies[page.movie1].caption }} </figcaption>
-</figure>
-
-<figure>
-<iframe src="{{ site.commonurl }}/movies/{{ site.data.movies[page.movie2].file }}" width="{{ site.data.movies[page.movie2].width }}" height="{{ site.data.movies[page.movie2].height }}" frameborder="0">
-</iframe>
-<figcaption> {{ site.data.movies[page.movie2].caption }} </figcaption>
 </figure>

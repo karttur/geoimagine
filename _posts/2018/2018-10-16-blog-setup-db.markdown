@@ -1,0 +1,145 @@
+---
+layout: post
+title: Set up the database
+modified: '2018-10-14 T18:17:25.000Z'
+categories: blog
+excerpt: "Setup the postgres database for Karttur's GeoImagine Framework"
+image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
+date: '2018-10-14 T18:17:25.000Z'
+comments: true
+share: true
+---
+<script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
+
+# Introduction
+
+In Karttur's GeoImagine Framework both the processes and the data are stored in a postgres database. The database is built up with schemas associated with typical processes and data sources. This post explains how to setup the complete database by using a special package and xml files defining all the schemas and tables.
+
+# Prerequisites
+
+You must have the complete Spatial Data Integrated Development Environment (SPIDE) installed as described in the blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-import-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). You must also have created a solution for how to link the Framework processes and the postgres database, as described in the [previous](../blog-setup-dblink/) post. How to run processes, including the setup described in this post, is described in an [earlier](../blog-run/) post. The xml files required for running the processes described in the post are included in the [<span class='pacakge'>setup_db</span>](https://github.com/karttur/geoimagine-setup_db/) package. To understand the structure of the xml file you can read [this](../blog-xml/) post. 
+
+# Setup database
+
+The blogpost [Connect Python and PostgreSQL using psycopg2](https://karttur.github.io/setup-ide/setup-ide/connect-with-psycopg2/) contains a python script for creating databases in postgres using Python. And the blogpost [Postgres setup with Python & xml](https://karttur.github.io/setup-ide/setup-ide/setup-db-karttur/) describes how to combine xml and python to create tables.
+
+The framework package [setup_db](https://github.com/karttur/geoimagine-setup_db/) contains the same python modules, plus all the xml and txt documents (files) needed for setting up the complete database structure of Karttur's GeoImagine Framework. Installing and running the <span class='package'>setup_db</span> package will setup the complete structure of schemas and tables used by karttur's GeoImagine Framework.
+
+## db_setup python package
+
+The [<span class='package'>db_setup</span>](https://github.com/karttur/geoimagine-setup_db/) package contains four <span class='file'>.py</span> files, the standard modules <span class='package'>\_\_init\_\_.py</span> and <span class='package'>version.py</span>, plus one main module and one class module:
+
+- setup_db_main.py
+- setup_db_class.py
+
+The package also contains a subfolder called [<span class='file'>doc</span>](https://github.com/karttur/geoimagine-setup_db/tree/master/doc/) that contains a number of text (<span class='file'>.txt</span>) files and a subfolder called [<span class='file'>xmlsql</span>](https://github.com/karttur/geoimagine-setup_db/tree/master/doc/xmlsql). Inside the latter are all the xml files that define all the schemas and tables for the Framework.
+
+## setup_db_main.py
+
+In <span class='module'>setup_db_main.py</span> there are predefined commands and links in the main section that are used to setup the entire database. You do not need to edit any of these files unless you want to change the default roles (users) as explained in the [previous](../blog-setup-dblink/) post.
+
+### Create main production db
+
+If you did not create a production db as described in the post [Postgres setup with Python & xml](https://karttur.github.io/setup-ide/setup-ide/setup-db-karttur/) you have to create it now. The default name of the database is _postgres_, but it can be set to any other name.
+
+To create the production database uncomment the first lines under the "\_\_main\_\_" section, and then run the module from the <span class='app'>Eclipse</span> menu <span class='menu'>Run : run</span>.
+
+```
+if __name__ == "__main__":
+    '''
+    This module should only be run at the very startup of building the Karttur Geo Imagine framework.
+    To run, remove the comment "#prodDB" and set the name of your production DB ("YourProdDB")
+    '''
+    prodDB = 'YourProdDB' #defaut name of 'YourProdDB' = 'postgres'
+
+    '''SetUpProdDb creates an empty Postgres database under the cluster postgres with the name "YourProdDB".'''
+    SetUpProdDb(prodDB)
+```
+
+You should now have a production database. In you want to check the database or change/add superuser(s) please refer to the post on [Install PostgreSQL and postGIS](https://karttur.github.io/setup-ide/setup-ide/install-postgres/).
+
+### Setup schemas and tables
+
+The next lines of the "\_\_main\_\_" section link to the files in <span class='file'>doc</span> subfolder and loops through them to setup all the schemas and tables. All you need to do is to uncomment the lines as shown below.
+
+```
+    '''
+    SetupSchemasTables creates schemas and tables from xml files, with the relative path to the
+    xml files given in the plain text file "projFPN".
+    '''
+    #db_karttur_setup_YYYYMMDD.txt sets up all the schemas and tables.
+    projFPN = 'doc/db_karttur_setup_20181116.txt'
+    SetupSchemasTables(projFPN,prodDB,verbose)
+```
+
+The file <span class='file'>db_karttur_setup_YYYYMMDD.txt</span> only contains links to the xml file to loop over.
+
+<button id= "togglesetuptxt" onclick="hiddencode('setuptxt')">Hide/Show db_karttur_setup_YYYYMMDD.txt</button>
+
+<div id="setuptxt" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+##### db_karttur_setup_YYYYMMDD.txt #####
+
+# general_schema_vXX_sql.xml installs the default database schemas
+xmlsql/general_schema_v80_sql.xml
+
+# general_processes_vXX_sql.xml installs the tables for handling paths and processes and
+# the core process handling all other process definitions,
+xmlsql/general_processes_v80_sql.xml
+
+#general_records_vXX_sql.xml adds records for super users and the process for managing all other processes
+xmlsql/general_records_v80_sql.xml
+
+# general_GDAL_vXX_sql.xml installs and fills the tables that defines the different
+# cell types and file types that the system can handle
+xmlsql/general_GDAL_v80_sql.xml
+
+# general_processeschain_vXX_sql.xml installs the automated processing chains tables
+xmlsql/general_processeschain_v80_sql.xml
+
+# compositions_vXX_sql.xml installs the tables defining all layer compositions
+xmlsql/compositions_v80_sql.xml
+
+# all_system_regions_vXX_sql.xml installs the region tables for the different systems
+xmlsql/all_system_regions_v80_sql.xml
+
+# ancillary_vXX_sql.xml installs the tables that defines ancillary data sources
+xmlsql/ancillary_v80_sql.xml
+
+# endmember_vXX_sql.xml tables for soil line and vegetaton spectral extraction
+xmlsql/endmember_v80_sql.xml
+
+#landsat_tilecoord_vXX_sql.xml adds the coordinates for landsat tiles
+xmlsql/landsat_tilecoords_v80_sql.xml
+
+# landsat_scenes_bands_vXX_sql.xml installs the tables for landsat scenes, bands and masks
+xmlsql/landsat_scenes_bands_v80_sql.xml
+
+# landsat_templates_vXX_sql.xml installs the landsat template table
+xmlsql/landsat_templates_v80_sql.xml
+
+# landsat_usgs_meta_vXX_sql.xml installs the core landsat meta tables, the columns are installed later
+xmlsql/landsat_usgs_meta_v80_sql.xml
+
+# layout_vXX_sql.xml adds the tables for layout
+xmlsql/layout_v80_sql.xml
+
+# modis_scenes_bands_vXX_sql.xml adds both the table for holding all scenes available at the
+# datapool as well as the tables for local modis data holdings
+xmlsql/modis_scenes_bands_v80_sql.xml
+```
+
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+Run the module, and all the schemas and tables defined in the above xml files will be created.
+
+### Superusers and process for setting up all other processes
+
+The package <span class='pacakge'>db_setup</span> also installs the system superuser and two processes: [_addrootproc_](../../subprocess/subproc-addrootproc/) and [_addsubproc_](../../subprocess/subproc-addeubproc/). Having access to the superuser and the two processes, all other processes can be installed using the [<span class='package'>setup_processes</span>](../../package/package-setup_processes/). The topic of the next post.

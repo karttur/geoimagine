@@ -778,3 +778,333 @@ TWIpercent_MCD43A4_h20v10_2005249_v006-tg01:
     caption: Force filled MODIS TWI for 16D period 2005249 and tile h20v10
     credit: null
     source: null
+plot_climate-soi-pdo_1998-2017:
+    file: plot_climate-soi-pdo_1998-2017.jpg
+    source: plot_climate-soi-pdo_1998-2017.jpg
+    author: Thomas Gumbricht
+    caption: Time series plot of climate indexes using pandas dataframe built in plot function
+    credit: null
+    source: null
+plot_climate-nao-soi-pdo_1998-2017:
+    file: plot_climate-nao-soi-pdo_1998-2017.jpg
+    source: plot_climate-nao-soi-pdo_1998-2017.jpg
+    author: Thomas Gumbricht
+    caption: Time series plot of climate indexes with user defined colors and styles
+    credit: null
+    source: null
+plot_climate-tendency1yr-nao-soi-pdo_1998-2017:
+    file: plot_climate-tendency1yr-nao-soi-pdo_1998-2017.jpg
+    source: plot_climate-tendency1yr-nao-soi-pdo_1998-2017.jpg
+    author: Thomas Gumbricht
+    caption: Time series plot of climate indexes including smoothing tendency
+    credit: null
+    source: null
+plot_climate-tendency2yr-nao-soi-pdo_1998-2017:
+    file: plot_climate-tendency2yr-nao-soi-pdo_1998-2017.jpg
+    source: plot_climate-tendency2yr-nao-soi-pdo_1998-2017.jpg
+    author: Thomas Gumbricht
+    caption: Time series plot of climate indexes including smoothing tendency
+    credit: null
+    source: null
+plot_climate-naive1yr-nao-soi-pdo_1998-2017:
+    file: plot_climate-naive1yr-nao-soi-pdo_1998-2017.jpg
+    source: plot_climate-naive1yr-nao-soi-pdo_1998-2017.jpg
+    author: Thomas Gumbricht
+    caption: Time series plot of climate indexes including smoothing tendency
+    credit: null
+    source: null
+plot_climate-naive2yr-nao-soi-pdo_1998-2017:
+    file: plot_climate-naive2yr-nao-soi-pdo_1998-2017.jpg
+    source: plot_climate-naive2yr-nao-soi-pdo_1998-2017.jpg
+    author: Thomas Gumbricht
+    caption: Time series plot of climate indexes including smoothing tendency
+    credit: null
+    source: null
+
+plot_climate-spline-nao-soi-pdo_1998-2017:
+    file: plot_climate-spline-nao-soi-pdo_1998-2017.jpg
+    source: plot_climate-spline-nao-soi-pdo_1998-2017.jpg
+    author: Thomas Gumbricht
+    caption: Time series plot of climate indexes including smoothing tendency and trend analysis
+    credit: null
+    source: null
+
+acf_climate_nao-soi-pdo:
+    file: acf_climate_nao-soi-pdo.jpg
+    source: acf_climate_nao-soi-pdo.jpg
+    author: Thomas Gumbricht
+    caption: Autocorrelation of climate index time series data
+    credit: null
+    source: null
+
+pacf_climate_nao-soi-pdo:
+    file: pacf_climate_nao-soi-pdo.jpg
+    source: pacf_climate_nao-soi-pdo.jpg
+    author: Thomas Gumbricht
+    caption: Partial autocorrelation of climate index time series data
+    credit: null
+    source: null
+
+decompose-naive-pdo:
+    file: decompose-naive-pdo.jpg
+    source: decompose-naive-pdo.jpg
+    author: Thomas Gumbricht
+    caption: Decomposed time sereis of atmospheric CO2 from Mauna Loa (additive model)
+    credit: null
+    source: null
+
+decompose-spline-pdo:
+    file: decompose-spline-pdo.jpg
+    source: decompose-spline-pdo.jpg
+    author: Thomas Gumbricht
+    caption: Decomposed time sereis of atmospheric CO2 from Mauna Loa (additive model)
+    credit: null
+    source: null
+
+decompose-naive-maunaloa_co2_additive:
+    file: decompose-naive-maunaloa_co2_additive.jpg
+    source: decompose-naive-maunaloa_co2_additive.jpg
+    author: Thomas Gumbricht
+    caption: Decomposed time sereis of atmospheric CO2 from Mauna Loa (additive model)
+    credit: null
+    source: null
+
+decompose-naive-maunaloa_co2_multiplicative:
+    file: decompose-naive-maunaloa_co2_multiplicative.jpg
+    source: decompose-naive-maunaloa_co2_multiplicative.jpg
+    author: Thomas Gumbricht
+    caption: Decomposed time sereis of atmospheric CO2 from Mauna Loa (mulitplicative model)
+    credit: null
+    source: null
+
+crosscorr_soi-okavango_clim-TRMM:
+    file: crosscorr_soi-okavango_clim-TRMM.jpg
+    source: crosscorr_soi-okavango_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between the Southern Oscillation Index (SOI) and local rainfall at Okavango (Botswana).
+    credit: null
+    source: null
+
+crosscorr_soi-okavango+lakevic_clim-TRMM:
+    file: crosscorr_soi-okavango+lakevic_clim-TRMM.jpg
+    source: crosscorr_soi-okavango+lakevic_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between the Southern Oscillation Index (SOI) and local rainfall at Okavango (Botswana).
+    credit: null
+    source: null
+
+crosscorr_pdo-okavango_clim-TRMM:
+    file: crosscorr_pdo-okavango_clim-TRMM.jpg
+    source: crosscorr_pdo-okavango_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between the Southern Oscillation Index (SOI) and local rainfall at Okavango (Botswana).
+    credit: null
+    source: null
+
+crosscorr-lagadj_pdo-okavango_clim-TRMM:
+    file: crosscorr-lagadj_pdo-okavango_clim-TRMM.jpg
+    source: crosscorr-lagadj_pdo-okavango_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between the Southern Oscillation Index (SOI) and local rainfall at Okavango (Botswana).
+    credit: null
+    source: null
+
+crosscorr-abs_pdo-okavango_clim-TRMM:
+    file: crosscorr-abs_pdo-okavango_clim-TRMM.jpg
+    source: crosscorr-abs_pdo-okavango_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between the Southern Oscillation Index (SOI) and local rainfall at Okavango (Botswana).
+    credit: null
+    source: null
+
+crosscorr-abs-lagadjust_pdo-okavango_clim-TRMM:
+    file: crosscorr-abs-lagadjust_pdo-okavango_clim-TRMM.jpg
+    source: crosscorr-abs-lagadjust_pdo-okavango_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between the Southern Oscillation Index (SOI) and local rainfall at Okavango (Botswana).
+    credit: null
+    source: null
+
+crosscorr_multiindex_oka_observation_clim-TRMM:
+    file: crosscorr_multiindex_oka_observation_clim-TRMM.jpg
+    source: crosscorr_multiindex_oka_observation_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between the Southern Oscillation Index (SOI) and local rainfall at Okavango (Botswana).
+    credit: null
+    source: null
+
+crosscorr_multiindex_oka_tendency_clim-TRMM:
+    file: crosscorr_multiindex_oka_tendency_clim-TRMM.jpg
+    source: crosscorr_multiindex_oka_tendency_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between the Southern Oscillation Index (SOI) and local rainfall at Okavango (Botswana).
+    credit: null
+    source: null
+
+crosscorr_multiindex_oka_seasons_clim-TRMM:
+    file: crosscorr_multiindex_oka_seasons_clim-TRMM.jpg
+    source: crosscorr_multiindex_oka_seasons_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between the Southern Oscillation Index (SOI) and local rainfall at Okavango (Botswana).
+    credit: null
+    source: null
+
+crosscorr_multiindex_oka_residual_clim-TRMM:
+    file: crosscorr_multiindex_oka_residual_clim-TRMM.jpg
+    source: crosscorr_multiindex_oka_residual_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between the Southern Oscillation Index (SOI) and local rainfall at Okavango (Botswana).
+    credit: null
+    source: null
+
+crosscorr_multiindex_oka+lakevic_tendency_clim-TRMM:
+    file: crosscorr_multiindex_oka+lakevic_tendency_clim-TRMM.jpg
+    source: crosscorr_multiindex_oka+lakevic_tendency_clim-TRMM.jpg
+    author: Thomas Gumbricht
+    caption: Cross correlation between different climate indexes and local rainfall at Okavango (Botswana) and Lake Victoria (Uganda).
+    credit: null
+    source: null
+
+arcticdem_polar-stereographic:
+  file: arcticdem_polar-stereographic.jpg
+  source: arcticdem_polar-stereographic.jpg
+  author: Thomas Gumbricht
+  caption: Arctic Digital Elevation Model (DEM) in polar stereographic projection (orignal download format).
+  credit: null
+  source: null
+
+arcticdem_h18v02:
+  file: arcticdem_h18v02.jpg
+  source: arcticdem_h18v02.jpg
+  author: Thomas Gumbricht
+  caption: Arctic Digital Elevation Model (DEM) projected to MODIS SIN grid h18v02 (central Scandinavia).
+  credit: null
+  source: null
+
+dem_detail_h18v02:
+  file: dem_detail_h18v02.jpg
+  source: dem_detail_h18v02.jpg
+  author: Thomas Gumbricht
+  caption: DEM detail.
+  credit: null
+  source: null
+
+hillshade_detail_h18v02:
+  file: hillshade_detail_h18v02.jpg
+  source: hillshade_detail_h18v02.jpg
+  author: Thomas Gumbricht
+  caption: Hillshade detail.
+  credit: null
+  source: null
+
+slope_detail_h18v02:
+  file: slope_detail_h18v02.jpg
+  source: slope_detail_h18v02.jpg
+  author: Thomas Gumbricht
+  caption: Slope detail.
+  credit: null
+  source: null
+
+aspect_detail_h18v02:
+  file: aspect_detail_h18v02.jpg
+  source: aspect_detail_h18v02.jpg
+  author: Thomas Gumbricht
+  caption: Aspect detail.
+  credit: null
+  source: null
+
+tpi500detail:
+  file: tpi500detail.jpg
+  source: tpi500detail.jpg
+  author: Thomas Gumbricht
+  caption: Terrain Position Index at 500 m spatial resolution.
+  credit: null
+  source: null
+
+tpi500detail:
+  file: tpi1000detail.jpg
+  source: tpi1000detail.jpg
+  author: Thomas Gumbricht
+  caption: Terrain Position Index at 1000 m spatial resolution.
+  credit: null
+  source: null
+
+tpi500detail:
+  file: tpi1500detail.jpg
+  source: tpi1500detail.jpg
+  author: Thomas Gumbricht
+  caption: Terrain Position Index at 1500 m spatial resolution.
+  credit: null
+  source: null
+
+tpi2000detail:
+  file: tpi2000detail.jpg
+  source: tpi2000detail.jpg
+  author: Thomas Gumbricht
+  caption: Terrain Position Index at 2000 m spatial resolution.
+  credit: null
+  source: null
+
+landform_scandinavia_rawtpi:
+  file: landform_scandinavia_rawtpi.jpg
+  source: landform_scandinavia_rawtpi.jpg
+  author: Thomas Gumbricht
+  caption: Landform classification from dual scaled raw TPI for the Nordic countries.
+  credit: null
+  source: null
+
+landform_scandinavia_globalstd-tpi:
+  file: landform_scandinavia_globalstd-tpi.jpg
+  source: landform_scandinavia_globalstd-tpi.jpg
+  author: Thomas Gumbricht
+  caption: Landform classification from dual scaled and globally standardized TPI for the Nordic countries.
+  credit: null
+  source: null
+
+landform_scandinavia_relativestd-tpi:
+  file: landform_scandinavia_relativestd-tpi.jpg
+  source: landform_scandinavia_relativestd-tpi.jpg
+  author: Thomas Gumbricht
+  caption: Landform classification from dual scaled and relatively standardized TPI for the Nordic countries.
+  credit: null
+  source: null
+
+landform_scandinavia_standardized-tpi:
+  file: landform_scandinavia_standardized-tpi.jpg
+  source: landform_scandinavia_standardized-tpi.jpg
+  author: Thomas Gumbricht
+  caption: Landform classification from dual scaled and locally standardized TPI for the Nordic countries.
+  credit: null
+  source: null
+
+landform_scandinavia-detail_rawtpi:
+  file: landform_scandinavia-detail_rawtpi.jpg
+  source: landform_scandinavia-detail_rawtpi.jpg
+  author: Thomas Gumbricht
+  caption: Landform classification from dual scaled raw TPI (detail showing tile boundary).
+  credit: null
+  source: null
+
+landform_scandinavia-detail_globalstd-tpi:
+  file: landform_scandinavia-detail_globalstd-tpi.jpg
+  source: landform_scandinavia-detail_globalstd-tpi.jpg
+  author: Thomas Gumbricht
+  caption: Landform classification from dual scaled and globally standardized TPI (detail showing tile boundary).
+  credit: null
+  source: null
+
+landform_scandinavia-detail_relativestd-tpi:
+  file: landform_scandinavia-detail_relativestd-tpi.jpg
+  source: landform_scandinavia-detail_relativestd-tpi.jpg
+  author: Thomas Gumbricht
+  caption: Landform classification from dual scaled and relatively standardized TPI (detail showing tile boundary).
+  credit: null
+  source: null
+
+landform_scandinavia-detail_standardized-tpi:
+  file: landform_scandinavia-detail_standardized-tpi.jpg
+  source: landform_scandinavia-detail_standardized-tpi.jpg
+  author: Thomas Gumbricht
+  caption: Landform classification from dual scaled and locally standardized TPI (detail showing tile boundary).
+  credit: null
+  source: null

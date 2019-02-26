@@ -1,0 +1,1161 @@
+---
+layout: post
+title: Vertical Water Balance
+modified: '2018-11-03 20:17'
+categories: blog
+excerpt: Calculating Vertical Water Balance from TRMM rainfall FAO reference evapotranspiration
+tags:
+  - Vertical Water Balance
+  - rainfall
+  - evapotranspiration
+  - TRMM
+  - Tropical Rainfall Measurement Mission
+  - FAO refET
+image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
+date: '2018-11-03 22:03'
+comments: true
+share: true
+---
+<script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
+
+# Introduction
+
+The Vertical Water Balance (VWB) is the local difference between precipitation and evapotranspiration. Regions with precipitation exceeding evapotranspiration are called humid, and areas where evapotranspiration exceed precipitation arid. Many regions have both wet and dry seasons, with humid conditions during the wet season and arid during the dry.
+
+Herein, VWB is calculated as the monthly precipitation minus the monthly evapotranspiration. In this post I use the [Tropical Rainfall Measurement Mission (TRMM)](../blog-TRMM/) dataset together with the [FAO reference evapotranspiration (refET)](../blog-FAO-refevap/) to calculate VWB. To calculate the global VWB you can use the [IMERG](../blog-IMERG/) rainfall dataset instead.
+
+## Project module and Shortcut to process chain
+
+As explained in the post on [Running processes](../blog-run/) you can create a project module for any set of processes. The module below links to a single file, and runs all processes in the listed xml files.
+
+```
+from geoimagine.kartturmain.readXMLprocesses import ReadXMLProcesses, RunProcesses
+
+if __name__ == "__main__":
+
+    verbose = True
+
+    projFN = '/Volume/and/path/to/VWB_TRMM-vs-FAOrefevap.txt'
+
+    procLL = ReadXMLProcesses(projFN,verbose)
+
+    RunProcesses(procLL,verbose)
+```
+
+At the very end of the post you find the process chain (i.e. the file "VWB_TRMM-vs-FAOrefevap.txt") that will run the complete VWB calculation outlined below; including the time series analysis and export as images and animations.
+
+# Preprocessing
+
+Accessing and organizing the [TRMM](../blog-TRMM/) and [refET](../blog-FAO-refevap/) datasets are covered in two previous posts.
+
+Before actually calculating the VWB you must fit the two datasets (rainfall and evapotranspiration) together. For the two datasets used here there are several issues that must be regarded for fitting the datasets:
+
+- Units must be the same (e.g mm/month)
+- The spatial extent must be the same
+- The spatial resolution must be the same
+- The regions of nodata should match
+
+The TRMM data was converted to mm/month when imported to the Framework using the [predefined import function](../blog-TRMM/). The FAO reference evapotranspiration data, however, was [imported with the original scaling](../blog-FAO-refevap/) that represent mm/day times 10. This must be converted to mm/month to algorithmic calculations.
+
+The TRMM dataset covers a smaller spatial region (between 50 degrees latitude) and has a slightly coarser spatial resolution. The easiest way to fit the dataset is thus to reduce the spatial extent and spatial coverage of the FAO reference evapotranspiration. The TRMM data have estimated rainfall for all pixels, including over the oceans. The FAO reference evapotranspiration only covers land. Fitting the datasets should thus also include masking out the same land area.
+
+## Adjust the data units
+
+Convert the reference evapotranspiration data in mm/day to mm/month by using the process [<span class='package'>convertdaytomonth</span>](../../subprocess/subproc-convertdaytomonth/).
+
+<button id= "toggledaytomonth" onclick="hiddencode('daytomonth')">Hide/Show FAOrefet010_convert_daytomonth.xml</button>
+
+<div id="daytomonth" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<convertdaytomonth>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period timestep='staticmonthly'></period>
+
+	<!-- Convert daily data to monthly data -->
+	<process processid ='convertdaytomonth' version = '3.0'>
+		<parameters factor = '0.1' offset = '0' ></parameters>
+		<srcpath volume = "karttur3tb"></srcpath>
+		<dstpath volume = "karttur3tb"></dstpath>
+    	<srccomp>
+			<fao-refet-dayx10 source = "fao" product = "refet" folder = "refet" band = "fao-refet-dayx10" prefix = "fao-refet-dayx10" suffix = "M">
+			</fao-refet-dayx10>
+		</srccomp>
+		<dstcomp>
+			<fao-refet source = "FAO" product = "refet" folder = "refet" band = "fao-refet" prefix = "fao-refet" suffix = "M" scalefac = "1" offsetadd = "0" dataunit = "mm" celltype = 'Int16' cellnull = '-32768' measure = 'R'>
+			</fao-refet>
+		</dstcomp>
+	</process>
+</convertdaytomonth>
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+## Transform the refET
+
+The global refET dataset with monthly average evapotranspiration needs to be fitted to the TRMM dataset. In Karttur's GeoImagine Framework the process for doing that is [<span class='package'>gdal_translateancillary</span>](../../subprocess/subproc-gdal_translateancillary/). This process is just an interface to the GDAL utility <span class='terminalapp'>gdal_translate</span>. In the xml file below, the parameters define the translation by setting a pre-defined default region ('trmm') and the columns ('xsize') and rows ('ysize') spanning the default region:
+
+<button id= "toggleFAOrefet011" onclick="hiddencode('FAOrefet011')">Hide/Show FAOrefet011.xml</button>
+
+<div id="FAOrefet011" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<translate>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period timestep='staticmonthly'></period>
+
+	<!-- GDAl interface for translating dataset spatial extent and resolution-->
+	<process processid ='gdal_translateancillary' version = '3.0'>
+		<parameters dst_region = 'trmm' xsize = '1440' ysize ='400' resampling ='average'></parameters>
+		<srcpath volume = "karttur3tb"></srcpath>
+		<dstpath volume = "karttur3tb"></dstpath>
+		<srccomp>
+			<fao-refet source = "FAO" product = "refet" folder = "refet" band = "fao-refet" prefix = "fao-refet" suffix = "M">
+			</fao-refet>
+		</srccomp>
+		<dstcomp>
+			<fao-refet source = "FAO" product = "refet" folder = "refet" band = "fao-refet" prefix = "fao-refet" suffix = "M" scalefac = "1" offsetadd = "0" dataunit = "mm" celltype = 'Int16' cellnull = '-32768' measure = 'R'>
+			</fao-refet>
+		</dstcomp>
+	</process>
+</translate>
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+## Create a landmask
+
+The FAO refET data only covers land areas. To create a mask, use the transformed version of the refET that fits the TRMM region for defining a mask. You could use any of the months in the refET dataset for defining the mask but to make sure you mask out all regions you can also use all 12 months of refET to define the mask (just to make sure in case there are errors in the FAO refET nodata mask). The process [<span class='package'>createstaticmaskancillary</span>](../../subprocess/subproc-createstaticmaskancillary/) will do it for you:
+
+<button id= "togglecreatestaticmask" onclick="hiddencode('createstaticmask')">Hide/Show TRMM010_createmask-from-FAOrefet_v80.xml</button>
+
+<div id="createstaticmask" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<createmask>
+
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period timestep='staticmonthly'></period>
+
+	<!-- Create static mask -->
+	<process processid = 'createstaticmaskancillary' version = '1.3'>
+		<parameters nullmask = 'True' maskvals ='0' ></parameters>
+		<srcpath volume='karttur3tb'></srcpath>
+		<dstpath volume='karttur3tb'></dstpath>
+		<srccomp>
+			<fao-refet source = "FAO" product = "refet" folder = "refet" band = "fao-refet" prefix = "fao-refet" suffix = "M" scalefac = "1" offsetadd = "0" dataunit = "mm" celltype = 'Int16' cellnull = '-32768' measure = 'R'>
+			</fao-refet>
+		</srccomp>
+		<dstcomp>
+			<landmask-trmm source = "TRMM" product = "landmask" folder = "mask" band = "landmask-trmm" prefix = "landmask-trmm" suffix = "FAOET" cellnull='0'>
+			</landmask-trmm>
+		</dstcomp>
+	</process>
+</createmask>
+```
+{% endraw %}
+{% endcapture %}
+
+Note that the tractid is set to 'karttur-trmm', which is the region owned by the user karttur that is based on the default region trmm. When operating on the spatial data, the karttur region 'karttur-trmm' will use the default region ('trmm') for all naming. This prevents any user (including super users) to operate directly on any default region. A user can only operate on its own regions.
+
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+## Apply mask
+
+The mask you just created from the refET data must be applied to the complete time series of TRMM rainfall data. This is done with the process [<span class='package'>applystaticmaskancillary</span>](../../subprocess/subproc-applystaticmaskancillary/).
+
+<button id= "toggleapplymask" onclick="hiddencode('applymask')">Hide/Show TRMM011_applymask_v80.xml</button>
+
+<div id="applymask" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<runprocess>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = '1998' startmonth = '01' startday = '01' endyear = '2018' endmonth = '08' endday = '01'  timestep='M'></period>
+
+	<!-- Apply static mask-->
+	<process processid = 'applystaticmaskancillary' version = '1.3'>
+		<parameters ></parameters>
+		<srcpath volume='karttur3tb'></srcpath>
+		<dstpath volume='karttur3tb'></dstpath>
+		<srccomp>
+			<trmm-3b43v7-precip  id='layer' source = "trmm" product = "3b43" folder = "rainfall" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7-f" timestep='M'>
+			</trmm-3b43v7-precip>
+		</srccomp>
+		<srccomp>
+			<landmask-trmm id='mask' source = "TRMM" product = "landmask" folder = "mask" band = "landmask-trmm" prefix = "landmask-trmm" suffix = "FAOET" cellnull='0'  timestep='static'>
+			</landmask-trmm>
+		</srccomp>
+		<dstcomp>
+			<trmm-3b43v7-precip  id='layer' source = "trmm" product = "3b43" folder = "rainfall" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7-f-m">
+			</trmm-3b43v7-precip>
+		</dstcomp>
+	</process>
+</runprocess>
+```
+
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+# Calculate Vertical Water Balance
+
+You should now have two time series covering the same spatial region, with the same spatial resolution and the same area of valid data: the dynamic TRMM precipitation dataset and the statistical FAO refET dataset. You can now calculate the Vertical Water Balance (VWB). As the refET dataset is a statistical seasonal dataset, the calculation of VWB equals removing the seasonal signal from the precipitation time series. As this is water balance data, it can be done in three ways: 1) as the complete difference, 2) only retaining rainfall surplus, or 3) only retaining rainfall deficit. In Karttur's GeoImagine Framework you can do all three options using the process [<span class='package'>subtractseasonsancillary</span>](../../subprocess/subproc-subtractseasonsancillary/).
+
+<button id= "togglesubtractseason" onclick="hiddencode('subtractseason')">Hide/Show VWB020_subtract_seasonal_trmm-refet_v80.xml</button>
+
+<div id="subtractseason" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<manageprocess>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = '1998' startmonth = '01' startday = '01' endyear = '2018' endmonth = '08' endday = '01'  timestep='M'></period>
+	<process processid = 'subtractseasonsancillary' version = '1.3'>
+		<parameters balance='diff'></parameters>
+		<srcpath volume='OPUS'></srcpath>
+		<dstpath volume='OPUS'></dstpath>
+		<srccomp>
+			<trmm-3b43v7-precip  id='layer' source = "trmm" product = "3b43" folder = "rainfall" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7-f-m" timestep='M'>
+			</trmm-3b43v7-precip>
+		</srccomp>
+		<srccomp>
+			<fao-refet id = 'season' source = "FAO" product = "refet" folder = "refet" band = "fao-refet" prefix = "fao-refet" suffix = "M" timestep='seasonal-M'>
+			</fao-refet>
+		</srccomp>
+		<dstcomp>
+			<trmm-fao-vwb source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb" prefix = "trmm-fao-vwb" suffix = "v7-f-m">
+			</trmm-fao-vwb>
+		</dstcomp>
+	</process>
+	<process processid = 'subtractseasonsancillary' version = '1.3'>
+		<parameters balance='surplus'></parameters>
+		<srcpath volume='OPUS'></srcpath>
+		<dstpath volume='OPUS'></dstpath>
+		<srccomp>
+			<trmm-3b43v7-precip  id='layer' source = "trmm" product = "3b43" folder = "rainfall" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7-f-m" timestep='M'>
+			</trmm-3b43v7-precip>
+		</srccomp>
+		<srccomp>
+			<fao-refet id = 'season' source = "FAO" product = "refet" folder = "refet" band = "fao-refet" prefix = "fao-refet" suffix = "M" timestep='seasonal-M'>
+			</fao-refet>
+		</srccomp>
+		<dstcomp>
+			<trmm-fao-vwb-surplus source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-surplus" prefix = "trmm-fao-vwb-surplus" suffix = "v7-f-m">
+			</trmm-fao-vwb-surplus>
+		</dstcomp>
+	</process>
+	<process processid = 'subtractseasonsancillary' version = '1.3'>
+		<parameters balance='deficit'></parameters>
+		<srcpath volume='OPUS'></srcpath>
+		<dstpath volume='OPUS'></dstpath>
+		<srccomp>
+			<trmm-3b43v7-precip  id='layer' source = "trmm" product = "3b43" folder = "rainfall" band = "trmm-3b43v7-precip" prefix = "rainfall" suffix = "v7-f-m" timestep='M'>
+			</trmm-3b43v7-precip>
+		</srccomp>
+		<srccomp>
+			<fao-refet id = 'season' source = "FAO" product = "refet" folder = "refet" band = "fao-refet" prefix = "fao-refet" suffix = "M" timestep='seasonal-M'>
+			</fao-refet>
+		</srccomp>
+		<dstcomp>
+			<trmm-fao-vwb-deficit source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-deficit" prefix = "trmm-fao-vwb-deficit" suffix = "v7-f-m">
+			</trmm-fao-vwb-deficit>
+		</dstcomp>
+	</process>
+</manageprocess>
+```
+
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+# Resample to annual timestep
+
+To simplify the statistical evaluation and trend analysis, you can translate the data to annual time steps with the process [<span class='package'>resampletsancillary</span>](../../subprocess/subproc-resampletsancillary/).
+
+<button id= "togglearesamplets" onclick="hiddencode('resamplets')">Hide/Show VWB021_resample-2-annual_v80.xml</button>
+
+<div id="resamplets" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+```
+<?xml version='1.0' encoding='utf-8'?>
+<runprocess>
+
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = "1998" endyear = "2017" timestep='M'></period>
+
+	<!-- Resample to annual-->
+	<process processid = 'resampletsancillary' version = '1.3'>
+		<overwrite>False</overwrite>
+		<parameters method = 'sum' targettimestep = 'A' ></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb" prefix = "trmm-fao-vwb" suffix = "v7-f-m" timestep='M'>
+			</trmm-fao-vwb>
+		</srccomp>
+		<dstcomp>
+			<trmm-fao-vwb band = "trmm-fao-vwb" suffix = "auto" dataunit = 'mm/yr' timestep='A'>
+			</trmm-fao-vwb>
+		</dstcomp>
+	</process>
+
+	<!-- Resample to annual-->
+	<process processid = 'resampletsancillary' version = '1.3'>
+		<overwrite>False</overwrite>
+		<parameters method = 'sum' targettimestep = 'A' ></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-surplus source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-surplus" prefix = "trmm-fao-vwb-surplus" suffix = "v7-f-m" timestep='M'>
+			</trmm-fao-vwb-surplus>
+		</srccomp>
+		<dstcomp>
+			<trmm-fao-vwb-surplus band = "trmm-fao-vwb-surplus" suffix = "auto" dataunit = 'mm/yr' timestep='A'>
+			</trmm-fao-vwb-surplus>
+		</dstcomp>
+	</process>
+
+	<!-- Resample to annual-->
+	<process processid = 'resampletsancillary' version = '1.3'>
+		<overwrite>False</overwrite>
+		<parameters method = 'sum' targettimestep = 'A' ></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-deficit source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-deficit" prefix = "trmm-fao-vwb-deficit" suffix = "v7-f-m" timestep='M'>
+			</trmm-fao-vwb-deficit>
+		</srccomp>
+		<dstcomp>
+			<trmm-fao-vwb-deficit band = "trmm-fao-vwb-deficit" suffix = "auto" dataunit = 'mm/yr' timestep='A'>
+			</trmm-fao-vwb-deficit>
+		</dstcomp>
+	</process>
+
+</runprocess>
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+# Trend analysis
+
+There are indications that climate change is causing a drying in dry regions/seasons and wetting in wet regions/seasons. To test that you can analyse the overall trends in VWB and compare it with the trends in humid and arid regions. Details about linear trend analysis in Karttur's GeoImagine Framework is given in the [post on SMAP processing](../blog-SMAP/). Time series linear trend analysis for ancillary data is done using the process [<span class='package'>trendtsancillary</span>](../../subprocess/subproc-trendtsancillary/):
+
+<button id= "toggletrendts" onclick="hiddencode('trendts')">Hide/Show VWB031_trend_A_v80.xml</button>
+
+<div id="trendts" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+```
+<?xml version='1.0' encoding='utf-8'?>
+<trendts>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = "1998" endyear = "2017" timestep='A'></period>
+
+	<!-- seasonaltrendcorr annual indexes and trends-->
+	<process processid = 'trendtsancillary' version = '1.3'>
+		<parameters method = 'avg' ></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb source = "trmm-vwb" product = "3b43" folder = "vwb-A" band = "trmm-fao-vwb" prefix = "trmm-fao-vwb" suffix = "v7-f-m-A">
+			</trmm-fao-vwb>
+		</srccomp>
+		<stats id = 'avg' band = "avg"></stats>
+		<stats id= 'std' band = "std"></stats>
+		<stats id= 'mk' band = "mk"></stats>
+		<stats id= 'ols' band = "ols"></stats>
+	</process>
+
+	<!-- seasonaltrendcorr annual indexes and trends-->
+	<process processid = 'trendtsancillary' version = '1.3'>
+		<parameters method = 'avg' ></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-surplus source = "trmm-vwb" product = "3b43" folder = "vwb-A" band = "trmm-fao-vwb-surplus" prefix = "trmm-fao-vwb-surplus" suffix = "v7-f-m-A">
+			</trmm-fao-vwb-surplus>
+		</srccomp>
+		<stats id = 'avg' band = "avg"></stats>
+		<stats id= 'std' band = "std"></stats>
+		<stats id= 'mk' band = "mk"></stats>
+		<stats id= 'ols' band = "ols"></stats>
+	</process>
+
+	<!-- seasonaltrendcorr annual indexes and trends-->
+	<process processid = 'trendtsancillary' version = '1.3'>
+		<parameters method = 'avg' ></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-deficit source = "trmm-vwb" product = "3b43" folder = "vwb-A" band = "trmm-fao-vwb-deficit" prefix = "trmm-fao-vwb-deficit" suffix = "v7-f-m-A">
+			</trmm-fao-vwb-deficit>
+		</srccomp>
+		<stats id = 'avg' band = "avg"></stats>
+		<stats id= 'std' band = "std"></stats>
+		<stats id= 'mk' band = "mk"></stats>
+		<stats id= 'ols' band = "ols"></stats>
+	</process>
+
+</trendts>
+
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+# Layout
+
+If you want to create color maps/images and animations for presenting the VWB data you must create the required layout.
+
+## Add palette
+
+The VWB palettes below, created with the process [<span class='package'>addrasterpalette</span>](../../subprocess/subproc-addrasterpalette/), are Karttur's default palettes for VWB.
+
+<button id= "togglecreatepalettes" onclick="hiddencode('createpalettes')">Hide/Show VWB000_createpalettes_v80.xml</button>
+
+<div id="createpalettes" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+```
+<?xml version='1.0' encoding='utf-8'?>
+<palette>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
+
+	<!-- addrasterpalette VWB-->
+	<process processid = 'addrasterpalette'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters compid= 'NA' palette = 'vwb'>
+			<setcolor id = '0' red = '103' green ='0' blue='31' alpha ='0' label='strongly neg' hint='strongly significant negative trend' ></setcolor>			
+			<setcolor id = '25' red = '178' green ='24' blue='43' alpha ='0' label='neg' hint='significant negative' ></setcolor>			
+			<setcolor id = '50' red = '214' green ='96' blue='77' alpha ='0' label='non significant' hint='non significant negative trend' ></setcolor>			
+			<setcolor id = '75' red = '244' green ='165' blue='130' alpha ='0' label='no trend' hint='no trend' ></setcolor>
+			<setcolor id = '100' red = '253' green ='219' blue='199' alpha ='0' label='non significant' hint='non significant positive trend' ></setcolor>
+			<setcolor id = '125' red = '224' green ='224' blue='224' alpha ='0' label='max npv' hint='strongly significant positive trend' ></setcolor>
+			<setcolor id = '150' red = '202' green ='219' blue='253' alpha ='0' label='strongly neg' hint='strongly significant negative trend' ></setcolor>			
+			<setcolor id = '175' red = '146' green ='197' blue='222' alpha ='0' label='neg' hint='significant negative' ></setcolor>			
+			<setcolor id = '200' red = '67' green ='147' blue='195' alpha ='0' label='non significant' hint='non significant negative trend' ></setcolor>			
+			<setcolor id = '225' red = '33' green ='102' blue='173' alpha ='0' label='no trend' hint='no trend' ></setcolor>
+			<setcolor id = '250' red = '5' green ='48' blue='97' alpha ='0' label='non significant' hint='non significant positive trend' ></setcolor>
+			<setcolor id = '253' red = '245' green ='237' blue='182' alpha ='0' label='unused' hint='NA' ></setcolor>
+			<setcolor id = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
+			<setcolor id = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
+		</parameters>			
+	</process>
+
+	<process processid = 'addrasterpalette'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters compid= 'NA' palette = 'vwbinvert'>
+			<setcolor id = '250' red = '103' green ='0' blue='31' alpha ='0' label='strongly neg' hint='strongly significant negative trend' ></setcolor>			
+			<setcolor id = '225' red = '178' green ='24' blue='43' alpha ='0' label='neg' hint='significant negative' ></setcolor>			
+			<setcolor id = '200' red = '214' green ='96' blue='77' alpha ='0' label='non significant' hint='non significant negative trend' ></setcolor>			
+			<setcolor id = '175' red = '244' green ='165' blue='130' alpha ='0' label='no trend' hint='no trend' ></setcolor>
+			<setcolor id = '150' red = '253' green ='219' blue='199' alpha ='0' label='non significant' hint='non significant positive trend' ></setcolor>
+			<setcolor id = '125' red = '224' green ='224' blue='224' alpha ='0' label='max npv' hint='strongly significant positive trend' ></setcolor>
+			<setcolor id = '100' red = '202' green ='219' blue='253' alpha ='0' label='strongly neg' hint='strongly significant negative trend' ></setcolor>			
+			<setcolor id = '75' red = '146' green ='197' blue='222' alpha ='0' label='neg' hint='significant negative' ></setcolor>			
+			<setcolor id = '50' red = '67' green ='147' blue='195' alpha ='0' label='non significant' hint='non significant negative trend' ></setcolor>			
+			<setcolor id = '25' red = '33' green ='102' blue='173' alpha ='0' label='no trend' hint='no trend' ></setcolor>
+			<setcolor id = '0' red = '5' green ='48' blue='97' alpha ='0' label='non significant' hint='non significant positive trend' ></setcolor>
+			<setcolor id = '253' red = '245' green ='237' blue='182' alpha ='0' label='unused' hint='NA' ></setcolor>
+			<setcolor id = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
+			<setcolor id = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
+		</parameters>			
+	</process>
+
+	<process processid = 'addrasterpalette'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters compid= 'NA' palette = 'VWBdeficit'>
+			<setcolor id = '0' red = '224' green ='224' blue='224' alpha ='0' label='max npv' hint='strongly significant positive trend' ></setcolor>
+			<setcolor id = '50' red = '253' green ='219' blue='199' alpha ='0' label='non significant' hint='non significant positive trend' ></setcolor>
+			<setcolor id = '100' red = '244' green ='165' blue='130' alpha ='0' label='no trend' hint='no trend' ></setcolor>
+			<setcolor id = '150' red = '214' green ='96' blue='77' alpha ='0' label='non significant' hint='non significant negative trend' ></setcolor>			
+			<setcolor id = '200' red = '178' green ='24' blue='43' alpha ='0' label='neg' hint='significant negative' ></setcolor>			
+			<setcolor id = '250' red = '103' green ='0' blue='31' alpha ='0' label='strongly neg' hint='strongly significant negative trend' ></setcolor>																				
+			<setcolor id = '253' red = '245' green ='237' blue='182' alpha ='0' label='dry (0)' hint='completely dry' ></setcolor>
+			<setcolor id = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
+			<setcolor id = '255' red = '0' green ='0' blue='0' alpha ='255' label='255' hint='no data' ></setcolor>
+		</parameters>			
+	</process>
+
+	<process processid = 'addrasterpalette'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters compid= 'NA' palette = 'VWBsurplus'>
+			<setcolor id = '0' red = '224' green ='224' blue='224' alpha ='0' label='max npv' hint='strongly significant positive trend' ></setcolor>
+			<setcolor id = '50' red = '202' green ='219' blue='253' alpha ='0' label='strongly neg' hint='strongly significant negative trend' ></setcolor>			
+			<setcolor id = '100' red = '146' green ='197' blue='222' alpha ='0' label='neg' hint='significant negative' ></setcolor>			
+			<setcolor id = '150' red = '67' green ='147' blue='195' alpha ='0' label='non significant' hint='non significant negative trend' ></setcolor>			
+			<setcolor id = '200' red = '33' green ='102' blue='173' alpha ='0' label='no trend' hint='no trend' ></setcolor>
+			<setcolor id = '250' red = '5' green ='48' blue='97' alpha ='0' label='non significant' hint='non significant positive trend' ></setcolor>
+			<setcolor id = '253' red = '245' green ='237' blue='182' alpha ='0' label='dry (0)' hint='completely dry' ></setcolor>
+			<setcolor id = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
+			<setcolor id = '255' red = '0' green ='0' blue='0' alpha ='255' label='255' hint='no data' ></setcolor>
+		</parameters>			
+	</process>
+
+	<process processid = 'addrasterpalette'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters compid= 'NA' palette = 'VWBstd'>
+			<setcolor id = '0' red = '224' green ='224' blue='224' alpha ='0' label='max npv' hint='strongly significant positive trend' ></setcolor>
+			<setcolor id = '50' red = '202' green ='219' blue='253' alpha ='0' label='strongly neg' hint='strongly significant negative trend' ></setcolor>			
+			<setcolor id = '100' red = '146' green ='197' blue='222' alpha ='0' label='neg' hint='significant negative' ></setcolor>			
+			<setcolor id = '150' red = '67' green ='147' blue='195' alpha ='0' label='non significant' hint='non significant negative trend' ></setcolor>			
+			<setcolor id = '200' red = '33' green ='102' blue='173' alpha ='0' label='no trend' hint='no trend' ></setcolor>
+			<setcolor id = '250' red = '5' green ='48' blue='97' alpha ='0' label='non significant' hint='non significant positive trend' ></setcolor>
+			<setcolor id = '253' red = '245' green ='237' blue='182' alpha ='0' label='dry (0)' hint='completely dry' ></setcolor>
+			<setcolor id = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
+			<setcolor id = '255' red = '0' green ='0' blue='0' alpha ='255' label='255' hint='no data' ></setcolor>
+		</parameters>			
+	</process>
+
+</palette>
+```
+
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+## Set scaling
+
+Layout exports require scaling the original data to byte (0 - 255) range. Details on the scaling is given in the post on [SMAPprocessing](../blog-SMAP/). The xml below calls the scaling definition process [<span class='package'>createscaling</span>](../../subprocess/subproc-createscaling/) and sets the scaling of both the monthly and annual VWB layers, and all the layers produced as part of the trend analysis.
+
+<button id= "togglecreatescaling" onclick="hiddencode('createscaling')">Hide/Show VWB000_createscaling_v80.xml</button>
+
+<div id="createscaling" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<scaling>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
+
+	<!-- Create scaling -->
+
+	<!-- VWB monthly -->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters power = '0.75' scalefac='0.8' mirror0='True'></parameters>		
+		<comp id = '1' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb" prefix = "trmm-fao-vwb" suffix = "v7-f-m"></comp>    	
+		<comp id = '2' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-surplus" prefix = "trmm-fao-vwb-surplus" suffix = "v7-f-m"></comp>
+		<comp id = '3' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-deficit" prefix = "trmm-fao-vwb-deficit" suffix = "v7-f-m"></comp>
+	</process>
+
+	<!-- VWB annual -->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters power = '0.75' scalefac='0.15' mirror0='True'></parameters>		
+		<comp id = '1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "avg-trmm-fao-vwb" prefix = "avg-trmm-fao-vwb" suffix = "v7-f-m"></comp>    	
+		<comp id = '2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "avg-trmm-fao-vwb-surplus" prefix = "avg-trmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>    	
+		<comp id = '3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "avg-trmm-fao-vwb-deficit" prefix = "avg-trmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+		<comp id = '4' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-ic-trmm-fao-vwb" prefix = "ols-ic-trmm-fao-vwb" suffix = "v7-f-m"></comp>    	
+		<comp id = '5' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-ic-trmm-fao-vwb-surplus" prefix = "ols-ic-trmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>    	
+		<comp id = '6' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-ic-trmm-fao-vwb-deficit" prefix = "ols-ic-trmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+		<comp id = '7' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-ic-trmm-fao-vwb" prefix = "ts-ic-trmm-fao-vwb" suffix = "v7-f-m"></comp>    	
+		<comp id = '8' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-ic-trmm-fao-vwb-surplus" prefix = "ts-ic-trmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>    	
+		<comp id = '9' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-ic-trmm-fao-vwb-deficit" prefix = "ts-ic-trmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+	</process>
+
+	<!-- VWB annual std and rmse -->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters power = '0.75' scalefac='0.8' mirror0='True'></parameters>		
+		<comp id = '1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "std-trmm-fao-vwb" prefix = "avg-trmm-fao-vwb" suffix = "v7-f-m"></comp>    	
+		<comp id = '2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "std-trmm-fao-vwb-surplus" prefix = "avg-trmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>    	
+		<comp id = '3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "std-trmm-fao-vwb-deficit" prefix = "avg-trmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+		<comp id = '4' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-rmse-trmm-fao-vwb" prefix = "avg-trmm-fao-vwb" suffix = "v7-f-m"></comp>    	
+		<comp id = '5' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-rmse-trmm-fao-vwb-surplus" prefix = "avg-trmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>    	
+		<comp id = '6' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-rmse-trmm-fao-vwb-deficit" prefix = "avg-trmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+	</process>
+
+	<!-- VWB mannkendall Z-->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters scalefac='40' offsetadd='125' ></parameters>			
+		<comp id = '1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "mk-z-trmm-fao-vwb" prefix = "mk-z-trmm-fao-vwb" suffix = "v7-f-A"></comp>
+		<comp id = '2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "mk-z-trmm-fao-vwb-surplus" prefix = "mk-z-trmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>
+		<comp id = '3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "mk-z-trmm-fao-vwb-deficit" prefix = "mk-z-trmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+	</process>
+
+	<!-- VWB r2-->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters scalefac='100'></parameters>			
+		<comp id = '1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-r2-trmm-fao-vwb" prefix = "ols-r2-trmm-fao-vwb" suffix = "v7-f-A"></comp>
+		<comp id = '2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-r2-trmm-fao-vwb-surplus" prefix = "ols-r2-trmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>
+		<comp id = '3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-r2-trmm-fao-vwb-deficit" prefix = "ols-r2-trmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+	</process>
+
+	<!-- VWB slope mm/year-->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters mirror0='True' power='0.75' scalefac='2'></parameters>
+		<comp id = '1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-mdsl-trmm-fao-vwb" prefix = "ts-mdsl-trmm-fao-vwb" suffix = "v7-f-m-A"></comp>
+		<comp id = '2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-losl-trmm-fao-vwb" prefix = "ts-losl-ttrmm-fao-vwb" suffix = "v7-f-m-A"></comp>
+		<comp id = '3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-hisl-trmm-fao-vwb" prefix = "ts-hisl-ttrmm-fao-vwb" suffix = "v7-f-m-A"></comp>
+		<comp id = '4' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-sl-trmm-fao-vwb" prefix = "ols-sl-trmm-fao-vwb" suffix = "v7-f-m-A"></comp>    	
+		<comp id = '5' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-mdsl-trmm-fao-vwb-deficit" prefix = "ts-mdsl-trmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+		<comp id = '6' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-losl-trmm-fao-vwb-deficit" prefix = "ts-losl-ttrmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+		<comp id = '7' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-hisl-trmm-fao-vwb-deficit" prefix = "ts-hisl-ttrmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+		<comp id = '8' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-sl-trmm-fao-vwb-deficit" prefix = "ols-sl-trmm-fao-vwb-deficit" suffix = "v7-f-m-A"></comp>
+		<comp id = '9' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-mdsl-trmm-fao-vwb-surplus" prefix = "ts-mdsl-trmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>
+		<comp id = '10' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-losl-trmm-fao-vwb-surplus" prefix = "ts-losl-ttrmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>
+		<comp id = '11' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-hisl-trmm-fao-vwb-surplus" prefix = "ts-hisl-ttrmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>
+		<comp id = '12' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-sl-trmm-fao-vwb-surplus" prefix = "ols-sl-trmm-fao-vwb-surplus" suffix = "v7-f-m-A"></comp>
+	</process>
+
+	<!-- VWB change -->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters power='0.75' scalefac='0.3' mirror0='True'></parameters>
+		<comp id = '1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-change" prefix = "trmm-fao-vwb-change" suffix = "model-v7-f-m-A"></comp>
+		<comp id = '2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-surplus-change" prefix = "trmm-fao-vwb-surplus-change" suffix = "model-v7-f-m-A"></comp>
+		<comp id = '3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-deficit-change" prefix = "trmm-fao-vwb-deficit-change" suffix = "model-v7-f-m-A"></comp>
+	</process>
+
+	<!-- VWB change -->
+	<process processid = 'createscaling' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters power='0.75' scalefac='3' mirror0='True'></parameters>
+		<comp id = '1' source = "trmm" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-delta" prefix = "trmm-fao-vwb-delta" suffix = "slope@p-v7-f-m-A"></comp>
+		<comp id = '2' source = "trmm" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-surplus-delta" prefix = "trmm-fao-vwb-surplus-delta" suffix = "slope@p-v7-f-m-A"></comp>
+		<comp id = '3' source = "trmm" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-deficit-delta" prefix = "trmm-fao-vwb-deficit-delta" suffix = "slope@p-v7-f-m-A"></comp>
+	</process>
+</scaling>
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+## Add movieclock
+
+You do not need to add a movieclock layout especially for VWB, the default movieclock works fine. But if you want to create a customised movieclock, the process is [<span class='package'>addmovieclock</span>](../../subprocess/subproc-addmovieclock/). The only parameter that is required is the name of the movieclock, all other parameters are set to default unless explicitly given as parameters (thus the movieclock added below will be identical to the default movieclock).
+
+<button id= "toggleaddmovieclock" onclick="hiddencode('addmovieclock')">Hide/Show VWB000_addmovieclock.xml</button>
+
+<div id="addmovieclock" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<movieclock>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
+	<path></path>
+
+	<!--  Add movieclock -->
+	<process processid = 'addmovieclock'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters name = 'vwb'>
+		</parameters>
+	</process>
+</movieclock>
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+# Export images and create animation
+
+You can now export any of the VWB layers created above.
+
+## Export monthly images
+
+The full series of monthly VWB images is needed if you want to create an animation.
+The following xml calls the process [<span class='package'>exporttobyteancillary</span>](../../subprocess/subproc-exporttobyteancillary/) and exports all the monthly VWB data, including the overall VWB, the humid VWB and the arid VWB.
+
+<button id= "toggleexportm" onclick="hiddencode('exportm')">Hide/Show VWB050_ExporttoByte_M_v80.xml</button>
+
+<div id="exportm" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+```
+<?xml version='1.0' encoding='utf-8'?>
+<export>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = "1998" endyear = "2018" endmonth ='7' endday = '31' timestep='M'></period>
+
+	<!-- Export to byte with colored palettes -->
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'vwb'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb id = 'layer1' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb" prefix = "trmm-fao-vwb" suffix = "v7-f-m">
+			</trmm-fao-vwb>
+			<trmm-fao-vwb-surplus id = 'layer2' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-surplus" prefix = "trmm-fao-vwb-surplus" suffix = "v7-f-m">
+			</trmm-fao-vwb-surplus>
+			<trmm-fao-vwb-deficit id = 'layer3' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-deficit" prefix = "trmm-fao-vwb-deficit" suffix = "v7-f-m">
+			</trmm-fao-vwb-deficit>
+		</srccomp>
+	</process>
+</export>
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+## Export statistical and trend results
+
+All exports use the same process [<span class='package'>exporttobyteancillary</span>](../../subprocess/subproc-exporttobyteancillary/), you just have to set the timestep and compostions to export all the statistical data, including the results of the trend analysis.
+
+<button id= "toggleexportA" onclick="hiddencode('exportA')">Hide/Show VWB050_ExporttoByte_timespanA_v80.xml</button>
+
+<div id="exportA" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+```
+<?xml version='1.0' encoding='utf-8'?>
+<export>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = "1998" endyear = "2017" timestep='timespan-A'></period>
+
+	<!-- exporttobyte avg A -->
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'vwb'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<avg-trmm-fao-vwb id = 'layer1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "avg-trmm-fao-vwb" prefix = "avg-trmm-fao-vwb" suffix = "v7-f-m-A">
+			</avg-trmm-fao-vwb>
+			<avg-trmm-fao-vwb-surplus id = 'layer2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "avg-trmm-fao-vwb-surplus" prefix = "avg-trmm-fao-vwb-surplus" suffix = "v7-f-m-A">
+			</avg-trmm-fao-vwb-surplus>
+			<avg-trmm-fao-vwb-deficit id = 'layer3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "avg-trmm-fao-vwb-deficit" prefix = "avg-trmm-fao-vwb-deficit" suffix = "v7-f-m-A">
+			</avg-trmm-fao-vwb-deficit>
+
+			<ols-ic-trmm-fao-vwb id = 'layer4' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-ic-trmm-fao-vwb" prefix = "ols-ic-trmm-fao-vwb" suffix = "v7-f-m-A">
+			</ols-ic-trmm-fao-vwb>
+			<ols-ic-trmm-fao-vwb-surplus id = 'layer5' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-ic-trmm-fao-vwb-surplus" prefix = "ols-ic-trmm-fao-vwb-surplus" suffix = "v7-f-m-A">
+			</ols-ic-trmm-fao-vwb-surplus>
+			<ols-ic-trmm-fao-vwb-deficit id = 'layer6' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-ic-trmm-fao-vwb-deficit" prefix = "ols-ic-trmm-fao-vwb-deficit" suffix = "v7-f-m-A">
+			</ols-ic-trmm-fao-vwb-deficit>
+
+			<ts-ic-trmm-fao-vwb id = 'layer7' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-ic-trmm-fao-vwb" prefix = "ts-ic-trmm-fao-vwb" suffix = "v7-f-m-A">
+			</ts-ic-trmm-fao-vwb>
+			<ts-ic-trmm-fao-vwb-surplus id = 'layer8' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-ic-trmm-fao-vwb-surplus" prefix = "ts-ic-trmm-fao-vwb-surplus" suffix = "v7-f-m-A">
+			</ts-ic-trmm-fao-vwb-surplus>
+			<ts-ic-trmm-fao-vwb-deficit id = 'layer9' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-ic-trmm-fao-vwb-deficit" prefix = "ts-ic-trmm-fao-vwb-deficit" suffix = "v7-f-m-A">
+			</ts-ic-trmm-fao-vwb-deficit>
+		</srccomp>
+	</process>
+
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'vwb'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+
+			<ols-sl-trmm-fao-vwb id = 'layer4' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-sl-trmm-fao-vwb" prefix = "ols-sl-trmm-fao-vwb" suffix = "v7-f-m-A">
+			</ols-sl-trmm-fao-vwb>
+			<ols-sl-trmm-fao-vwb-surplus id = 'layer5' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-sl-trmm-fao-vwb-surplus" prefix = "ols-sl-trmm-fao-vwb-surplus" suffix = "v7-f-m-A">
+			</ols-sl-trmm-fao-vwb-surplus>
+			<ols-sl-trmm-fao-vwb-deficit id = 'layer6' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-sl-trmm-fao-vwb-deficit" prefix = "ols-sl-trmm-fao-vwb-deficit" suffix = "v7-f-m-A">
+			</ols-sl-trmm-fao-vwb-deficit>
+
+			<ts-mdsl-trmm-fao-vwb id = 'layer7' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-mdsl-trmm-fao-vwb" prefix = "ts-mdsl-trmm-fao-vwb" suffix = "v7-f-m-A">
+			</ts-mdsl-trmm-fao-vwb>
+			<ts-mdsl-trmm-fao-vwb-surplus id = 'layer8' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-mdsl-trmm-fao-vwb-surplus" prefix = "ts-mdsl-trmm-fao-vwb-surplus" suffix = "v7-f-m-A">
+			</ts-mdsl-trmm-fao-vwb-surplus>
+			<ts-mdsl-trmm-fao-vwb-deficit id = 'layer9' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-mdsl-trmm-fao-vwb-deficit" prefix = "ts-mdsl-trmm-fao-vwb-deficit" suffix = "v7-f-m-A">
+			</ts-mdsl-trmm-fao-vwb-deficit>
+
+			<ts-losl-trmm-fao-vwb id = 'layer7' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-losl-trmm-fao-vwb" prefix = "ts-losl-trmm-fao-vwb" suffix = "v7-f-m-A">
+			</ts-losl-trmm-fao-vwb>
+			<ts-losl-trmm-fao-vwb-surplus id = 'layer8' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-losl-trmm-fao-vwb-surplus" prefix = "ts-losl-trmm-fao-vwb-surplus" suffix = "v7-f-m-A">
+			</ts-losl-trmm-fao-vwb-surplus>
+			<ts-losl-trmm-fao-vwb-deficit id = 'layer9' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-losl-trmm-fao-vwb-deficit" prefix = "ts-losl-trmm-fao-vwb-deficit" suffix = "v7-f-m-A">
+			</ts-losl-trmm-fao-vwb-deficit>
+
+			<ts-hisl-trmm-fao-vwb id = 'layer7' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-hisl-trmm-fao-vwb" prefix = "ts-hisl-trmm-fao-vwb" suffix = "v7-f-m-A">
+			</ts-hisl-trmm-fao-vwb>
+			<ts-hisl-trmm-fao-vwb-surplus id = 'layer8' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-hisl-trmm-fao-vwb-surplus" prefix = "ts-hisl-trmm-fao-vwb-surplus" suffix = "v7-f-m-A">
+			</ts-hisl-trmm-fao-vwb-surplus>
+			<ts-hisl-trmm-fao-vwb-deficit id = 'layer9' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ts-hisl-trmm-fao-vwb-deficit" prefix = "ts-hisl-trmm-fao-vwb-deficit" suffix = "v7-f-m-A">
+			</ts-hisl-trmm-fao-vwb-deficit>
+		</srccomp>
+	</process>
+
+	<!-- exporttobyte std + rmse A -->
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'vwb'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+
+			<std-trmm-fao-vwb id = 'layer1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "std-trmm-fao-vwb" prefix = "std-trmm-fao-vwb" suffix = "v7-f-m-A">
+			</std-trmm-fao-vwb>
+			<std-trmm-fao-vwb-surplus id = 'layer2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "std-trmm-fao-vwb-surplus" prefix = "std-trmm-fao-vwb-surplus" suffix = "v7-f-m-A">
+			</std-trmm-fao-vwb-surplus>
+			<std-trmm-fao-vwb-deficit id = 'layer3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-stats" band = "std-trmm-fao-vwb-deficit" prefix = "std-trmm-fao-vwb-deficit" suffix = "v7-f-m-A">
+			</std-trmm-fao-vwb-deficit>
+			<std-trmm-3b43v7-precip id = 'layer' source = "trmm" product = "3b43" folder = "rainfall-A-stats" band = "std-trmm-3b43v7-precip" prefix = "std-trmm-3b43v7-precip" suffix = "v7-f-A">
+			</std-trmm-3b43v7-precip>
+
+			<ols-rmse-trmm-fao-vwb id = 'layer4' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-rmse-trmm-fao-vwb" prefix = "ols-rmse-trmm-fao-vwb" suffix = "v7-f-m-A">
+			</ols-rmse-trmm-fao-vwb>
+			<ols-rmse-trmm-fao-vwb-surplus id = 'layer5' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-rmse-trmm-fao-vwb-surplus" prefix = "ols-rmse-trmm-fao-vwb-surplus" suffix = "v7-f-m-A">
+			</ols-rmse-trmm-fao-vwb-surplus>
+			<ols-rmse-trmm-fao-vwb-deficit id = 'layer6' source = "trmm-vwb" product = "3b43" folder = "vwb-A-trend" band = "ols-rmse-trmm-fao-vwb-deficit" prefix = "ols-rmse-trmm-fao-vwb-deficit" suffix = "v7-f-m-A">
+			</ols-rmse-trmm-fao-vwb-deficit>
+
+		</srccomp>
+	</process>
+
+	<!-- VWB change -->
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'vwb'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-change id = 'layer1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-change" prefix = "trmm-fao-vwb-change" suffix = "model-v7-f-m-A">
+			</trmm-fao-vwb-change>
+
+			<trmm-fao-vwb-delta id = 'layer3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-delta" prefix = "trmm-fao-vwb-delta" suffix = "slope@p-v7-f-m-A">
+			</trmm-fao-vwb-delta>
+		</srccomp>
+	</process>
+
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'vwb'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-change id = 'layer2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-change" prefix = "trmm-fao-vwb-change" suffix = "model@p-v7-f-m-A">
+			</trmm-fao-vwb-change>
+		</srccomp>
+	</process>
+
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'vwb'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-surplus-change id = 'layer1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-surplus-change" prefix = "trmm-fao-vwb-surplus-change" suffix = "model-v7-f-m-A">
+			</trmm-fao-vwb-surplus-change>
+
+			<trmm-fao-vwb-surplus-delta id = 'layer3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-surplus-delta" prefix = "trmm-fao-vwb-surplus-delta" suffix = "slope@p-v7-f-m-A">
+			</trmm-fao-vwb-surplus-delta>
+		</srccomp>
+	</process>
+
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'vwb'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-surplus-change id = 'layer2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-surplus-change" prefix = "trmm-fao-vwb-surplus-change" suffix = "model@p-v7-f-m-A">
+			</trmm-fao-vwb-surplus-change>
+		</srccomp>
+	</process>
+
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'vwb'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-deficit-change id = 'layer1' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-deficit-change" prefix = "trmm-fao-vwb-deficit-change" suffix = "model-v7-f-m-A">
+			</trmm-fao-vwb-deficit-change>
+
+			<trmm-fao-vwb-deficit-delta id = 'layer3' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-deficit-delta" prefix = "trmm-fao-vwb-deficit-delta" suffix = "slope@p-v7-f-m-A">
+			</trmm-fao-vwb-deficit-delta>
+		</srccomp>
+	</process>
+
+	<process processid = 'exporttobyteancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters palette= 'vwb'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-deficit-change id = 'layer2' source = "trmm-vwb" product = "3b43" folder = "vwb-A-change" band = "trmm-fao-vwb-deficit-change" prefix = "trmm-fao-vwb-deficit-change" suffix = "model@p-v7-f-m-A">
+			</trmm-fao-vwb-deficit-change>
+		</srccomp>
+	</process>
+
+</export>
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+### Create movie frames
+
+The process [<span class='package'>movieframeancillary</span>](../../subprocess/subproc-movieframeancillary/) converts the exported images (from previous step) to movie frames. The process is basically a dimension conversion that can also create an embossed text on the fly. For the process [<span class='package'>movieframeancillary</span>](../../subprocess/subproc-movieframeancillary/) to work you must have installed <span class='terminalapp'>imagemagick</span> as explained in [another blogpost](https://karttur.github.io/setup-theme-blog/blog/install-imagemagick/).
+
+To run the process fully automated you must set the parameter _asscript_ to _False_, otherwise you must manually execute the shell script file reported when the process comes to an end. By default the process will create a script file so you must explicitly enter asscript=\"False\" if you want the process to generate the frames on the fly.
+
+Note that because the three versions of VWB (the total VWB, suplus VWB and deficit VWB) were organized to be stored in the same directory (or folder) path, you can only create one animation at the time. If you want to create animations of all three versions you must delete the "movieframe" folder between each creation.
+
+<button id= "togglemovieframe" onclick="hiddencode('movieframe')">Hide/Show VWB055_movieframes_M_v80.xml</button>
+
+<div id="movieframe" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+```
+<?xml version='1.0' encoding='utf-8'?>
+<movieframe>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = "1998"  endyear = "2018" endmonth='07' endday='31' timestep='M'></period>
+
+	<!-- Create movie frame -->
+	<process processid = 'movieframeancillary' version = '1.3'>
+		<overwrite>True</overwrite>
+		<parameters name = 'vwb' width = '800' crop='800,222,0,0' emboss='KARTTUR' embossdims='720,150' embossptsize='100' asscript='True'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb id = 'layer1' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb" prefix = "trmm-fao-vwb" suffix = "v7-f-m">
+			</trmm-fao-vwb>
+		</srccomp>
+	</process>
+
+	<!-- Create movie frame surplus
+		If you want to create an animation from the VWB surplus timeseries
+		you must first make sure that the dstpath "movieframes" is empty,
+		i.e. you must first finish the movie for trmm-fao-vwb (above) and
+		delete all intermediate files (and only keep the final movie).
+		Otherwise the movie will include both trmm-fao-vwb and trmm-fao-vwb-surplus.
+		To create a movie form the surplus data, change processx to process below and
+		set process to processx for the process above.
+	-->
+	<processx processid = 'movieframeancillary' version = '1.3'>
+		<overwrite>False</overwrite>
+		<parameters name = 'vwb' width = '800' crop='800,222,0,0' emboss='KARTTUR' embossdims='720,150' embossptsize='100' asscript='True'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-surplus id = 'layer2' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-surplus" prefix = "trmm-fao-vwb-surplus" suffix = "v7-f-m">
+			</trmm-fao-vwb-surplus>
+		</srccomp>
+	</processx>
+
+	<!-- Create movie frame deficit
+		If you want to create an animation from the VWB defiit timeseries
+		you must first make sure that the dstpath "movieframes" is empty,
+		see above.
+	-->
+	<processx processid = 'movieframeancillary' version = '1.3'>
+		<overwrite>False</overwrite>
+		<parameters name = 'vwb' width = '800' crop='800,222,0,0' emboss='KARTTUR' embossdims='720,150' embossptsize='100' asscript='True'></parameters>
+		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
+		<dstpath volume = "karttur3tb/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>
+		<srccomp>
+			<trmm-fao-vwb-deficit id = 'layer3' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-deficit" prefix = "trmm-fao-vwb-deficit" suffix = "v7-f-m">
+			</trmm-fao-vwb-deficit>
+		</srccomp>
+	</processx>
+</movieframe>
+
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+### Create movie clock and animation
+
+The process [<span class='package'>movieclockancillary</span>](../../subprocess/subproc-movieclockancillary/) first creates the movieclocks to combine with the movie frames from the previous step, and then creates the movie/animation itself. To run the process fully automated you must set the parameter _asscript_ to _False_, otherwise you must manually execute the shell script files reported when the process comes to an end. By default the process will create script files so you must explicitly enter asscript=\"False\" if you want the process to generate the complete animation on the fly.
+
+For the process [<span class='package'movieclockancillary</span>](../../subprocess/subproc-movieclockancillary/) to work you must have installed <span class='terminalapp'>FFmpeg</span> as explained in [another blogpost](https://karttur.github.io/setup-theme-blog/blog/ffmpeg-movie/).
+
+<button id= "togglemovieclock" onclick="hiddencode('movieclock')">Hide/Show VWB055_movieclock_M_v80.xml</button>
+
+<div id="movieclock" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+```
+<?xml version='1.0' encoding='utf-8'?>
+<movieclock>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur-trmm' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
+	<period startyear = "1998"  endyear = "2018" endmonth='07' endday='31' timestep='M'></period>
+
+	<!-- Create movie clock -->
+	<process processid = 'movieclockancillary' version = '1.3'>
+		<overwrite>False</overwrite>
+		<parameters name = 'trmm' width = '800' asscript='True'></parameters>
+
+		<dstpath volume = "karttur3tb/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>
+		<dstcomp>
+			<trmm-fao-vwb id = 'layer1' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb" prefix = "trmm-fao-vwb" suffix = "v7-f-m">
+			</trmm-fao-vwb>
+		</dstcomp>
+	</process>
+
+	<!-- Create movie clock surplus
+		If you want to create an animation from the VWB surplus timeseries
+		you must first make sure that the dstpath "movieframes" is empty,
+		i.e. you must first finish the movie for trmm-fao-vwb (above) and
+		delete all intermediate files (and only keep the final movie).
+		Otherwise the movie will include both trmm-fao-vwb and trmm-fao-vwb-surplus.
+		To create a movie form the surplus data, change processx to process below and
+		set process to processx for the process above.
+	-->
+	<processx processid = 'movieclockancillary' version = '1.3'>
+		<overwrite>False</overwrite>
+		<parameters name = 'trmm' width = '800' asscript='True'></parameters>
+
+		<dstpath volume = "karttur3tb/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>
+		<dstcomp>
+			<trmm-fao-vwb-surplus id = 'layer2' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-surplus" prefix = "trmm-fao-vwb-surplus" suffix = "v7-f-m">
+			</trmm-fao-vwb-surplus>
+		</dstcomp>
+	</processx>
+
+	<!-- Create movie clock deficit
+		If you want to create an animation from the VWB defiit timeseries
+		you must first make sure that the dstpath "movieframes" is empty,
+		see above.
+	-->
+	<processx processid = 'movieclockancillary' version = '1.3'>
+		<overwrite>False</overwrite>
+		<parameters name = 'trmm' width = '800' asscript='True'></parameters>
+
+		<dstpath volume = "karttur3tb/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>
+		<dstcomp>
+			<trmm-fao-vwb-deficit id = 'layer3' source = "trmm-vwb" product = "3b43" folder = "vwb" band = "trmm-fao-vwb-deficit" prefix = "trmm-fao-vwb-deficit" suffix = "v7-f-m">
+			</trmm-fao-vwb-deficit>
+		</dstcomp>
+	</processx>
+
+</movieclock>
+
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+# Process Chain
+
+All of the above processes can be assembled into a single process chain as shown below. To run the process chain you just have to remove the comment marker "#" and run the Framework pointing at the text file with the process chain.
+
+<button id= "toggleprocesschain" onclick="hiddencode('processchain')">Hide/Show VWB processchain</button>
+
+<div id="processchain" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+##### Vertical Water Balance using TRMM and FAO ref evap ######
+
+#Uncomment the processes you want to run by removing the "#"
+
+### 0 Set layout ###
+
+# 0.0 Create scaling
+#VWB000_createscaling_v80.xml
+
+# 0.0 Create palettes
+#VWB000_createpalettes_v80.xml
+
+# 0.0 Add movieclock
+#VWB000_addmovieclock.xml
+
+# 1.0 Convert FAO refet to mm/month
+#FAOrefet010_convert_daytomonth.xml
+
+# 1.1 Translate FAO refet spatial extent of TRMM
+#FAOrefet011_translate_toTRMM.xml
+
+# 1.0 TRMM create mask from FAO refet (land)
+#TRMM010_createmask-from-FAOrefet_v80.xml
+
+# 1.1 TRMM mask out land (FAO refet)
+#TRMM011_applymask_v80.xml
+
+# 2.0 Monthly vertical water balance
+#VWB020_subtract_seasonal_trmm-refet_v80.xml
+
+# 2.1 Resample to annual
+#VWB021_resample-2-annual_v80.xml
+
+# 3.1 Annual trend
+#VWB031_trend_A_v80.xml
+
+# 3.2 Get regions with significant trends
+#VWB032_significant_changes_v80.xml
+
+# 5.0 Export to byte with colored palettes
+#VWB050_ExporttoByte_M_v80.xml
+#VWB050_ExporttoByte_VWB-timespanA_v80.xml
+
+# 5.5 Create movieframes
+# For fully automated processing you need to set parameter "asscript" to False
+#VWB055_movieframes_M_v80.xml
+#If you set the parameter "asscript" to True (= default),
+#you have to execute the shell script file reported by the process
+#"volume"/movieclock/export/trmm-vwb/region/vwb/trmm/movieframes/movieframes_trmm-fao-vwb.sh
+
+# 5.6 Create movieclock
+# For fully automated processing you need to set parameter "asscript" to False
+#VWB056_movieclock_M_v80.xml
+#If you set the parameter "asscript" to True (= default),
+#you have to execute the shell script file reported by the process
+#"volume"/movieclock/export/trmm-vwb/region/vwb/trmm/frames/frame_trmm-fao-vwb.sh
+#"volume"/movieclock/export/trmm-vwb/region/vwb/trmm/movie/movie_trmm-fao-vwb.sh
+
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>

@@ -8,7 +8,7 @@ search_omit: true
 
 Karttur's GeoImagine Framework offers a semi-automated processing environment for spatial data, mainly intended for Big Data satellite image processing.
 
-Everything in the framework is done using object oriented processes. Even the definition of the processes themselves use the same processing routines as all other processes. The processes are assembled in root groups, where each group is associated with either a particular data source (e.g. MODIS, Sentinel, Landsat, ancillary data etc), or particular kinds of processes (e.g. time series processing, scalar, overlay, export etc). Most root processes are also associated with a specific, purpose-built, python package.
+Everything in the framework is done using object oriented processes. Even the definition of the processes themselves use the same interface as all other processes. The processes are assembled in groups (called roots), where each group is associated with either a particular data source (e.g. MODIS, Sentinel, Landsat, ancillary data etc), or particular kinds of processes (e.g. time series processing, scalar, overlay, export etc). Most root processes are also associated with a specific, purpose-built, python package.
 
 To search for a particular package or process, use these links to browse the content of Karttur's GeoImagine Framework:
 
@@ -18,7 +18,7 @@ To search for a particular package or process, use these links to browse the con
 
 The [blog](../blog/) contains step-by-step examples covering data acquisitions and processing.
 
-The Framework is built in Python using the Eclipse Integrated Development Environment (IDE) and postreSQL as database. The setup of the IDE with all its components is covered in the [Setup IDE Blog](https://karttur.github.io/setup-ide/).
+The Framework is built in Python using the Eclipse Integrated Development Environment (IDE) and postreSQL as database. The setup of the IDE with all its components is covered in the [Setup IDE Blog](https://karttur.github.io/setup-ide/). If you want to setup Karttur's GeoImagine Framework you have to start with building the Eclipse Spatial Data IDE (SPIDE).
 
 <h1>Blog<h1>
 <ul class="post-list">

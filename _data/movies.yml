@@ -30,3 +30,11 @@ TWIpercent_MCD43A4_h21v08_2001009-2017361_v006-tg01:
     source: null
     width: 800
     height: 800
+rainfall_3b43_trmm_199801-201807_v7-f:
+    file: rainfall_3b43_trmm_199801-201807_v7-f.mp4
+    author: Thomas Gumbricht
+    caption: Monthly rainfall estimated from TRMM and other sources
+    credit: null
+    source: null
+    width: 800
+    height: 222

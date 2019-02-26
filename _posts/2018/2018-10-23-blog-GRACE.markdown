@@ -14,10 +14,11 @@ figure2B: ts-mdsl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 figure2C: ts-losl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 figure2D: ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 ---
+<script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
 
 # Introduction
 
-This post goes through the steps needed to produce colored maps of the trends in global water storage using data from the [GRACE (Gravity Recovery and Climate Experiment)](https://grace.jpl.nasa.gov) mission. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework as described in the [previous](../blog-import-project-eclipse/) post.
+This post goes through the complete chain of processes from accessing data from the [Gravity Recovery and Climate Experiment (GRACE)](https://grace.jpl.nasa.gov) mission to producing colored maps of the global trend in water storage from 2003 to 2016. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework as described in the [previous](../blog-import-project-eclipse/) post.
 
 <figure>
 <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure1].file }}">
@@ -28,23 +29,89 @@ This post goes through the steps needed to produce colored maps of the trends in
 
 The Gravity Recovery and Climate Experiment (GRACE) was built around two identical satellites orbiting the Earth. Traveling with a fixed distance in between them the gravitational pull caused minute changes in the vertical elevation difference between the two satellites. This change can be used for estimating the gravitational pull. Short term (days to months) changes in the gravitation is primarily related to the Earth's water reservoirs over land, ice and oceans, and earthquakes and crustal deformations.
 
-I use GRACE TELLUS [Level-3 data grids of monthly surface mass changes](https://grace.jpl.nasa.gov/data/monthly-mass-grids/) to detect trends in water storage on land. The GRACE data that I use represent the changes in equivalent water thickness relative to a time-mean baseline. There are three different solutions for the calculations of equivalent water thickness, respectively produced by CSR (Center for Space Research at University of Texas, Austin), GFZ (GeoforschungsZentrum Potsdam) and JPL (Jet Propulsion Laboratory). You can use any of these solutions, but the official recommendation is that [users obtain all three data center's solutions (JPL, CSR, GFZ) and simply average them](https://grace.jpl.nasa.gov/data/choosing-a-solution/).
-
-This blog summarises how the processing is done using Karttur´s GeoImagine Framework.
+In this tutorial you will use GRACE TELLUS [Level-3 data grids of monthly surface mass changes](https://grace.jpl.nasa.gov/data/monthly-mass-grids/) to detect trends in water storage on land. This GRACE data represent the changes in equivalent water thickness relative to a time-mean baseline. There are three different solutions for the calculations of equivalent water thickness, respectively produced by CSR (Center for Space Research at University of Texas, Austin), GFZ (GeoforschungsZentrum Potsdam) and JPL (Jet Propulsion Laboratory). You can use any of these solutions, but the official recommendation is that [users obtain all three data center's solutions (JPL, CSR, GFZ) and simply average them](https://grace.jpl.nasa.gov/data/choosing-a-solution/).
 
 ## Python Package
 
 The GeoImagine Framework includes a package for specific GRACE processing: [geoimagine-grace](https://github.com/karttur/geoimagine-grace/). However, also several other packages in the Framework are needed for repeating the steps below.
 
+### Project module
+
+The project module file (<span class='file'>projGRACE.py</span>) for GRACE is available in the Project package [geoimagine-projects](https://github.com/karttur/geoimagine-projects/).
+
+<button id= "toggleprojfile" onclick="hiddencode('projfile')">Hide/Show projGRACE.py</button>
+
+<div id="projfile" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+from geoimagine.kartturmain.readXMLprocesses import ReadXMLProcesses, RunProcesses
+
+if __name__ == "__main__":
+
+    verbose = True
+
+    #projFN ='/full/path/to/grace_20181018_0.txt'
+    projFN ='doc/GRACE/grace_20181018_0.txt'
+
+    procLL = ReadXMLProcesses(projFN,verbose)
+
+    RunProcesses(procLL,verbose)
+```
+
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+### Project files
+
+The project file links to an ASCII text file that contains a list of the xml files to executes.
+
+```
+projFN ='doc/GRACE/grace_20181018_0.txt'
+```
+
+As the path to the project file does **not** start with a slash "\\", the path must be relative to the project module itself. The [project package available on Karttur's GitHub page]() contains the path and the files requred for running the 
+Both the text file and the xml files are available under the <span class='file'>doc</span> folder in the projects package. The path to the test is given as a relative path in the <span class='file'>projGRACE.py</span> module, and all the xml files are located in a subfolder called <span class='file'>xml</span> under the folder <span class='file'>GRACE</span>.
+
+```
+GRACE
+|____grace_20181018_0.txt
+|____xml
+  |____ancillary-download-GRACE.xml
+  |____extract_season_GRACE_v80.xml
+  |____exportlegend_GRACE_v80.xml
+  |____trend_GRACE_A_v80.xml
+  |____resample_GRACE_A_v80.xml
+  |____createpalettes_GRACE_v80.xml
+  |____ExporttoByte_GRACE_v80.xml
+  |____mendGrace_v80.xml
+  |____createlegends_GRACE_v80.xml
+  |____averageGrace_v80.xml
+  |____ancillary-organize-GRACE.xml
+  |____significant_changes_GRACE_v80.xml
+  |____createscaling_GRACE_v80.xml
+```
+
 ## Data access and download
 
-THe GRACE data is freely available from [GRACE TELLUS](https://grace.jpl.nasa.gov/data/get-data/). The data are available through ftp, and as the dataset is small and the experiment finished, I download the data using an FTP client (for example [Filezilla](https://filezilla-project.org)).
+THe GRACE data is freely available from [GRACE TELLUS](https://grace.jpl.nasa.gov/data/get-data/). The data are available through ftp, and the dataset is small and the experiment finished. The easiest way to download the data is to use an FTP client (for example [Filezilla](https://filezilla-project.org)).
 
-The data can be downloaded as NetCDF files, as GeoTIFF images and as ASCII text files. Karttur's GeoImagine Framework can import any of these formats, but the specific GRACE importer that solves the projection of the GRACE data on the fly use the ASCII data as input. When downloading the data, just keep the same folder structure as the online resource.
+The data can be downloaded as NetCDF files, as GeoTIFF images and as ASCII text files. Karttur's GeoImagine Framework can import any of these formats, but the specific GRACE importer that solves the projection of the GRACE data on the fly use the ASCII data as input. When downloading the data, make sure to keep the same folder structure as the online resource (this is how the import process expects the data).
 
 ## Organizing the dataset
 
-The GRACE dataset available online is not projected in the usual manner, but starts at the Greenwich Meridian and then extends eastwards. It wraps the dateline and the last column again ends at the Greenwich Meridian. To solve the projection on the fly when organizing GRACE data, use the process <span class='package'>OrganizeGrace</span> (only works on the ASCII data). This process is a subclass to <span class='package'>OrganizeAncillary</span>, and uses the same xml structure:
+The GRACE dataset available online is not projected in the usual manner; the left edge starts at the Greenwich Meridian and then extends eastwards. It wraps the dateline and the last column again ends at the Greenwich Meridian. To solve the projection on the fly when organizing GRACE data, use the process <span class='package'>OrganizeGrace</span> (only works on the ASCII data). This process is a subclass to <span class='package'>OrganizeAncillary</span>, and uses the same xml structure:
+
+<button id= "toggleorganize" onclick="hiddencode('organize')">Hide/Show GRACE010_organize_v80.xml</button>
+
+<div id="organize" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -77,14 +144,42 @@ The GRACE dataset available online is not projected in the usual manner, but sta
 		</dstcomp>
 	</process>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
-The process <span class='package'>OrganizeAncillary</span> translates the raw GRACE data to organized and projected GeoTIFF layers.
+The process <span class='package'>OrganizeAncillary</span> translates the raw GRACE data to organized and projected GeoTIFF layers. The xml does not define the layers explicitly. Like for all processes, the spatial data is defined by a _compositon_ object, a region (_tract_, _site_ or _plot_) and a time span inculding a temporal resolution. When the process is exectuted the layers are constructed from a compostion, a loaction and a time stamp.
+
+In the xml above, the region is defined by the _tract_:
+
+```
+tractid= 'karttur'
+```
+
+Where the _tractid_ _karttur_ is the default superuser owned tract representing global extent (see [this](../blog-xml/) post for details).
+
+The time span and the temporal resolution is defined in the \<period\> tag:
+
+```
+<period timestep='allscenes'></period>
+```
+
+The _timestep_ parameter _allscenes_ only works for some processes; for GRACE data it searches the source data for all available data found under the import path.
+
+The composition is completely defined by the following tag:
+
+```
+source = "NASA-GRACE" product = "jpl-cmwater" folder = "cmwater" band = "grace-jpl" prefix = "grace-jpl" suffix = "RL05" scalefac = "1" offsetadd = "0" dataunit = "cm" celltype = 'Float32' cellnull = '32767' measure ='R' masked='Y'
+```
+
+You can change the composition definition to anything you want, but you must set values to all parameters.
 
 If you want to use all the solutions for equivalent water thickness (CST, GFZ and JPL) you have to define three import processes (can be done in the same xml file).
 
 ## Filling missing data
 
-The GRACE monthly dataset of equivalent water thickness has some gaps. The process <span class='package'>mendancillarytimeseries</span> fills the gaps. The default method for filling data is linear interpolation.
+The GRACE monthly dataset of equivalent water thickness has some gaps. The process <span class='package'>mendancillarytimeseries</span> fills the gaps. The default method for filling data is linear interpolation. Note that the \<srccomp\> tag in the xml below is identical to the  \<dstcomp\> tag in the xml defining the import (above). In the xml file below also the time period and the temporal resolution are explicitly defined.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -115,7 +210,7 @@ The GRACE monthly dataset of equivalent water thickness has some gaps. The proce
 
 ## Average solutions
 
-As note above, the recommendation is to use the average of the three solutions for the monthly equivalent water depth (CSR, GFZ and JPL). The process <span class='package'>average3ancillarytimeseries</span> will do this for you.
+As note above, the recommendation is to use the average of the three solutions for the monthly equivalent water depth (CSR, GFZ and JPL). The process <span class='package'>average3ancillarytimeseries</span> will do this for you. You must have imported and filled all three solutions, and then tracked the compositions.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>

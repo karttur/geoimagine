@@ -16,10 +16,11 @@ figure3: soil-moisture-avg_SPL3SMP_global_2016009_005
 movie1: soil-moisture-avg_SPL3SMP_global_2015121-2018345_005
 movie2: soil-moisture-avg_SPL3SMP_global_2015-2018@16D_005
 ---
+<script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
 
 # Introduction
 
-This post goes through the necessary steps to produce maps of global soil moisture conditions captured by the [Soil Moisture Active Passive (SMAP)](https://smap.jpl.nasa.gov) mission. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework.
+This post introduces data processing from the [Soil Moisture Active Passive (SMAP)](https://smap.jpl.nasa.gov) mission in Karttur's GeoImagine Framework. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework.
 
 <figure>
 <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure1].file }}">
@@ -28,23 +29,25 @@ This post goes through the necessary steps to produce maps of global soil moistu
 
 # SMAP
 
-The Soil Moisture Active and Passive (SMAP) mission estimates the global top 5 cm soil moisture with a weekly interval. SMAP also determines if the ground is frozen or thawed in colder areas of the world. SMAP was developed for using a combination of active and passive microwave sensors. The active sensor, however, only worked for a couple of months, and the original SMAP combined active and passive data are only available from 13 april 2015 to 7 july 2015. Both the active radar and the passive radiometer use the L-band, a  microwave frequency that is less disturbed by vegetation and has better ground penetration compared to the more commonly used C-band.
+The Soil Moisture Active and Passive (SMAP) mission estimates the global top 5 cm soil moisture with approximately a weekly interval. SMAP also determines if the ground is frozen or thawed in colder areas of the world. SMAP was developed for using a combination of active and passive microwave sensors. The active sensor, however, only worked for a couple of months, and the original SMAP combined active and passive data are only available from 13 april to 7 july 2015. Both the active radar and the passive radiometer use the L-band, a  microwave frequency that is less disturbed by vegetation and has better ground penetration compared to the more commonly used C-band.
 
-The SMAP passive radiometer original spatial resolution is 36 km, and has been operational since March 2015. Recent algorithmic development has allowed a 9 km enhanced product. Combined with the Sentinel-I active microwave sensor (C-band) a new enhanced active-passive product has also become available at 3 km spatial resolution.
+The SMAP passive radiometer original spatial resolution is 36 km, and has been operational since March 2015. Recent algorithmic development has allowed a 9 km enhanced product. Combined with the Sentinel-I active microwave sensor (C-band) a new enhanced active-passive product at 3 km spatial resolution is also under development.
 
 This post summarises how the SMAP processing is done using Karttur´s GeoImagine Framework. In this post I have used [SMAP L3 Radiometer Global Daily 36 km EASE-Grid Soil Moisture, Version 5](https://nsidc.org/data/spl3smp) to illustrate the SMAP processing.
 
 ## Python Package
 
-The GeoImagine Framework includes a package for specific SMAP processing: [geoimagine-smap](https://github.com/karttur/geoimagine-smap/). However, also several other packages in the Framework are needed for repeating the steps below.
+The GeoImagine Framework includes a package for specific SMAP processing: <span class='package'>[geoimagine-smap](https://github.com/karttur/geoimagine-smap/)</span>. The pacakge contains three python modules: <span class='file'>smap.py</span>, span class='file'>definetemplate.py</span> and <span class='file'>hdf5_2_geotiff.py</span>.
 
-The package includes a stand alone module <span class='module'>???</span> that can be used for adding records to the SMAP database table on templates. The templates table is required when extracting and organizing SMAP data. The templates define both which layers to extract, how to name them and where to save them.
+The module <span class='file'>definetemplate.py</span> is used for adding records to the SMAP database table on templates. The templates table is required when extracting and organizing SMAP data. The templates define both which layers to extract, how to name them and where to save them. You can accept the default templates that are installed with the GeoImagine Framework database, or you can redefine the database using the <span class='file'>definetemplate.py</span> module.
 
-You can accept the default templates that are installed with the GeoImagine Framework database, or you can redefine the database using the <span class='module'>???</span> module.
+SMAP data is projected to an EASE-grid (see below) and the translation of the original hdf data to geotiff requires a special solution; available in the module <span class='file'>hdf5_2_geotiff.py</span>.
+
+The module <span class='file'>smap.py</span> contans all other SMAP specific processing.
 
 ## Data access and download
 
-The SMAP data is available via [Alaska Satellite Facility](https://www.asf.alaska.edu/smap/) (ASF) and [National Snow and Ice Data Center](https://nsidc.org/data/smap) (NSIDC). The higher level products that are used in this post are only available from NSIDC. To get access to the data hosted by NSIDC you must sign up with [https://earthdata.nasa.gov](https://earthdata.nasa.gov).
+The SMAP data is available via [Alaska Satellite Facility](https://www.asf.alaska.edu/smap/) (ASF) and [National Snow and Ice Data Center](https://nsidc.org/data/smap) (NSIDC). The higher level products (used in this post) are only available from NSIDC. To get access to the data hosted by NSIDC you must sign up with [https://earthdata.nasa.gov](https://earthdata.nasa.gov).
 
 ## Searching the SMAP online repository
 
@@ -53,6 +56,13 @@ The way Karttur´s GeoImagine Framework is organized, you first have to search t
 ### Search
 
 I have tried to find some library or database that lists the data available in the online repositories, but have failed to find any. Instead I created a solution where I use <span class ='terminalapp'>wget</span> ("web get") for downloading an html coded list of available data. The Framework process for searching the online repository for SMAP data using <span class ='terminalapp'>wget</span> is <span class='package'>SearchSmapProducts</span>.
+
+<button id= "toggleSearchSmap" onclick="hiddencode('SearchSmap')">Hide/Show smap-daac-download.xml</button>
+
+<div id="SearchSmap" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -65,15 +75,25 @@ I have tried to find some library or database that lists the data available in t
 	</process>
 </searchsmap>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 Before running the process <span class='package'>SearchSmapProducts</span> you must have the credentials for accessing [https://earthdata.nasa.gov](https://earthdata.nasa.gov) in a <span class='file'>.netrc</span> file, with the username corresponding to the one given in the xml file ('YourEarthDataUser').
 
-The process <span class='package'>SearchSmapProducts</span> will drill into [https://earthdata.nasa.gov](https://earthdata.nasa.gov) and load all the available data as html coded files. By default the process save one html file per date (online sub-folder) under the path <span class='file'>../smap/source/yyyy.mm.dd/</span> on the volume identified in the xml file. The files are ordinary html files, but with the <span class='file'>.html</span> extension omitted.
+The process <span class='package'>SearchSmapProducts</span> drills into [https://earthdata.nasa.gov](https://earthdata.nasa.gov) and loads the available files as html code. By default the process save one html file per date (online sub-folder) under the path <span class='file'>../smap/source/yyyy.mm.dd/</span> (where yyyy.mm.dd/ is the date of acquisition) on the volume identified in the xml file. The files are ordinary html files, but with the <span class='file'>.html</span> extension omitted.
 
 ## Transfer search to database
 
 To transfer the search results to the GeoImagine Framework database you must run the process <span class='package'>SmapSearchToDB</span>. This process reads the html files, extracts the required information and inserts the information in the database. When finished it moves the html file to a sub-folder called <span class='file'>done</span>. If, for some reason, you delete your database all you need to do is to take all the html files under the <span class='file'>done</span> sub-folder and move them one level up and then re-run <span class='package'>SmapSearchToDB</span>.
 
+<button id= "toggleSearchToDB" onclick="hiddencode('SearchToDB')">Hide/Show SmapSearchToDB.xml</button>
+
+<div id="SearchToDB" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <searchtodb>
@@ -86,6 +106,10 @@ To transfer the search results to the GeoImagine Framework database you must run
 	</process>		
 </searchtodb>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 ## Downloading SMAP data
 
@@ -95,6 +119,12 @@ I have tried to figure out how to extract individual layers from the SMAP online
 
 When downloading the SMAP HDF5 files you can either download the files on the fly, or write the download commands to a shell script file. The latter is the default. To change it you need to set the parameter _asscript_ to False.
 
+<button id= "toggleDownload" onclick="hiddencode('Download')">Hide/Show Download.xml</button>
+
+<div id="Download" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <downloadsmap>
@@ -107,6 +137,10 @@ When downloading the SMAP HDF5 files you can either download the files on the fl
 	</process>
 </downloadsmap>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 If you did not add the parameter _asscript_, including setting it to False, the process produces a script file that you must run manually. You can also copy the script to another machine (with better internet connection) and run the script from there. The machine you run from must have a <span class='file'>.netrc</span> file with your EarthData credentials. And the volume indicated in the xml must either exists on the machine from which you download, or you need to edit the script to reflect a volume that is available on the machine from which you download. To run the shell script you must first make it executable, and then execute it:
 
@@ -120,7 +154,7 @@ The layers included in each HDF5 file, as well as metadata, can be accessed usin
 
 <span class='terminal'>gdalinfo path/to/smap/hdf5file.H5</span>
 
-In Karttur's GeoImagine Framework the layers to extract have to be defined in the database, in the table "templates" under the "smap" schema. The template table also define the celltype, cellnull, projection and folder where to store the extracted layer. How to define which layers to extract is the topic of [another post](../blog-SMAP-template/).
+In Karttur's GeoImagine Framework the layers to extract have to be defined in the database, in the table _templates_ under the _smap_ schema. The template table also define the celltype, cellnull, projection and folder where to store the extracted layer. How to define which layers to extract is the topic of [another post](../blog-SMAP-template/).
 
 ### The EASE-Grid projection
 
@@ -140,8 +174,14 @@ It is best to use the EPSG code when working with the SMAP data. The EASE-Grid 2
 
 If you look in the module <span class='module'>hdf5_2_geotff.py</span>, you can alter between defining the projection using proj4 and the EPSG code.
 
-The process <span class='package'>extractSmapHdf</span> extracts the layers you want from the HDF5 files.
+The process <span class='package'>extractSmapHdf</span> extracts the layers defined in the database from the HDF5 files.
 
+<button id= "toggleExtract" onclick="hiddencode('Extract')">Hide/Show Extract.xml</button>
+
+<div id="Extract" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <searchdatapool>
@@ -153,13 +193,23 @@ The process <span class='package'>extractSmapHdf</span> extracts the layers you 
 	</process>
 </searchdatapool>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 The process identifies missing HDF5 files on the fly, and create a shell script file that, if executed, will download the missing files. Thus you have to give your remote user for EarthData. If you do not have any user for EarthData and will not use the script, you can enter any name.
 
 ## Overlay am and pm to daily average
 
-The dowloaded daily data for most SMAP L3 products are separated into morning (am) and evening (pm) observed soil moisture. To create a daily average (minimum or maximium) composites use the Framework process <span class='package'>conditionaloverlay</span>. The <span class='package'>conditionaloverlay</span> ignores "null" when overlaying data, and for creating the daily average that is what yout want.
+The dowloaded daily data for most SMAP L3 products are separated into morning (am) and evening (pm) observed soil moisture. To create a daily average (minimum or maximium) composites use the Framework process <span class='package'>conditionaloverlay</span>. The <span class='package'>conditionaloverlay</span> ignores "null" when overlaying data, and for creating the daily average that is what you want.
 
+<button id= "toggleOverlayAmPm" onclick="hiddencode('OverlayAmPm')">Hide/Show OverlayAmPm.xml</button>
+
+<div id="OverlayAmPm" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <resampletssmap>
@@ -183,6 +233,10 @@ The dowloaded daily data for most SMAP L3 products are separated into morning (a
 	</process>
 </resampletssmap>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 <figure class="third">
 
@@ -197,14 +251,22 @@ The dowloaded daily data for most SMAP L3 products are separated into morning (a
 
 ## Temporal resampling
 
-For some of the analysis and modeling that I do, the daily timestep is the best solution. But for comparing with e.g. climate data, vegetation growth, or other satellite images like MODIS, I prefer to aggregate (resample) the SMAP data. A lot of the processing I do either rely on weekly to biweekly, or monthly timesteps. MODIS products typically represent 8 or 16 day intervals, the old crop-climate data from AVHRR images usually come as three (3) monthly periods, and a lot of climate data is available using monthly aggregated data.
+For some of the analysis and modeling the daily timestep is the best solution. But for comparison with e.g. climate data, vegetation growth, or other satellite images like MODIS, I prefer to aggregate (resample) the SMAP data. A lot of the processing I do either rely on weekly to biweekly, or monthly timesteps. MODIS products typically represent 8 or 16 day intervals, the old crop-climate data from AVHRR images usually come as three (3) monthly periods, and a lot of climate data is available using monthly aggregated data.
 
-All this can be done using Karttur's GeoImagine Framework. The temporal frequenies defined in Karttur's GeoImagine Framework rely on the <span class='package'>Pandas</span> package. <span class='package'>Pandas</span> is widely used for handling time series data in Python, and is part of Anaconda (the python distribution used by Karttur´s GeoImagine Framework). It can be a bit slow to use for resampling, and for some of the resampling the GeoImagine Framework instead use numba JIT (Just In Time) compiled scripts. But the frequency definitions and conversions rely on <span class='package'>Pandas</span>.
+The temporal aggregation can be done using Karttur's GeoImagine Framework. The temporal frequencies defined in Karttur's GeoImagine Framework rely on the [<span class='package'>Pandas</span> package](https://pandas.pydata.org). <span class='package'>Pandas</span> is widely used for handling time series data in Python, and is part of Anaconda (the python distribution used by Karttur´s GeoImagine Framework). It can be a bit slow to use for resampling, and for some of the resampling the GeoImagine Framework instead use numba JIT (Just In Time) compiled scripts. But the frequency definitions and conversions rely on <span class='package'>Pandas</span>.
+
+The Framework process for temporal aggregation (resampling) of SMAP data is <span class='package'><resampletssmap/span>.
 
 ### Resampling to 8 or 16 day intervals
 
-The process <span class='package'>resampletssmap</span> can be used for any temporal resampling of SMAP data. To resample to 16 day intervals (same temporal resolution as several MODIS products) set the _period_ tag attribute timestep = "16D". The start date given in the period tag will determine the start and end date of each 16D period. You can create a gliding mean of the 16D interval by repeating the process 16 times, each with a 1 day difference of the starting date.
+To resample SMAP from daily to 16 day intervals (same temporal resolution as several MODIS products) set the parameter _targettimestep_ to _16D_. The start date given in the period tag will determine the start and end date of each 16D period. You can create a gliding mean of the 16D interval by repeating the process 16 times, each time with a 1 day difference of the starting date. The setting below will cause the 16D interval to coincide with The MODIS 16D standard intervals with the first date of observation at 1st of January.
 
+<button id= "toggleResampling" onclick="hiddencode('Resampling')">Hide/Show Resampling.xml</button>
+
+<div id="Resampling" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <resampletssmap>
@@ -222,6 +284,10 @@ The process <span class='package'>resampletssmap</span> can be used for any temp
 	</process>
 </resampletssmap>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 <figure>
 <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure3].file }}">
@@ -230,8 +296,14 @@ The process <span class='package'>resampletssmap</span> can be used for any temp
 
 ## Seasonal signal extraction
 
-The process <span class='package'>extractseasonsmap</span> extracts the seasonal mulityear signal. The extraction can be set to force interpolaiton of all seasons lacking data. For the soil moisture data all frozen soils lack estimates of soil moisture, and the soil moisture conditions under frozen soil were force-filled by interpolation for all pixels. This is an oversimplification, but the animation, following further down, becomes more pleasing and easy to follow.
+The process <span class='package'>extractseasonsmap</span> extracts the seasonal multiyear signal. The extraction can be set to force interpolaiton of all seasons lacking data. For the SMAP soil moisture data all frozen soils lack estimates of soil moisture, and the soil moisture conditions under frozen soil are force-filled by interpolation for all pixels. This is an oversimplification, but the animation, following further down, becomes more pleasing and easy to follow.
 
+<button id= "toggleSeasonalSignal" onclick="hiddencode('SeasonalSignal')">Hide/Show SeasonalSignal.xml</button>
+
+<div id="SeasonalSignal" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <runprocess>
@@ -249,6 +321,10 @@ The process <span class='package'>extractseasonsmap</span> extracts the seasonal
 	</process>
 </runprocess>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 ## SMAP layout
 
@@ -263,6 +339,12 @@ The layout processing required for exporting the SMAP data to nicely looking map
 
 To set up a palette, use the process <span class='package'>addrasterpalette</span>. In the example below three different SMAP related palettes are defined: for soil moisture (vol/vol), for change in soil moisture and for variations in soil moisture
 
+<button id= "togglePalette" onclick="hiddencode('Palette')">Hide/Show Palette.xml</button>
+
+<div id="Palette" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <palette>
@@ -318,11 +400,21 @@ To set up a palette, use the process <span class='package'>addrasterpalette</spa
 	</process>
 </palette>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 ## SMAP Legends
 
 To set up legends, use the process <span class='package'>createlegend</span>.
 
+<button id= "toggleLegend" onclick="hiddencode('Legend')">Hide/Show Legend.xml</button>
+
+<div id="Legend" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <palette>
@@ -354,11 +446,21 @@ To set up legends, use the process <span class='package'>createlegend</span>.
 	</process>
 </palette>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 ## SMAP Scaling
 
 To set up scalings, use the process <span class='package'>createscaling</span>.
 
+<button id= "toggleScaling" onclick="hiddencode('Scaling')">Hide/Show Scaling.xml</button>
+
+<div id="Scaling" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <scaling>
@@ -391,6 +493,10 @@ To set up scalings, use the process <span class='package'>createscaling</span>.
 	</process>
 </scaling>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 ## Karttur´s movieclock
 
@@ -407,6 +513,12 @@ An animation requires a pre-defined movieclock (but usually the "default" moviec
 
 A movieclock object defines the colors, types and sizes of the elements building the clock and timeline in the animation.  Basically you do not need to define any of the elements, they are all defaulted. But if you want other widhts, margins, colors etc, all can be set using the process <span class='package'>addmovieclock</span>
 
+<button id= "toggleAddMovieClock" onclick="hiddencode('AddMovieClock')">Hide/Show AddMovieClock.xml</button>
+
+<div id="AddMovieClock" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <palette>
@@ -421,11 +533,21 @@ A movieclock object defines the colors, types and sizes of the elements building
 	</process>
 </palette>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 ## Export SMAP
 
 Once you have creates the palettes, legends and scalings for SMAP, you can export the data as color images (maps). The scaling can not be set in the <span class='package'>exporttobytesmap</span> process. It must be given in the database and related to the data to be exported using the theme (folder) and name (band) of the layer. The palette to use must be set as a parameter.
 
+<button id= "toggleExport" onclick="hiddencode('Export')">Hide/Show Export.xml</button>
+
+<div id="Export" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <runprocess>
@@ -445,11 +567,22 @@ Once you have creates the palettes, legends and scalings for SMAP, you can expor
 	</process>
 </runprocess>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 ## Movie frames
 
 To create movie frames, you must first have exported the images, and then you can run the process <span class='package'>movieframesmap</span>.
 
+
+<button id= "toggleMovieFrame" onclick="hiddencode('MovieFrame')">Hide/Show MovieFrame.xml</button>
+
+<div id="MovieFrame" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <runprocess>
@@ -470,6 +603,10 @@ To create movie frames, you must first have exported the images, and then you ca
 	</process>
 </runprocess>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 As default the script produces a shell script file that you must execute manually to produce the movie frames. The advantage with the script file is that you can edit the area of the map to appear in the movie as well as the embossed watermark text. The link to the script file is reported by the process.
 
@@ -477,6 +614,12 @@ As default the script produces a shell script file that you must execute manuall
 
 The final step before producing the time series animation is to create the movie-clock that fits with your movie frames. You need to set the dimensions of the movie clock manually as parameters in the process <span class='package'>movieclocksmap</span>.
 
+<button id= "toggleMovieClock" onclick="hiddencode('MovieClock')">Hide/Show MovieClock.xml</button>
+
+<div id="MovieClock" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <runprocess>
@@ -495,11 +638,21 @@ The final step before producing the time series animation is to create the movie
 	</process>
 </runprocess>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 The process <span class='package'>movieclocksmap</span> use a combination of python image processing and <span class='terminalapp'>ImageMagick</span> commands.
 
 The process also produces two shell script files. The first (in the subfolder <span class='file'>frames</span>) overlays the movieclock and the image frames, and the second (in the subfolder <span class='file'>movie</span>) produces the movie using <span class='terminalapp'>ffmpeg</span>.
 
+<button id= "toggleMovieClock_B" onclick="hiddencode('MovieClock_B')">Hide/Show MovieClock.xml</button>
+
+<div id="MovieClock_B" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 ```
 <?xml version='1.0' encoding='utf-8'?>
 <runprocess>
@@ -519,6 +672,10 @@ The process also produces two shell script files. The first (in the subfolder <s
 
 </runprocess>
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 <figure>
 <iframe src="{{ site.commonurl }}/movies/{{ site.data.movies[page.movie1].file }}" width="{{ site.data.movies[page.movie1].width }}" height="{{ site.data.movies[page.movie1].height }}" frameborder="0">
