@@ -19,7 +19,9 @@ fig1b: pacf_climate_nao-soi-pdo
 
 # Introduction
 
-In this post you will plot the autocorrelation for climate index data. Karttur's GeoImagine Framework uses the python package <span class = 'package'>statsmodel</span> for estimation of both the nomral (or full) autocorrelation function (acf) and the partial acf (pacf). The <span class = 'package'>statsmodel</span> acf and pacf functions can be used for estimating the autocorrelation for any time series data, both for plotting and for producing layers with per pixel estimation of the autocorrleation.
+Autocorrelation, or serial correlation, is the correlation of a signal and delayed copies of itself (i.e. with 1,2 or 3 days/weeks/months delay). The Autocorrelation with no delay is always 1.0 (perfect), and for time series with annual seasonality (like climate) the correlation with a delay representing the number of annual seasons (i.e. 12 if monthly data) is usually strong. The autocorrelation is useful for e.g. filling missing data, forecasting or for creating unbiased datasets.
+
+In this post you will plot the autocorrelation for climate index data. Karttur's GeoImagine Framework uses the python package <span class = 'package'>statsmodel</span> for estimation of both the normal (or full) autocorrelation function (acf) and the partial acf (pacf). The <span class = 'package'>statsmodel</span> acf and pacf functions can be used for estimating the autocorrelation for any time series data, both for plotting and for producing layers with per pixel estimation of the autocorrelation.
 
 # Prerequisites
 
@@ -31,7 +33,7 @@ The plotting functions of Karttur's GeoImagine Framework make use of [matplotlib
 
 The process for plotting the autocorrelation of climate indexes (and other database recorded) time series in Karttur's GeoImagine Framework is [<span class='package'>autocorrdbtsclimate</span>](../../subprocess/subproc-autocorrdbtsclimate/).
 
-## XML commands
+## Process commands
 
 By default the  [<span class='package'>autocorrdbtsclimate</span>](../../subprocess/subproc-autocorrdbtsclimate/) process performs a full autocorrelation (acf). To do a partial acf (pacf) the parameter _partial_ must be set to _True_.
 
@@ -66,7 +68,7 @@ The xml commands above generate a plot with the three climate indexes, as shown 
 	<figcaption>Autocorrelation of climate indexes; the left plot shows a full autocorrelation and the right a partial autocorrelation.</figcaption>
 </figure>
 
-# resources
+# Resources
 
 [Pyplot turtorial](https://matplotlib.org/users/pyplot_tutorial.html)
 

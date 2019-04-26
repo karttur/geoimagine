@@ -36,9 +36,9 @@ The plotting functions of Karttur's GeoImagine Framework make use of [matplotlib
 
 The process for plotting climate indexes (and other database recorded) time series in Karttur's GeoImagine Framework is [<span class='package'>plotdbtsancillary</span>](../../subprocess/subproc-plotdbtsancillary/).
 
-## XML commands
+## Process commands
 
-As stated above, all time series plotting can be done by using the <span class='package'>Pandas</span> package built in plot command. You simply do that by setting the parameter _pdplot_ to _True_.
+All time series plotting can be done by using the <span class='package'>Pandas</span> package built in plot command. You simply do that by setting the parameter _pdplot_ to _True_.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -104,7 +104,7 @@ You can also do a time series decomposition on the fly, and display the smoothed
 </plotdbtsclimate>
 ```
 
-By default time series decomposition uses a spline functions for smoothing and removing the seasonal signal, as described in [another](../glob-seasonal/) post. The default size of the smoothing filter (kernel) equals then number of annual observations (i.e. 12 for monthly data), but can be set to any multiple of that number (with the parameter _yearfac_). Alternatively the smoothing can be done with a filter kernel (by setting the boolean parameter _naive_ to _True_), commonly referred to as naive decomposition.
+By default time series decomposition uses a spline functions for smoothing and removing the seasonal signal, as described in [another](../blog-seasonal/) post. The default size of the smoothing filter (kernel) equals the number of annual observations (i.e. 12 for monthly data), but can be set to any multiple of that number (with the parameter _yearfac_). Alternatively the smoothing can be done with a filter kernel (by setting the boolean parameter _naive_ to _True_), commonly referred to as naive decomposition.
 
 The figure below shows 4 single plots, all showing the smoothed time series (tendency). The top row shows the spline smoothed tendencies and the bottom row the naive tendencies. The left plots have been smoothed with a kernel representing a single (1) annual cycle, whereas the right plots have been smoothed using a kernel spanning 2 years. Note that the y-axis range differs between the plots.
 
@@ -121,7 +121,7 @@ The figure below shows 4 single plots, all showing the smoothed time series (ten
 	<figcaption>Plots showing time series of climate indexes, The different plots illustrate different smoorthing functions (see text). </figcaption>
 </figure>
 
-The last example shows how to plot the observations, the smoothed time series, and the estimated trends as separate subplots in a single plot.
+The last example shows how to plot multiple indexes as subplots in the same plot window.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -149,7 +149,29 @@ The last example shows how to plot the observations, the smoothed time series, a
 <figcaption> {{ site.data.images[page.fig4].caption }} </figcaption>
 </figure>
 
-# resources
+## Project file
+
+The project file is the same as used for [importing climate indexes](../blog-climateindex), but with one (1) additional link to the xml file defining the plots shown above (projFN = '/doc/ClimateIndexes/xml/climateIndexes-0800_plot.xml'):
+
+```
+from geoimagine.kartturmain.readXMLprocesses import ReadXMLProcesses, RunProcesses
+
+if __name__ == "__main__":
+
+    verbose = True
+
+    #projFN = '/doc/ClimateIndexes/xml/climateIndex-0100_import-NOAA.xml'
+    #projFN = '/doc/ClimateIndexes/xml/climateIndex-0100_import-co2records.xml'
+    projFN = '/doc/ClimateIndexes/xml/climateIndexes-0800_plot.xml'
+
+    procLL = ReadXMLProcesses(projFN,verbose)
+
+    RunProcesses(procLL,verbose)
+```
+
+The linked xml contains the plot processes shown above, plus some more alternatives.
+
+# Resources
 
 [Pyplot turtorial](https://matplotlib.org/users/pyplot_tutorial.html)
 

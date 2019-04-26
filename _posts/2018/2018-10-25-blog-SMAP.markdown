@@ -1,9 +1,25 @@
 ---
 layout: post
-title: Processing of SMAP data
+title: SMAP
 modified: '2018-10-25 T18:17:25.000Z'
 categories: blog
-excerpt: "Processing SMAP data using Karttur's GeoImagine Framework"
+excerpt: "Soil Moisture Active Passive (SMAP) mission processing using Karttur's GeoImagine Framework"
+tags:
+  - SMAP
+  - searchsmapproducts
+  - smapsearchtodb
+  - downloadsmapdaac
+  - extractsmaphdf
+  - conditionalsmapoverlay
+  - resampletssmap
+  - extractseasonsmap
+  - seasonfilltssmap
+  - createscaling
+  - addrasterpalette
+  - addmovieclock
+  - exporttobytesmap
+  - movieclocksmap
+  - movieframesmap
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-25 T18:17:25.000Z'
 comments: true
@@ -15,228 +31,472 @@ figure2C: soil-moisture-pm_SPL3SMP_global_20160122_005
 figure3: soil-moisture-avg_SPL3SMP_global_2016009_005
 movie1: soil-moisture-avg_SPL3SMP_global_2015121-2018345_005
 movie2: soil-moisture-avg_SPL3SMP_global_2015-2018@16D_005
+
+SMAP-0001_createscaling: SMAP-0001_createscaling
+SMAP-0002_createpalettes: SMAP-0002_createpalettes
+SMAP-0003_createlegends: SMAP-0003_createlegends
+SMAP-0004_createmovieclock: SMAP-0004_createmovieclock
+SMAP-0005_add-movieclock: SMAP-0005_add-movieclock
+SMAP-0100_search-daac_20150331-20150807: SMAP-0100_search-daac_20150331-20150807
+SMAP-0100_search-daac_20150331-20181231: SMAP-0100_search-daac_20150331-20181231
+SMAP-0100_search-daac_20150413-20150807: SMAP-0100_search-daac_20150413-20150807
+SMAP-0100_search-daac_2019-present: SMAP-0100_search-daac_2019-present
+SMAP-0110_search-todb_20150331-20181231: SMAP-0110_search-todb_20150331-20181231
+SMAP-0110_search-todb_20150413-20150807: SMAP-0110_search-todb_20150413-20150807
+SMAP-0110_search-todb_2019-present: SMAP-0110_search-todb_2019-present
+SMAP-0120_download_20150331-20181231: SMAP-0120_download_20150331-20181231
+SMAP-0120_download_20150413-20150807: SMAP-0120_download_20150413-20150807
+SMAP-0120_download_2019-present: SMAP-0120_download_2019-present
+SMAP-0130_extract_20150331-20181231: SMAP-0130_extract_20150331-20181231
+SMAP-0130_extract_20150413-20150807: SMAP-0130_extract_20150413-20150807
+SMAP-0130_extract_20181010-present: SMAP-0130_extract_20181010-present
+SMAP-0130_extract_2019-present: SMAP-0130_extract_2019-present
+SMAP-0145_check: SMAP-0145_check
+SMAP-0240_overlaydaily_20150331-20181231: SMAP-0240_overlaydaily_20150331-20181231
+SMAP-0240_overlaydaily_20190101-present: SMAP-0240_overlaydaily_20190101-present
+SMAP-0310_tsresample-16D_2015: SMAP-0310_tsresample-16D_2015
+SMAP-0310_tsresample-16D_2016: SMAP-0310_tsresample-16D_2016
+SMAP-0310_tsresample-16D_2017: SMAP-0310_tsresample-16D_2017
+SMAP-0310_tsresample-16D_2018: SMAP-0310_tsresample-16D_2018
+SMAP-0310_tsresample-16D_2019: SMAP-0310_tsresample-16D_2019
+SMAP-0310_tsresample-M_2015: SMAP-0310_tsresample-M_2015
+SMAP-0310_tsresample-M_201512: SMAP-0310_tsresample-M_201512
+SMAP-0310_tsresample-M_2016: SMAP-0310_tsresample-M_2016
+SMAP-0310_tsresample-M_2017: SMAP-0310_tsresample-M_2017
+SMAP-0310_tsresample-M_2018: SMAP-0310_tsresample-M_2018
+SMAP-0310_tsresample-M_2019: SMAP-0310_tsresample-M_2019
+SMAP-0320_extract-season_16D: SMAP-0320_extract-season_16D
+SMAP-0320_extract-season_M: SMAP-0320_extract-season_M
+SMAP-0900_ExporttoByte_16D: SMAP-0900_ExporttoByte_16D
+SMAP-0905_ExporttoByte_16D-seasons: SMAP-0905_ExporttoByte_16D-seasons
+SMAP-0950_movieframes_16D-seasons: SMAP-0950_movieframes_16D-seasons
+SMAP-0950_movieframes_16D: SMAP-0950_movieframes_16D
+SMAP-0960_movieclock_16D-seasons: SMAP-0960_movieclock_16D-seasons
+SMAP-0960_movieclock_16D: SMAP-0960_movieclock_16D
+SMAP-0330_interpolseasn_16D_2015-2019: SMAP-0330_interpolseasn_16D_2015-2019
 ---
 <script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
 
 # Introduction
 
-This post introduces data processing from the [Soil Moisture Active Passive (SMAP)](https://smap.jpl.nasa.gov) mission in Karttur's GeoImagine Framework. To actually repeat the steps you must have installed Karttur´s GeoImagine Framework.
+This post introduces processing of data from the [Soil Moisture Active Passive (SMAP)](https://smap.jpl.nasa.gov) mission in Karttur's GeoImagine Framework. The two following posts deals with [capturing SMAP products to the Framework database](../blog-SMAP-template/) and how to [use SQL to alter the layers to extract from each SMAP products](../blog-SMAP-sql/). Then follows a post on how to [adjust the SMAP estimates for open water bodies](../blog-SMAP-adjust/).
 
 <figure>
 <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure1].file }}">
 <figcaption> {{ site.data.images[page.figure1].caption }} </figcaption>
 </figure>
 
+## Prerequisites
+
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). The Framework [postgres database must be setup](../blog-setup-db/) and the [processes defined](../blog-setup-processes/).
+
+If you want to use the Framework for searching and registering avaiable SMAP data you must have the terminal command line tool <span class='terminalapp'>wget</span> ("web get") installed. Mac osx does not come with <span class='terminalapp'>wget</span>, you have to install it. I use <span class='app'>Homebrew</span> for that:
+
+<span class='terminal'>brew install wget</span>
+
+How to set up <span class='app'>Homebrew</span> is covered in [this](https://karttur.github.io/setup-theme-blog/blog/install-imagemagick/) post.
+
 # SMAP
 
-The Soil Moisture Active and Passive (SMAP) mission estimates the global top 5 cm soil moisture with approximately a weekly interval. SMAP also determines if the ground is frozen or thawed in colder areas of the world. SMAP was developed for using a combination of active and passive microwave sensors. The active sensor, however, only worked for a couple of months, and the original SMAP combined active and passive data are only available from 13 april to 7 july 2015. Both the active radar and the passive radiometer use the L-band, a  microwave frequency that is less disturbed by vegetation and has better ground penetration compared to the more commonly used C-band.
+The Soil Moisture Active and Passive (SMAP) mission estimates the global top &sim;5 cm soil moisture with approximately weekly global coverage. SMAP also determines if the ground is frozen or thawed in colder areas of the world. SMAP was developed for using a combination of active and passive microwave sensors. The active sensor, however, only worked for a couple of months, and the original SMAP combined active and passive data are only available from 13 april to 7 july 2015. Both the active radar and the passive radiometer use the L-band, a  microwave frequency that is less disturbed by vegetation and has better ground penetration compared to the more commonly used C-band.
 
 The SMAP passive radiometer original spatial resolution is 36 km, and has been operational since March 2015. Recent algorithmic development has allowed a 9 km enhanced product. Combined with the Sentinel-I active microwave sensor (C-band) a new enhanced active-passive product at 3 km spatial resolution is also under development.
 
-This post summarises how the SMAP processing is done using Karttur´s GeoImagine Framework. In this post I have used [SMAP L3 Radiometer Global Daily 36 km EASE-Grid Soil Moisture, Version 5](https://nsidc.org/data/spl3smp) to illustrate the SMAP processing.
-
 ## Python Package
 
-The GeoImagine Framework includes a package for specific SMAP processing: <span class='package'>[geoimagine-smap](https://github.com/karttur/geoimagine-smap/)</span>. The pacakge contains three python modules: <span class='file'>smap.py</span>, span class='file'>definetemplate.py</span> and <span class='file'>hdf5_2_geotiff.py</span>.
+The Framework includes a package for specific SMAP processing: <span class='package'>[geoimagine-smap](https://github.com/karttur/geoimagine-smap/)</span>. The package contains three python modules: <span class='file'>smap.py</span>, <span class='file'>definetemplate.py</span> and <span class='file'>hdf5_2_geotiff.py</span>.
 
-The module <span class='file'>definetemplate.py</span> is used for adding records to the SMAP database table on templates. The templates table is required when extracting and organizing SMAP data. The templates define both which layers to extract, how to name them and where to save them. You can accept the default templates that are installed with the GeoImagine Framework database, or you can redefine the database using the <span class='file'>definetemplate.py</span> module.
+The module <span class='file'>definetemplate.py</span> is used for [adding records to the SMAP database table on templates](../blog-SMAP-template/). The templates table is required when extracting and organizing SMAP data. The templates define both which layers to extract, how to name them and where to save them. You can accept the default templates that are installed with the GeoImagine Framework database, or you can redefine the database using the <span class='file'>definetemplate.py</span> module. You can also check the template definitions, and alter them, by using a graphical interface to the Framework database as described in [this](../blog-SMAP-sql) post.
 
-SMAP data is projected to an EASE-grid (see below) and the translation of the original hdf data to geotiff requires a special solution; available in the module <span class='file'>hdf5_2_geotiff.py</span>.
+SMAP data is projected to an EASE-grid (see below) and the translation of the original hdf data to geotiff requires a special solution available in the module <span class='file'>hdf5_2_geotiff.py</span>.
 
-The module <span class='file'>smap.py</span> contans all other SMAP specific processing.
+The module <span class='file'>smap.py</span> contains all other SMAP specific processing.  Note that also several other packages in the Framework are needed for repeating the steps below.
 
-## Data access and download
+## Project module
+
+The project module file (<span class='file'>projSMAP.py</span>) is available in the <span class='package'>Project</span> package [projects](https://github.com/karttur/geoimagine-projects/).
+
+<button id= "toggleprojfile" onclick="hiddencode('projfile')">Hide/Show projSMAP.py</button>
+
+<div id="projfile" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+from geoimagine.kartturmain.readXMLprocesses import ReadXMLProcesses, RunProcesses
+
+if __name__ == "__main__":
+
+    verbose = True
+
+    #projFN ='/full/path/to/smap_YYYYMMDD.txt'
+    projFN ='doc/SMAP/smap_YYYYMMDD.txt'
+
+    procLL = ReadXMLProcesses(projFN,verbose)
+
+    RunProcesses(procLL,verbose)
+```
+
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+## Process chain
+
+The project file links to an ASCII text file that contains a list of the xml files to execute.
+
+```
+projFN ='doc/SMAP/smap_YYYYMMDD.txt'
+```
+
+As the path to the project file does **not** start with a slash "/", the path is relative to the project module itself. The [project package available on Karttur's GitHub page](../../../geoimagine-projects) contains the path and the files required for running the process chain. Both the text file and the xml files are available under the subfolder [<span class='file'>doc/SMAP</span>](../../../geoimagine-projects/doc/SMAP).
+
+<button id= "toggleprojfile" onclick="hiddencode('processchain')">Hide/Show SMAP process chain</button>
+
+<div id="processchain" style="display:none">
+{% capture text-capture %}
+{% raw %}
+
+```
+###################################
+###################################
+###             SMAP            ###
+###################################
+###################################
+
+###################################
+###             Layout          ###
+###################################
+
+## Create scaling for smap compids ##
+#SMAP-0001_createscaling.xml
+
+## Create palettes for smap ##
+#SMAP-0002_createpalettes.xml
+
+## Create legend for smap ##
+#SMAP-0003_createlegends.xml
+
+## Create movie clock for smap##
+#SMAP-0004_createmovieclock.xml
+
+###################################
+###          Update db          ###
+###################################
+
+## If you have access to SMAP data created by karttur's Geoimagine Framework ##
+## you can access the data from your Framework installation by updating the db ##
+## You can also use updatedb to clean your database and/or delete files from your Framework organized storage ##
+
+#Update db - updates the db for all daily (D) smap data
+#smap-udatedb_D_20150331-present.xml
+
+#Update 16D
+smap-udatedb_16D_20150423-present.xml
+
+###################################
+### Search, download & extract  ###
+###################################
+
+## Search DAAC for SMAP products ##
+
+#SMAP-0100_search-daac_20150413-20150807.xml
+#SMAP-0100_search-daac_20150331-20181231.xml
+#SMAP-0100_search-daac_2019-present.xml
+
+## Transfer search results to db ##
+#SMAP-0110_search-todb_20150413-20150807.xml
+#SMAP-0110_search-todb_20150331-20181231.xml
+#SMAP-0110_search-todb_2019-present.xml
+
+## Check the db for downloaded and extracted tiles ##
+#Should be done before any downloading
+#SMAP-0145_check.xml
+
+## Download the SMAP data from DAAC ##
+#SMAP-0120_download_20150413-20150807.xml
+#SMAP-0120_download_20150331-20181231.xml
+#SMAP-0120_download_2019-present.xml
+
+## Check the db for downloaded and extracted tiles (rerun)  ##
+#SMAP-0145_check.xml
+
+## Extract SMAP HDF files ##
+#SMAP-0130_extract_20150413-20150807.xml
+#SMAP-0130_extract_20150331-20181231.xml
+SMAP-0130_extract_2019-present.xml
+
+###################################
+###       Overlay special       ###
+###################################
+
+## Overlay to daily data ##
+#SMAP-0240_overlaydaily_20150331-20181231.xml
+#SMAP-0240_overlaydaily_20190101-present.xml
+
+###################################
+###   Time series resampling    ###
+###################################
+
+## Resample to 16 D intervals ##
+## Do one year at a time ##
+#SMAP-0310_tsresample-16D_2015.xml
+#SMAP-0310_tsresample-16D_2016.xml
+#SMAP-0310_tsresample-16D_2017.xml
+#SMAP-0310_tsresample-16D_2018.xml
+#SMAP-0310_tsresample-16D_2019.xml
+
+## Resample to monthly intervals ##
+## Do one year at a time ##
+#SMAP-0310_tsresample-M_2015.xml
+#SMAP-0310_tsresample-M_2016.xml
+#SMAP-0310_tsresample-M_2017.xml
+#SMAP-0310_tsresample-M_2018.xml
+#SMAP-0310_tsresample-M_2019.xml
+
+###################################
+###       Extract season        ###
+###################################
+
+## Extract seasonal signal ##
+#SMAP-0320_extract-season_16D.xml
+#SMAP-0320_extract-season_M.zml
+
+###################################
+###  Interpolate with seasons   ###
+###################################
+
+## Interpolate nodata supported with seasonal signal ##
+#SMAP-0330_interpolseasn_16D_2015-2019.xml
+
+###################################
+###        Export media         ###
+###################################
+
+## Export 16D SMAP ##
+#SMAP-0900_ExporttoByte_16D.xml
+
+## Export seasonal signals 16D ##
+#SMAP-0905_ExporttoByte_16D-seasons.xml
+
+###        Movie         ###
+
+## Create image frames ##
+#SMAP-0950_movieframes_16D-seasons.xml
+#SMAP-0950_movieframes_16D
+
+## Create clock frames and movie ##
+#SMAP-0960_movieclock_16D-seasons.xml
+#SMAP-0960_movieclock_16D
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+### Layout
+
+Processing to pleasing looking maps requires that different layout aspects are pre-defined, including:
+
+- scaling
+- legends
+- palettes
+- movieclock
+
+You must define scaling and palettes. You need legends if you want to add that to your map layouts. You can also define a customized layout of the clock and time line for animations, but you can also use the Framework default.
+
+#### Create scaling
+
+To export a layer to a color map the scaling must be set using the process [<span class='package'>createscaling</span>](../../subprocess/subproc-createscaling/). All exported maps are in byte format (valid numerical range between 0 and 255). Thus all compositions that are not defined as byte must be rescaled to fit between 0 and 255. The Framework default is to use 255 to denote nodata and values between 251 and 255 for layout.
+
+{% capture foo %}{{page.SMAP-0001_createscaling}}{% endcapture %}
+{% include xml/SMAP-0001_createscaling.html foo=foo %}
+
+#### Create palettes
+
+To set up a palette, use the process [<span class='package'>addrasterpalette</span>](../../subprocess/subproc-addrasterpalette/). In the example below three different SMAP related palettes are defined: for soil moisture (vol/vol), for change in soil moisture and for variations in soil moisture.
+
+{% capture foo %}{{page.SMAP-0002_createpalettes}}{% endcapture %}
+{% include xml/SMAP-0002_createpalettes.html foo=foo %}
+
+#### Create legends
+
+To export legends for use together with maps, use the process [<span class='package'>createlegend</span>](../../subprocess/subproc-createlegend/).
+
+{% capture foo %}{{page.SMAP-0003_createlegends}}{% endcapture %}
+{% include xml/SMAP-0003_createlegends.html foo=foo %}
+
+#### movieclock
+
+As part of Karttur´s GeoImagine Framework, time series images can be converted to animations with a timeline and a clock showing the year and the season. To create animations you must have installed the terminal apps <span class='terminalapp'>ImageMagick</span> (for command line image processing) and <span class='terminalapp'>ffmpeg</span> (for command line movie making). Here are the links to my blog posts on how to install and use <span class='terminalapp'>ImageMagick</span> and <span class='terminalapp'>ffmpeg</span>:
+
+- [ImageMagick](https://karttur.github.io/setup-theme-blog/blog/install-imagemagick/)
+- [FFmpeg](https://karttur.github.io/setup-theme-blog/blog/ffmpeg-movie/)
+
+The post on <span class='terminalapp'>ffmpeg</span> also illustrates the use of the GeoImagine Framework movieclock.
+
+#### Defining a movieclock
+
+An animation requires a pre-defined movieclock (but usually the "default" movieclock is OK), and that the time series data is first exported and then converted to movie frames.
+
+A movieclock object defines the colors, types and sizes of the elements building the clock and timeline in the animation.  Basically you do not need to define any of the elements, they are all defaulted. But if you want other postions, widths, margins, colors etc, all can be set using the process [<span class='package'>addmovieclock</span>](../../subprocess/subproc-addmovieclock/).
+
+{% capture foo %}{{page.SMAP-0005_add-movieclock}}{% endcapture %}
+{% include xml/SMAP-0005_add-movieclock.html foo=foo %}
+
+### Update DB
+
+The process [<span class='package'>updatedb</span>](../../subprocess/subproc-updatedb/) is used for transferring database records with associated data processed with the Framework from one computer to another. Examples can be found in the online repository.
+
+### Search, download & extract
 
 The SMAP data is available via [Alaska Satellite Facility](https://www.asf.alaska.edu/smap/) (ASF) and [National Snow and Ice Data Center](https://nsidc.org/data/smap) (NSIDC). The higher level products (used in this post) are only available from NSIDC. To get access to the data hosted by NSIDC you must sign up with [https://earthdata.nasa.gov](https://earthdata.nasa.gov).
 
-## Searching the SMAP online repository
+#### Searching the SMAP online repository
 
 The way Karttur´s GeoImagine Framework is organized, you first have to search the online repository, then register the search results in the Framework postgres database. Once the data is registered you can download and extract the actual SMAP data.
 
-### Search
+#### Search
 
-I have tried to find some library or database that lists the data available in the online repositories, but have failed to find any. Instead I created a solution where I use <span class ='terminalapp'>wget</span> ("web get") for downloading an html coded list of available data. The Framework process for searching the online repository for SMAP data using <span class ='terminalapp'>wget</span> is <span class='package'>SearchSmapProducts</span>.
+I have tried to find some library or database that lists the data available in the online repositories, but have failed to find any. Instead I created a solution where I use <span class ='terminalapp'>wget</span> ("web get") for downloading an html coded list of available data. For more information on <span class ='terminalapp'>wget</span>, see the Prerequisites above. The Framework process for searching the online repository for SMAP data using <span class ='terminalapp'>wget</span> is [<span class='package'>SearchSmapProducts</span>](../../subprocess/subproc-searchsmapproducts/).
 
-<button id= "toggleSearchSmap" onclick="hiddencode('SearchSmap')">Hide/Show smap-daac-download.xml</button>
+The project xml folder (<span class='file'>doc/SMAP/xml</span>) contains a number of xml files for searching the online database.  If the end date is set to a date later than _today_, the search will stop at todays date and thus you can safely put a future date to be sure to get all the recent data.
 
-<div id="SearchSmap" style="display:none">
+Before running the process [<span class='package'>SearchSmapProducts</span>](../../subprocess/subproc-searchsmapproducts/) you must have the credentials for accessing [https://earthdata.nasa.gov](https://earthdata.nasa.gov) in a <span class='file'>.netrc</span> file, with the username corresponding to the one given in the xml file ('YourEarthDataUser'). The use of <span class='file'>.netrc</span> for accessing protected sites is introduced in [this](https://karttur.github.io/setup-ide/setup-ide/connect-with-psycopg2/) post.
 
-{% capture text-capture %}
-{% raw %}
+The process [<span class='package'>SearchSmapProducts</span>](../../subprocess/subproc-searchsmapproducts/). drills into [https://earthdata.nasa.gov](https://earthdata.nasa.gov) and loads the available files as html code. By default the process saves one html file per date (online sub-folder) under the path <span class='file'>../smap/source/yyyy.mm.dd/</span> (where yyyy.mm.dd is the date of acquisition) on the volume identified in the xml file. The files are ordinary html files, but with the <span class='file'>.html</span> extension omitted.
 
-```
-<?xml version='1.0' encoding='utf-8'?>
-<searchsmap>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '03' startday = '31' endyear = '2015' endmonth = '08' endday = '08' timestep='D'></period>
-	<process processid ='SearchSmapProducts' dsversion = '1.3'>
-		<parameters remoteuser='YourEarthDataUser' product="SPL3SMP" version="003" serverurl="https://n5eil01u.ecs.nsidc.org/" ></parameters>
-		<dstpath volume = "Karttur2tb"></dstpath>
-	</process>
-</searchsmap>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
+#### Active Passive (2015)
 
-Before running the process <span class='package'>SearchSmapProducts</span> you must have the credentials for accessing [https://earthdata.nasa.gov](https://earthdata.nasa.gov) in a <span class='file'>.netrc</span> file, with the username corresponding to the one given in the xml file ('YourEarthDataUser').
+The active Synthetic Aperture Radar (SAR) instrument was only operational for a few months in 2015.
 
-The process <span class='package'>SearchSmapProducts</span> drills into [https://earthdata.nasa.gov](https://earthdata.nasa.gov) and loads the available files as html code. By default the process save one html file per date (online sub-folder) under the path <span class='file'>../smap/source/yyyy.mm.dd/</span> (where yyyy.mm.dd/ is the date of acquisition) on the volume identified in the xml file. The files are ordinary html files, but with the <span class='file'>.html</span> extension omitted.
+{% capture foo %}{{page.SMAP-0100_search-daac_20150413-20150807}}{% endcapture %}
+{% include xml/SMAP-0100_search-daac_20150413-20150807.html foo=foo %}
 
-## Transfer search to database
+#### Passive 2015 - 2018
 
-To transfer the search results to the GeoImagine Framework database you must run the process <span class='package'>SmapSearchToDB</span>. This process reads the html files, extracts the required information and inserts the information in the database. When finished it moves the html file to a sub-folder called <span class='file'>done</span>. If, for some reason, you delete your database all you need to do is to take all the html files under the <span class='file'>done</span> sub-folder and move them one level up and then re-run <span class='package'>SmapSearchToDB</span>.
+The passive radiometer instrument has been continuously operating since March 2015. To facilitate updating the processing is divided between "past" (only needs to be done once) and "present",
 
-<button id= "toggleSearchToDB" onclick="hiddencode('SearchToDB')">Hide/Show SmapSearchToDB.xml</button>
+{% capture foo %}{{page.SMAP-0100_search-daac_20150331-20181231}}{% endcapture %}
+{% include xml/SMAP-0100_search-daac_20150331-20181231.html foo=foo %}
 
-<div id="SearchToDB" style="display:none">
+#### Passive 2019 to present
 
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<searchtodb>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2015' endmonth = '08' endday = '08' timestep='D'></period>
+{% capture foo %}{{page.SMAP-0100_search-daac_2019-present}}{% endcapture %}
+{% include xml/SMAP-0100_search-daac_2019-present.html foo=foo %}
 
-	<process processid ='SmapSearchToDB' dsversion = '1.3'>
-		<parameters product="SPL3SMAP" version="003"></parameters>
-		<srcpath volume = "Karttur2tb" ></srcpath>
-	</process>		
-</searchtodb>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
+### Transfer search to database
 
-## Downloading SMAP data
+To transfer the search results to the GeoImagine Framework database you must run the process [<span class='package'>SmapSearchToDB</span>](../../subprocess/subproc-smapsearchtodb/). It reads the html files created by [<span class='package'>SearchSmapProducts</span>](../../subprocess/subproc-searchsmapproducts/), extracts the required information and inserts the information in the database. When finished it moves the html file to a sub-folder called <span class='file'>done</span>. If, for some reason, you delete your database all you need to do is to take all the html files under the <span class='file'>done</span> sub-folder and move them one level up and then re-run [<span class='package'>SmapSearchToDB</span>](../../subprocess/subproc-smapsearchtodb/).
 
-With the available SMAP data registered in the database you can download any of the registered data using the process <span class='package'>DownLoadSmapDaac</span>.
+#### Active Passive data
 
-I have tried to figure out how to extract individual layers from the SMAP online repository HDF5 files. But I have not managed. Hence the process <span class='package'>DownLoadSmapDaac</span> will always download the complete HDF5 files for each product and date. For most of the products this is really not a problem, but the recently available enhanced products can be very large.
+{% capture foo %}{{page.SMAP-0110_search-todb_20150413-20150807}}{% endcapture %}
+{% include xml/SMAP-0110_search-todb_20150413-20150807.html foo=foo %}
 
-When downloading the SMAP HDF5 files you can either download the files on the fly, or write the download commands to a shell script file. The latter is the default. To change it you need to set the parameter _asscript_ to False.
+#### Passive data 2015 - 2018
 
-<button id= "toggleDownload" onclick="hiddencode('Download')">Hide/Show Download.xml</button>
+{% capture foo %}{{page.SMAP-0110_search-todb_20150331-20181231}}{% endcapture %}
+{% include xml/SMAP-0110_search-todb_20150331-20181231.html foo=foo %}
 
-<div id="Download" style="display:none">
+#### Passive data 2019 to present
 
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<downloadsmap>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2015' endmonth = '08' endday = '08' timestep='D'></period>
+{% capture foo %}{{page.SMAP-0110_search-todb_2019-present}}{% endcapture %}
+{% include xml/SMAP-0110_search-todb_2019-present.html foo=foo %}
 
-	<process processid ='DownLoadSmapDaac' dsversion = '1.3'>
-		<parameters remoteuser='YourEarthDataUser' product="SPL3SMAP" version="003" serverurl="https://n5eil01u.ecs.nsidc.org/" ></parameters>
-		<dstpath volume = "Karttur3tb" hdrfiletype = "h5" datfiletype = "h5"></dstpath>
-	</process>
-</downloadsmap>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
+### Downloading SMAP data
 
-If you did not add the parameter _asscript_, including setting it to False, the process produces a script file that you must run manually. You can also copy the script to another machine (with better internet connection) and run the script from there. The machine you run from must have a <span class='file'>.netrc</span> file with your EarthData credentials. And the volume indicated in the xml must either exists on the machine from which you download, or you need to edit the script to reflect a volume that is available on the machine from which you download. To run the shell script you must first make it executable, and then execute it:
+With the available SMAP data registered in the database you can download any of the registered data using the process [<span class='package'>DownLoadSmapDaac</span>](../../subprocess/subproc-downloadsmapdaac/).
+
+I have tried to figure out how to extract individual layers from the SMAP online repository HDF5 files. But I have not managed. Hence the process [<span class='package'>DownLoadSmapDaac</span>](../../subprocess/subproc-downloadsmapdaac/) will always download the complete HDF5 files for each product and date. For most of the products this is really not a problem, but the recently available enhanced products can be very large.
+
+When downloading the SMAP HDF5 files you can either download the files on the fly, or write the download commands to a shell script file. The latter is the default. To change it you need to set the parameter _asscript_ to _False_.
+
+If you did not add the parameter _asscript_, including setting it to _False_, the process produces a script file that you must run manually. You can also copy the script to another machine (with better internet connection) and run the script from there. The machine you run from must have a <span class='file'>.netrc</span> file with your EarthData credentials. And the volume indicated in the xml must either exists on the machine from which you download, or you need to edit the script to reflect a volume that is available on the machine from which you download. To run the shell script you must first make it executable, and then execute it:
 
 <span class='terminal'>$ chmod 777 /path/to/script.sh</span>
 
 <span class='terminal'>$ /path/to/script.sh</span>
 
-## Extracting SMAP layers
+#### Active Passive data
+
+{% capture foo %}{{page.SMAP-0120_download_20150413-20150807}}{% endcapture %}
+{% include xml/SMAP-0120_download_20150413-20150807.html foo=foo %}
+
+#### Passive data 2015 - 2018
+
+{% capture foo %}{{page.SMAP-0120_download_20150331-20181231}}{% endcapture %}
+{% include xml/SMAP-0120_download_20150331-20181231.html foo=foo %}
+
+#### Passive data 2019 to present
+
+{% capture foo %}{{page.SMAP-0120_download_2019-present}}{% endcapture %}
+{% include xml/SMAP-0120_download_2019-present.html foo=foo %}
+
+### Registering Downloads
+
+If you downloaded SMAP data on the fly (i.e. with parameter _asscript_ set to _False_), your downloads are automatically registered in the database. If you downloaded via script they are not. The easiest way to register the downloads is to re-run [<span class='package'>DownLoadSmapDaac</span>](../../subprocess/subproc-downloadsmapdaac/) with the same parameters (xml command file) and the script will recognize that the SMAP tiles are already downloaded and register them.
+
+{% capture foo %}{{page.SMAP-0145_check}}{% endcapture %}
+{% include xml/SMAP-0145_check.html foo=foo %}
+
+### Extract SMAP layers
 
 The layers included in each HDF5 file, as well as metadata, can be accessed using <span class='terminalapp'>gdalinfo</span>.
 
-<span class='terminal'>gdalinfo path/to/smap/hdf5file.H5</span>
+<span class='terminal'>gdalinfo /path/to/smap/hdf5file.H5</span>
 
-In Karttur's GeoImagine Framework the layers to extract have to be defined in the database, in the table _templates_ under the _smap_ schema. The template table also define the celltype, cellnull, projection and folder where to store the extracted layer. How to define which layers to extract is the topic of [another post](../blog-SMAP-template/).
+In Karttur's GeoImagine Framework the layers to extract have to be defined in the database, in the table _templates_ under the _smap_ schema. The template table also define the celltype, cellnull, projection and folder where to store the extracted layer. The two following posts deals with how to fill and edit the table _smap.temaplates_. To extract the layers run the process [<span class='package'>extractSmapHdf</span>](../../subprocess/subproc-extractsmaphdf/), but first a bit of information on the SMAP data projection.
 
-### The EASE-Grid projection
+#### The EASE-Grid projection
 
-The SMAP data are projected using the equal area  [EASE-Grid](https://nsidc.org/data/ease/ease_grid.html) 2.0 projection, using three different regions:
+The SMAP data are projected using the equal area [EASE-Grid](https://nsidc.org/data/ease/ease_grid.html) 2.0 projection, using three different regions:
 
-- A global cylindrical EASE grid (EPSG:3410)
-- A northern polar EASE grid (EPSG:3408)
-- A southern polar EASE grid (EPSG:3409)
+- A global cylindrical EASE grid (EPSG:6933)
+- A northern polar EASE grid (EPSG:6931)
+- A southern polar EASE grid (EPSG:6932)
 
 As with all other data imported to Karttur's GeoImagine Framework, the basic projection is kept, and only changed when data from different systems are combined (i.e. you can combine SMAP with MODIS by transferring the SMAP data to fit MODIS sinusoidal grids).
 
 It is best to use the EPSG code when working with the SMAP data. The EASE-Grid 2.0 projection requires that proj4 is at least version 4.8. You need to check that out. If you have an earlier version of proj4, you can use the proj4 definition instead of the EPSG code:
 
 ```
-+proj=cea +lat_0=0 +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs
++proj=cea +lon_0=0 +lat_ts=30 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
 ```
 
-If you look in the module <span class='module'>hdf5_2_geotff.py</span>, you can alter between defining the projection using proj4 and the EPSG code.
+If you look in the module <span class='module'>hdf5_2_geotff.py</span>, you can alter between defining the projection using proj4 and the EPSG code. If you are not sure, please use the full proj4 definition above instead of the EPSG code.
 
-The process <span class='package'>extractSmapHdf</span> extracts the layers defined in the database from the HDF5 files.
+The process [<span class='package'>extractSmapHdf</span>](../../subprocess/subproc-extractsmaphdf/) extracts the layers defined in the database from the HDF5 files.
 
-<button id= "toggleExtract" onclick="hiddencode('Extract')">Hide/Show Extract.xml</button>
+The process identifies missing HDF5 files on the fly, and create a shell script file that, if executed, will download the missing files. Thus you have to give your remote user for EarthData. If you do not have any user for EarthData you can enter any text string for the extraction itself.
 
-<div id="Extract" style="display:none">
+#### Active Passive data
 
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<searchdatapool>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2020' endmonth = '10' endday = '010' timestep='D'></period>
-	<process processid ='extractSmapHdf' dsversion = '1.3'>
-		<parameters product="SPL3SMP" version="005" exploded ='False' remoteuser='YourEartDataUser' serverurl="https://n5eil01u.ecs.nsidc.org/"></parameters>
-		<dstpath volume = "Karttur3tb"></dstpath>
-	</process>
-</searchdatapool>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
+{% capture foo %}{{page.SMAP-0130_extract_20150413-20150807}}{% endcapture %}
+{% include xml/SMAP-0130_extract_20150413-20150807.html foo=foo %}
 
-The process identifies missing HDF5 files on the fly, and create a shell script file that, if executed, will download the missing files. Thus you have to give your remote user for EarthData. If you do not have any user for EarthData and will not use the script, you can enter any name.
+#### Passive data 2015 - 2018
 
-## Overlay am and pm to daily average
+{% capture foo %}{{page.SMAP-0130_extract_20150331-20181231}}{% endcapture %}
+{% include xml/SMAP-0130_extract_20150331-20181231.html foo=foo %}
 
-The dowloaded daily data for most SMAP L3 products are separated into morning (am) and evening (pm) observed soil moisture. To create a daily average (minimum or maximium) composites use the Framework process <span class='package'>conditionaloverlay</span>. The <span class='package'>conditionaloverlay</span> ignores "null" when overlaying data, and for creating the daily average that is what you want.
+#### Passive data 2019 to present
 
-<button id= "toggleOverlayAmPm" onclick="hiddencode('OverlayAmPm')">Hide/Show OverlayAmPm.xml</button>
+{% capture foo %}{{page.SMAP-0130_extract_2019-present}}{% endcapture %}
+{% include xml/SMAP-0130_extract_2019-present.html foo=foo %}
 
-<div id="OverlayAmPm" style="display:none">
+### Overlay special
 
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<resampletssmap>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '04' startday = '13' endyear = '2018' endmonth = '12' endday = '31' timestep='D'></period>
-	<process processid ='conditionalsmapoverlay' dsversion = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters acceptmissing = 'True' copycomp ='template' targettimestep = '16D' startstep='1' method ='avg' template = 'soil-moisture-am'></parameters>
-		<srcpath volume = "Karttur3tb" hdrfiletype='tif'></srcpath>
-		<dstpath volume = "Karttur3tb" hdrfiletype='tif'></dstpath>
-		<srccomp>
-			<soil-moisture-am id='layer1' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-am" band = "soil-moisture-am" prefix = "soil-moisture-am" suffix = "005">
-			</soil-moisture-am>
-			<soil-moisture-pm id='layer2' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-pm" band = "soil-moisture-pm" prefix = "soil-moisture-pm" suffix = "005">
-			</soil-moisture-pm>
-		</srccomp>
-		<dstcomp>
-			<soil-moisture-avg id='layersum' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005">
-			</soil-moisture-avg>
-		</dstcomp>
-	</process>
-</resampletssmap>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
+The daily data for most SMAP L3 products are separated into morning (am) and evening (pm) observed soil moisture. And the extraction above will in general produce both am and pm layers. To create daily average (or minimum or maximum) composites use the Framework process [<span class='package'>conditionaloverlay</span>](../../subprocess/subproc-conditionalsmapoverlay/). It ignores "null" when overlaying data, and for creating the daily average that is what you want.
+
+#### Overlay am and pm to daily average
+
+The overlay of am and pm data to daily averages as defined in the xml commands below are done for several of the sub-datasets of the different SMAP products.
+
+{% capture foo %}{{page.SMAP-0240_overlaydaily_20150331-20181231}}{% endcapture %}
+{% include xml/SMAP-0240_overlaydaily_20150331-20181231.html foo=foo %}
 
 <figure class="third">
 
@@ -249,433 +509,99 @@ The dowloaded daily data for most SMAP L3 products are separated into morning (a
 <figcaption>Daily SMAP maps for the 22 January 2016. The left image is the morning (am) soil moisture, the right image is the afternoon (pm) soil moisture and the central image is a combination of the other two. </figcaption>
 </figure>
 
-## Temporal resampling
+### Time series processing
 
-For some of the analysis and modeling the daily timestep is the best solution. But for comparison with e.g. climate data, vegetation growth, or other satellite images like MODIS, I prefer to aggregate (resample) the SMAP data. A lot of the processing I do either rely on weekly to biweekly, or monthly timesteps. MODIS products typically represent 8 or 16 day intervals, the old crop-climate data from AVHRR images usually come as three (3) monthly periods, and a lot of climate data is available using monthly aggregated data.
+For some of the analysis and modeling the daily timestep is the best solution. But for comparison with e.g. climate data, vegetation growth, or other satellite images like MODIS, the SMAP data need to be aggregated. This also has the advantage that if you aggregate to weekly data, or more, you will get estimates with total global coverage (not strips like in the figure above).
 
-The temporal aggregation can be done using Karttur's GeoImagine Framework. The temporal frequencies defined in Karttur's GeoImagine Framework rely on the [<span class='package'>Pandas</span> package](https://pandas.pydata.org). <span class='package'>Pandas</span> is widely used for handling time series data in Python, and is part of Anaconda (the python distribution used by Karttur´s GeoImagine Framework). It can be a bit slow to use for resampling, and for some of the resampling the GeoImagine Framework instead use numba JIT (Just In Time) compiled scripts. But the frequency definitions and conversions rely on <span class='package'>Pandas</span>.
+#### Temporal resampling
 
-The Framework process for temporal aggregation (resampling) of SMAP data is <span class='package'><resampletssmap/span>.
+A lot of the processing examples in this blog rely on weekly to biweekly, or monthly timesteps. MODIS products typically represent 8 or 16 day intervals, the old crop-climate data from AVHRR images usually come as three (3) monthly periods, and a lot of climate data is available using monthly aggregated data.
 
-### Resampling to 8 or 16 day intervals
+The temporal frequencies defined in Karttur's GeoImagine Framework rely on the [<span class='package'>Pandas</span>](https://pandas.pydata.org) package. <span class='package'>Pandas</span> is widely used for handling time series data in Python, and is part of Anaconda (the python distribution used by Karttur´s GeoImagine Framework). It can be a bit slow to use for resampling, and for some of the resampling the GeoImagine Framework instead use numba JIT (Just In Time) compiled scripts. But the frequency definitions and conversions rely on <span class='package'>Pandas</span>.
 
-To resample SMAP from daily to 16 day intervals (same temporal resolution as several MODIS products) set the parameter _targettimestep_ to _16D_. The start date given in the period tag will determine the start and end date of each 16D period. You can create a gliding mean of the 16D interval by repeating the process 16 times, each time with a 1 day difference of the starting date. The setting below will cause the 16D interval to coincide with The MODIS 16D standard intervals with the first date of observation at 1st of January.
+The Framework process for temporal aggregation (resampling) of SMAP data is [<span class='package'>resampletssmap</span>](../../subprocess/subproc-resampletssmap/).
 
-<button id= "toggleResampling" onclick="hiddencode('Resampling')">Hide/Show Resampling.xml</button>
+#### Resampling 16 day intervals
 
-<div id="Resampling" style="display:none">
+To resample SMAP from daily to 16 day intervals (same temporal resolution as several MODIS products) set the parameter _targettimestep_ to _16D_ (as shown in the xml example below). The start date given in the period tag will determine the start and end date of each 16D period. You can create a gliding mean of the 16D interval by repeating the process 16 times, each time with a 1 day difference of the starting date. The setting below will cause the 16D interval to coincide with The MODIS 16D standard intervals.
 
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<resampletssmap>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2016' startmonth = '01' startday = '01' endyear = '2017' endmonth = '01' endday = '10' timestep='D'></period>
-	<process processid ='resampletssmap' dsversion = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters acceptmissing = 'True' copycomp ='resamplets' targettimestep = '16D' startstep='1' method ='avg'></parameters>
-		<srcpath volume = "Karttur3tb" hdrfiletype='tif'></srcpath>
-		<dstpath volume = "Karttur3tb" hdrfiletype='tif'></dstpath>
-		<srccomp>
-			<soil-moisture-avg source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005">
-			</soil-moisture-avg>
-		</srccomp>
-	</process>
-</resampletssmap>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
+Opening and processing daily SMAP data covering a temporal span of multiple years demands a lot of computer power, and for that reason I have divided the resampling into annual steps. I thus resample each individual year separately. The result is the same as resampling the whole time series in one go, but is less memory intense. The example below shows the resampling of the incomplete start year for SMAP (2015). All other years are available in the online project xml folder. Note hoe the enddate is set to 10 January 2016. This is required in order to capture the complete 16 day period centering on the last 16 day period in 2015.
+
+{% capture foo %}{{page.SMAP-0310_tsresample-16D_2015}}{% endcapture %}
+{% include xml/SMAP-0310_tsresample-16D_2015.html foo=foo %}
 
 <figure>
 <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure3].file }}">
 <figcaption> {{ site.data.images[page.figure3].caption }} </figcaption>
 </figure>
 
-## Seasonal signal extraction
-
-The process <span class='package'>extractseasonsmap</span> extracts the seasonal multiyear signal. The extraction can be set to force interpolaiton of all seasons lacking data. For the SMAP soil moisture data all frozen soils lack estimates of soil moisture, and the soil moisture conditions under frozen soil are force-filled by interpolation for all pixels. This is an oversimplification, but the animation, following further down, becomes more pleasing and easy to follow.
-
-<button id= "toggleSeasonalSignal" onclick="hiddencode('SeasonalSignal')">Hide/Show SeasonalSignal.xml</button>
-
-<div id="SeasonalSignal" style="display:none">
-
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<runprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = '2015' startmonth = '04' startday = '23' endyear = '2018' endmonth = '04' endday = '25' timestep='16D'></period>
-	<process processid ='extractseasonsmap' dsversion = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters></parameters>
-		<srcpath volume = "Karttur3tb" hdrfiletype='tif'></srcpath>
-		<dstpath volume = "Karttur3tb" hdrfiletype='tif'></dstpath>
-		<srccomp>
-			<soil-moisture-avg source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005">
-			</soil-moisture-avg>
-		</srccomp>
-	</process>
-</runprocess>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
-
-## SMAP layout
-
-The layout processing required for exporting the SMAP data to nicely looking maps, images and animation, include setting up:
-
-- palettes
-- legends
-- scaling
-- movieclock
-
-### SMAP palettes
-
-To set up a palette, use the process <span class='package'>addrasterpalette</span>. In the example below three different SMAP related palettes are defined: for soil moisture (vol/vol), for change in soil moisture and for variations in soil moisture
-
-<button id= "togglePalette" onclick="hiddencode('Palette')">Hide/Show Palette.xml</button>
-
-<div id="Palette" style="display:none">
-
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<palette>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
-	<path></path>
-	<!-- addrasterpalette smap-->
-	<process processid = 'addrasterpalette'>
-		<overwrite>Y</overwrite>
-		<delete>N</delete>
-		<parameters palette = 'smap' compid='test'>
-			<setcolor id = '0' red = '255' green ='132' blue='94' alpha ='0' label='0' hint='0' ></setcolor>			
-			<setcolor id = '25' red = '240' green ='224' blue='148' alpha ='0' label='10' hint='NA' ></setcolor>			
-			<setcolor id = '50' red = '162' green ='162' blue='122' alpha ='0' label='50' hint='no correlation' ></setcolor>			
-			<setcolor id = '100' red = '70' green ='89' blue='112' alpha ='0' label='100' hint='positive correclation' ></setcolor>
-			<setcolor id = '150' red = '20' green ='60' blue='210' alpha ='0' label='150' hint='positive correclation' ></setcolor>
-			<setcolor id = '200' red = '2' green ='1' blue='190' alpha ='0' label='200' hint='strong positive correlation' ></setcolor>
-			<setcolor id = '250' red = '2' green ='1' blue='190' alpha ='0' label='250' hint='strong positive correlation' ></setcolor>
-			<setcolor id = '253' red = '245' green ='237' blue='182' alpha ='0' label='dry (0)' hint='completely dry' ></setcolor>
-			<setcolor id = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
-			<setcolor id = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
-		</parameters>			
-	</process>
-	<!-- addrasterpalette smapdelta-->
-	<process processid = 'addrasterpalette'>
-		<overwrite>Y</overwrite>
-		<delete>N</delete>
-		<parameters palette = 'smapdelta' compid='test'>
-			<setcolor id = '0' red = '200' green ='50' blue='0' alpha ='0' label='0' hint='strongly negative correlation' ></setcolor>			
-			<setcolor id = '62' red = '255' green ='225' blue='30' alpha ='0' label='63' hint='negative correlation' ></setcolor>			
-			<setcolor id = '125' red = '190' green ='190' blue='190' alpha ='0' label='125' hint='positive correclation' ></setcolor>
-			<setcolor id = '187' red = '20' green ='110' blue='200' alpha ='0' label='188' hint='strong positive correlation' ></setcolor>
-			<setcolor id = '250' red = '2' green ='1' blue='143' alpha ='0' label='250' hint='strong positive correlation' ></setcolor>
-			<setcolor id = '253' red = '245' green ='237' blue='182' alpha ='0' label='dry (0)' hint='completely dry' ></setcolor>
-			<setcolor id = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
-			<setcolor id = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
-		</parameters>			
-	</process>
-	<!-- addrasterpalette smapstd-->
-	<process processid = 'addrasterpalette'>
-		<overwrite>Y</overwrite>
-		<delete>N</delete>
-		<parameters palette = 'smapstd' compid='test'>
-			<setcolor id = '0' red = '200' green ='200' blue='200' alpha ='0' label='125' hint='positive correclation' ></setcolor>
-			<setcolor id = '50' red = '240' green ='224' blue='148' alpha ='0' label='188' hint='strong positive correlation' ></setcolor>
-			<setcolor id = '100' red = '162' green ='162' blue='122' alpha ='0' label='188' hint='strong positive correlation' ></setcolor>
-			<setcolor id = '150' red = '70' green ='89' blue='112' alpha ='0' label='250' hint='strong positive correlation' ></setcolor>
-			<setcolor id = '200' red = '20' green ='60' blue='210' alpha ='0' label='250' hint='strong positive correlation' ></setcolor>
-			<setcolor id = '250' red = '2' green ='1' blue='190' alpha ='0' label='250' hint='strong positive correlation' ></setcolor>		
-			<setcolor id = '253' red = '245' green ='237' blue='182' alpha ='0' label='dry (0)' hint='completely dry' ></setcolor>
-			<setcolor id = '254' red = '32' green ='32' blue='32' alpha ='255' label='frame' hint='frame' ></setcolor>
-			<setcolor id = '255' red = '250' green ='250' blue='250' alpha ='255' label='255' hint='no data' ></setcolor>
-		</parameters>			
-	</process>
-</palette>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
-
-## SMAP Legends
-
-To set up legends, use the process <span class='package'>createlegend</span>.
-
-<button id= "toggleLegend" onclick="hiddencode('Legend')">Hide/Show Legend.xml</button>
-
-<div id="Legend" style="display:none">
-
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<palette>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
-	<!-- Create legend -->
-	<!-- NOTE THE ID IS ONLY USED IN THE SCRIPTING SO IT CAN HAVE (UNIQUE) DUMMY VALUES HERE -->
-	<!-- GRACE monthly cmwater-->
-	<process processid = 'createlegend' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters columnhead='Soil moisture (%)' palmax='200' precision='0'></parameters>			
-    	<comp id = '1' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-am" band = "soil-moisture-am" prefix = "soil-moisture-am" suffix = "005"></comp>    	
-		<comp id = '2' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-pm" band = "soil-moisture-pm" prefix = "soil-moisture-pm" suffix = "005"></comp>    	
-		<comp id = '3' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005"></comp>    	
-		<comp id = '4' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-min" band = "soil-moisture-min" prefix = "soil-moisture-min" suffix = "005"></comp>    	
-		<comp id = '5' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-max" band = "soil-moisture-max" prefix = "soil-moisture-max" suffix = "005"></comp>    	
-
-		<comp id = '11' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-am-16D" band = "soil-moisture-am" prefix = "soil-moisture-am" suffix = "005"></comp>    	
-		<comp id = '12' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-pm-16D" band = "soil-moisture-pm" prefix = "soil-moisture-pm" suffix = "005"></comp>    	
-		<comp id = '13' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005"></comp>    	
-		<comp id = '14' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-min-16D" band = "soil-moisture-min" prefix = "soil-moisture-min" suffix = "005"></comp>    	
-		<comp id = '15' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-max-16D" band = "soil-moisture-max" prefix = "soil-moisture-max" suffix = "005"></comp>    	
-
-		<comp id = '21' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-am-16D-sesn" band = "soil-moisture-am" prefix = "soil-moisture-am" suffix = "005"></comp>    	
-		<comp id = '22' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-pm-16D-sesn" band = "soil-moisture-pm" prefix = "soil-moisture-pm" suffix = "005"></comp>    	
-		<comp id = '23' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D-sesn" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005"></comp>    	
-		<comp id = '24' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-min-16D-sesn" band = "soil-moisture-min" prefix = "soil-moisture-min" suffix = "005"></comp>    	
-		<comp id = '25' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-max-16D-sesn" band = "soil-moisture-max" prefix = "soil-moisture-max" suffix = "005"></comp>    	
-
-	</process>
-</palette>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
-
-## SMAP Scaling
-
-To set up scalings, use the process <span class='package'>createscaling</span>.
-
-<button id= "toggleScaling" onclick="hiddencode('Scaling')">Hide/Show Scaling.xml</button>
-
-<div id="Scaling" style="display:none">
-
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<scaling>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
-	<!-- Create scaling -->
-
-	<!-- NOTE THE ID IS OLNLY USED IN THE SCRIPTING SO IT CAN HAVE (UNIQUE) DUMMY VALUES HERE -->
-	<!-- SMAP vol/vol-->
-	<process processid = 'createscaling' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters scalefac='200' mirror0='False'></parameters>			
-    	<comp id = '1' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-am" band = "soil-moisture-am" prefix = "soil-moisture-am" suffix = "005"></comp>    	
-		<comp id = '2' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-pm" band = "soil-moisture-pm" prefix = "soil-moisture-pm" suffix = "005"></comp>    	
-		<comp id = '3' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005"></comp>    	
-		<comp id = '4' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-min" band = "soil-moisture-min" prefix = "soil-moisture-min" suffix = "005"></comp>    	
-		<comp id = '5' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-max" band = "soil-moisture-max" prefix = "soil-moisture-max" suffix = "005"></comp>    	
-
-		<comp id = '11' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-am-16D" band = "soil-moisture-am" prefix = "soil-moisture-am" suffix = "005"></comp>    	
-		<comp id = '12' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-pm-16D" band = "soil-moisture-pm" prefix = "soil-moisture-pm" suffix = "005"></comp>    	
-		<comp id = '13' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005"></comp>    	
-		<comp id = '14' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-min-16D" band = "soil-moisture-min" prefix = "soil-moisture-min" suffix = "005"></comp>    	
-		<comp id = '15' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-max-16D" band = "soil-moisture-max" prefix = "soil-moisture-max" suffix = "005"></comp>    	
-
-		<comp id = '21' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-am-16D-sesn" band = "soil-moisture-am" prefix = "soil-moisture-am" suffix = "005"></comp>    	
-		<comp id = '22' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-pm-16D-sesn" band = "soil-moisture-pm" prefix = "soil-moisture-pm" suffix = "005"></comp>    	
-		<comp id = '23' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D-sesn" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005"></comp>    	
-		<comp id = '24' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-min-16D-sesn" band = "soil-moisture-min" prefix = "soil-moisture-min" suffix = "005"></comp>    	
-		<comp id = '25' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-max-16D-sesn" band = "soil-moisture-max" prefix = "soil-moisture-max" suffix = "005"></comp>    	
-
-	</process>
-</scaling>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
-
-## Karttur´s movieclock
-
-As part of Karttur´s GeoImagine Framework, time series images can be converted to animations with a timeline and a clock showing the year and the season. To create animations you must have installed the terminal apps <span class='terminalapp'>ImageMagick</span> (for command line image processing) and <span class='terminalapp'>ffmpeg</span> (for command line movie making). Here are the links to my blog posts on how to install and use <span class='terminalapp'>ImageMagick</span> and <span class='terminalapp'>ffmpeg</span>:
-
-- [ImageMagick](https://karttur.github.io/setup-theme-blog/blog/install-imagemagick/)
-- [FFmpeg](https://karttur.github.io/setup-theme-blog/blog/ffmpeg-movie/)
-
-The post on <span class='terminalapp'>ffmpeg</span> also illustrates the use of the GeoImagine Framework movieclock.
-
-### Defining a movieclock
-
-An animation requires a pre-defined movieclock (but usually the "default" movieclock is OK), and that the time series data is exported and then converted to movie frames.
-
-A movieclock object defines the colors, types and sizes of the elements building the clock and timeline in the animation.  Basically you do not need to define any of the elements, they are all defaulted. But if you want other widhts, margins, colors etc, all can be set using the process <span class='package'>addmovieclock</span>
-
-<button id= "toggleAddMovieClock" onclick="hiddencode('AddMovieClock')">Hide/Show AddMovieClock.xml</button>
-
-<div id="AddMovieClock" style="display:none">
-
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<palette>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'system'></userproj>
-	<path></path>
-
-	<!-- createmovieclock -->
-	<process processid = 'addmovieclock'>
-		<overwrite>Y</overwrite>
-		<delete>N</delete>
-		<parameters name = 'default'></parameters>
-	</process>
-</palette>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
-
-## Export SMAP
-
-Once you have creates the palettes, legends and scalings for SMAP, you can export the data as color images (maps). The scaling can not be set in the <span class='package'>exporttobytesmap</span> process. It must be given in the database and related to the data to be exported using the theme (folder) and name (band) of the layer. The palette to use must be set as a parameter.
-
-<button id= "toggleExport" onclick="hiddencode('Export')">Hide/Show Export.xml</button>
-
-<div id="Export" style="display:none">
-
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<runprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = "2015" startmonth='1' startday='1' endyear = "2018" endmonth='12' endday='31' timestep='seasonal-16D'></period>
-
-	<!-- exporttobyte avg A -->
-	<process processid = 'exporttobytesmap' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters palette= 'smap' movieframes= 'True'></parameters>		
-		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath>
-		<dstpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></dstpath>    	
-		<srccomp>			
-			<soil-moisture-avg id = 'layer3' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D-sesn" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005">
-			</soil-moisture-avg>
-		</srccomp>
-	</process>
-</runprocess>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
-
-## Movie frames
-
-To create movie frames, you must first have exported the images, and then you can run the process <span class='package'>movieframesmap</span>.
-
-
-<button id= "toggleMovieFrame" onclick="hiddencode('MovieFrame')">Hide/Show MovieFrame.xml</button>
-
-<div id="MovieFrame" style="display:none">
-
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<runprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = "2015" startmonth='4' startday='23' endyear = "2018" endmonth='12' endday='31' timestep='16D'></period>
-
-	<!-- exporttobyte avg A -->
-	<process processid = 'movieframesmap' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters name = 'smap' width = '800' crop='800,336,0,0' emboss='KARTTUR' embossdims='720,150' embossptsize='100'></parameters>
-		<srcpath volume = "karttur3tb" hdrfiletype = 'tif' datfiletype = 'tif'></srcpath> 	
-		<dstpath volume = "/Users/thomasgumbricht/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>    	
-		<srccomp>			
-			<soil-moisture-avg id = 'layer3' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005">
-			</soil-moisture-avg>
-		</srccomp>
-
-	</process>
-</runprocess>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
-
-As default the script produces a shell script file that you must execute manually to produce the movie frames. The advantage with the script file is that you can edit the area of the map to appear in the movie as well as the embossed watermark text. The link to the script file is reported by the process.
-
-## Movie clock
-
-The final step before producing the time series animation is to create the movie-clock that fits with your movie frames. You need to set the dimensions of the movie clock manually as parameters in the process <span class='package'>movieclocksmap</span>.
-
-<button id= "toggleMovieClock" onclick="hiddencode('MovieClock')">Hide/Show MovieClock.xml</button>
-
-<div id="MovieClock" style="display:none">
-
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<runprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = "2015" startmonth='4' startday='23' endyear = "2018" endmonth='12' endday='31' timestep='16D'></period>		
-
-	<!-- exporttobyte avg A -->
-	<process processid = 'movieclocksmap' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters name = 'smap' width = '800'></parameters>		
-		<dstpath volume = "/Users/thomasgumbricht/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>    	
-		<dstcomp>			
-			<soil-moisture-avg id = 'layer3' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005">
-			</soil-moisture-avg>    	
-		</dstcomp>
-	</process>
-</runprocess>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
-
-The process <span class='package'>movieclocksmap</span> use a combination of python image processing and <span class='terminalapp'>ImageMagick</span> commands.
-
-The process also produces two shell script files. The first (in the subfolder <span class='file'>frames</span>) overlays the movieclock and the image frames, and the second (in the subfolder <span class='file'>movie</span>) produces the movie using <span class='terminalapp'>ffmpeg</span>.
-
-<button id= "toggleMovieClock_B" onclick="hiddencode('MovieClock_B')">Hide/Show MovieClock.xml</button>
-
-<div id="MovieClock_B" style="display:none">
-
-{% capture text-capture %}
-{% raw %}
-```
-<?xml version='1.0' encoding='utf-8'?>
-<runprocess>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'smap'></userproj>
-	<period startyear = "2015" startmonth='4' startday='23' endyear = "2018" endmonth='12' endday='31' timestep='16D'></period>		
-
-	<!-- exporttobyte avg A -->
-	<process processid = 'movieclocksmap' version = '1.3'>
-		<overwrite>True</overwrite>
-		<parameters name = 'smap' width = '800'></parameters>		
-		<dstpath volume = "/Users/thomasgumbricht/movieclock" hdrfiletype = 'png' datfiletype = 'png'></dstpath>    	
-		<dstcomp>			
-			<soil-moisture-avg id = 'layer3' source = "SPL3SMP.005" product = "SPL3SMP" folder = "soil-moisture-avg-16D" band = "soil-moisture-avg" prefix = "soil-moisture-avg" suffix = "005">
-			</soil-moisture-avg>    	
-		</dstcomp>
-	</process>
-
-</runprocess>
-```
-{% endraw %}
-{% endcapture %}
-{% include widgets/toggle-code.html  toggle-text=text-capture  %}
-</div>
+#### Resampling to monthly intervals
+
+The xml example below shows how to resample the daily SMAP values to monthly average. The example is for a year with complete data (2016).
+
+{% capture foo %}{{page.SMAP-0310_tsresample-M_2016}}{% endcapture %}
+{% include xml/SMAP-0310_tsresample-M_2016.html foo=foo %}
+
+### Seasonal signal extraction
+
+The process [<span class='package'>extractseasonsmap</span>](../../subprocess/subproc-extractseasonsmap/) extracts the seasonal multiyear signal. The extraction can be set to force interpolation of all seasons lacking data. For the SMAP soil moisture data all frozen soils lack estimates of soil moisture, and the soil moisture conditions under frozen soil are force-filled by interpolation for all pixels. This is an oversimplification, but also has advantages; including when presenting the data, like in the animations below.
+
+#### Extract 16D seasonal signal
+
+The process [<span class='package'>extractseasonsmap</span>](../../subprocess/subproc-extractseasonsmap/) uses all data available within the defined period for retrieving a seasonal signal. In the example below the 16D seasonal cycle is extracted using all dates between 23 April 2005 and 19 February 2019. The process can be set to linearly interolate any missing season.
+
+{% capture foo %}{{page.SMAP-0320_extract-season_16D}}{% endcapture %}
+{% include xml/SMAP-0320_extract-season_16D.html foo=foo %}
+
+#### Extract monthly seasonal signal
+
+{% capture foo %}{{page.SMAP-0320_extract-season_M}}{% endcapture %}
+{% include xml/SMAP-0320_extract-season_M.html foo=foo %}
+
+### Interpolate nodata considering seasonal signal
+
+Karttur´s GeoImagine Framework provides some different methods for interpolating time series data and force fill all periods. The simplest method is to do a linear interpolation, as used for filling in missing data for e.g. [GRACE](../blog-GRACE). The more advanced method is to use a nonlinear interpolation and also adjust for the seasonality. This requires that you first extract the seasonal signal for the same period you want to interpolate (as in the step above), then you can apply the process [<span class='package'>seasonfilltsSmap</span>](../../subprocess/subproc-seasonfilltssmap/). The processes applies a weighted linear interpolation giving larger weight to the previous observation compared to the next, while also including the seasonal signal. At small gaps (a single missing date) the seasonal signal is almost irrelevant; the larger the gap the larger the influence of the seasonal signal.
+
+#### Interpolate nodata for 16D time series
+
+{% capture foo %}{{page.SMAP-0330_interpolseasn_16D_2015-2019}}{% endcapture %}
+{% include xml/SMAP-0330_interpolseasn_16D_2015-2019.html foo=foo %}
+
+### Export
+
+Exporting layers requires that you have defined the scaling for the composition and a suitable palette. SMAP layers are exported suing the process [<span class='package'>exporttobytesmap</span>](../../subprocess/subproc-exporttobytesmap/).
+
+### Export time series images
+
+If you want to do a movie (animation) of the SMAP time-series data you have to export all the individual SMAP dates. To make the movie look pleasing it is best to export the force filled 16D period time series. Below, both the force filled time series and the seasonal signals are exported, and then used for creating movie animations.
+
+{% capture foo %}{{page.SMAP-0900_ExporttoByte_16D}}{% endcapture %}
+{% include xml/SMAP-0900_ExporttoByte_16D.html foo=foo %}
+
+### Export seasonal signal
+
+{% capture foo %}{{page.SMAP-0905_ExporttoByte_16D-seasons}}{% endcapture %}
+{% include xml/SMAP-0905_ExporttoByte_16D-seasons.html foo=foo %}
+
+### Create movie
+
+To create movie frames, you must first have exported the time-series images. You then convert the individual images to movie frames with the process [<span class='package'>movieframesmap</span>](../../subprocess/subproc-movieframesmap/) and then create the clock and timeline with the process [<span class='package'>movieclocksmap</span>](../../subprocess/subproc->movieclocksmap/). The latter process also generates the shell scripts for joining the map frames and the clock frames, and for assembling the joined frames to a movie. If you set the parameter _asscript_ to _False_ the scripts are called and executed from within the process.
+
+### Create movie frames
+
+{% capture foo %}{{page.SMAP-0950_movieframes_16D}}{% endcapture %}
+{% include xml/SMAP-0950_movieframes_16D.html foo=foo %}
+
+By default the process [<span class='package'>movieframesmap</span>](../../subprocess/subproc-movieframesmap/) produces a shell script file that you must execute manually to produce the movie frames. The advantage with the script file is that you can edit the area of the map to appear in the movie as well as the embossed watermark text. The link to the script file is reported by the process.
+
+### Create movie clock and timeline
+
+The final step before producing the movie (time series animation) is to create the movie clock/timeline that fits with your movie frames. You need to set the dimensions of the movie clock manually as parameters in the process [<span class='package'>>movieclocksmap</span>](../../subprocess/subproc->movieclocksmap/). The process uses a combination of python image processing and <span class='terminalapp'>ImageMagick</span> commands.
+
+The process also produces two shell script files. The first joins (overlays) the movieclock and the image frames (with <span class='terminalapp'>ImageMagick</span>), and the second produces the movie using <span class='terminalapp'>ffmpeg</span>. If you do not set the parameter _asscript_ to _False_ you need to execute both scripts manually as reported by the script.
+
+{% capture foo %}{{page.SMAP-0960_movieclock_16D}}{% endcapture %}
+{% include xml/SMAP-0960_movieclock_16D.html foo=foo %}
 
 <figure>
 <iframe src="{{ site.commonurl }}/movies/{{ site.data.movies[page.movie1].file }}" width="{{ site.data.movies[page.movie1].width }}" height="{{ site.data.movies[page.movie1].height }}" frameborder="0">
@@ -692,6 +618,10 @@ The process also produces two shell script files. The first (in the subfolder <s
 # Resources
 
 [Karttur´s GeoImagine Framework](https://karttur.github.io/setup-ide/)
+
+[the EASE-Grid Projection](https://nsidc.org/ease/clone-ease-grid-projection-gt) by NSIDC
+
+[hdf5_to_geotiff](https://github.com/Zepy1/satellite_analysis/blob/master/hdf5_2_geotiff.py) GitHub script for projecting SMAP layers in EASE-Grid 2
 
 [ImageMagick for batch processing maps](https://karttur.github.io/setup-theme-blog/blog/install-imagemagick/)
 

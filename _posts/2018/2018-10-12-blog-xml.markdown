@@ -1,9 +1,9 @@
 ---
 layout: post
-title: Processes, compositions and XML structure
+title: Framework key concepts
 modified: '2018-10-12 T18:17:25.000Z'
 categories: blog
-excerpt: "Key concepts: processes and compositions and how they are represented in xml."
+excerpt: "Key concepts: processes and compositions, and how they are represented in xml."
 tags:
   - processes
   - compositions
@@ -18,30 +18,46 @@ date: '2018-10-12 T18:17:25.000Z'
 comments: true
 share: true
 ---
+**Contents**
+
+\- [Introduction](#introduction)
+\- [Processes and compositions](#processes-and-compositions)
+\- [Processes](#processes)
+\- [Compositions](#compositions)
+\- [Composition organization](#composition-organization)
+	\- [File naming conventing](#file-naming-conventing)
+		\- [Hierarchical folder structure](#hierarchical-folder-structure)
+\- [XML coded parameterization](#xml-coded-parameterization)
+	\- [\<userproj\>](#userproj)
+		\- [Defining the Framework superuser](#defining-the-framework-superuser)
+	\- [\<period\>](#period)
+	\- [\<process\>](#process)
+		\- [Boolean tags for \<overwrite\>, \<delete\>, \<acceptmissing\>, and \<update\>](#boolean-tags-for-overwrite-delete-acceptmissing-and-update)
+		\- [\<parameters\>](#parameters)
+		\- [\<srcpath\> and \<dstpath\>](#srcpath-and-dstpath)
+		\- [\<srccomp\> and \<dstcomp\>](#srccomp-and-dstcomp)
+		\- [Other tags](#other-tags)
+
 
 # Introduction
 
-Karttur's GeoImagine Framework is built with object oriented classes and methods. The object oriented concept in programming means that all items belong to a class. Items belonging to a certain class have both properties (or attributes) and methods (processes or functions) associated with that class. In the Framework the most important objects are functions (called **processes**) and spatial data collections (called **compositions**).
-
-# Overview
-
-This post first explains the key concepts behind Karttur's GeoImagine Framework: processes and compositions. Everything the Framework can do is represented in processes. In the processes all the data are represented as compositions. The parameterization of processes and compositions is encoded in eXtensible Markup Language (xml) files. The xml structure used for parameterizing Framework processes and compositions is explained in the second part of this tutorial.
+Karttur's GeoImagine Framework is built with object oriented classes and methods. The object oriented concept in programming means that all items belong to a class. Items belonging to a certain class have both properties (or attributes) and methods (processes or functions) associated with that class. In the Framework the most important objects are functions (called **processes**) and spatial data collections (called **compositions**).  The parameterization of processes and compositions is encoded in eXtensible Markup Language (xml) files. This post first summarizes the concepts of **processes** and **compositions** and then explains how this is translated to xml structured codes.
 
 # Processes and compositions
 
-All functionalities of the Framework are encoded in object oriented processes. Most processes operate on spatial data, but not all; processes are also used for building the database, setting up the processes themselves, and handling the database.
+All functionalities of the Framework are encoded in object oriented processes. Most processes operate on spatial data, but not all; processes are also used for building and managing the database and setting up the processes themselves.
 
-Most processes, however, do use spatial data either as input (or source [src] data) and/or output (or destination [dst] data). Source data is usually denoted with the abbreviation _src_ and destionation data with _dst_. All data, regardless of type, belongs to a composition.
+Most processes, however, do use spatial data either as input (or source [src] data) and/or output (or destination [dst] data). Source data is usually denoted with the abbreviation _src_ and destination data with _dst_. All data, regardless of type, belong to a composition.
 
 ## Processes
 
 There are hundreds of different processes defined within the Framework. You can get a list of all available processes from the top menu item [sub processes](../../subprocesses/).
 
-Processes can be regarded as high level Geographic Information System (GIS) functions. The more basic processes are in fact nothing else than interfaces to standard GIS functions. Other processes represent sequences of standard GIS functions. And then there are functions, including for modeling and machine learning, that can not be found in standard GIS software package. One of the advantages with Karttur's GeoImagine Framework is that you can combine any number of processes and then run them for data over any region, or the entire Earth, in one go. That is possible because of the organization of spatial data as _composition_ objects.
+Processes can be regarded as high level Geographic Information System (GIS) functions. The more basic processes are in fact nothing else than interfaces to standard GIS functions. Other processes represent sequences of standard GIS functions. And then there are functions, including for modeling and machine learning, that can not be found in standard GIS software packages. One of the advantages with Karttur's GeoImagine Framework is that you can combine any number of processes and then run them for data over any region, or the entire Earth, in one go.
 
 ## Compositions
 
-A composition can be a single file, like the map of global countries, or it can be millions of files, like the red reflectance of tiles from the MODIS sensor. When asking the Framework to do processes that involve data, the composition(s) to use must be stated. The processing will be done for all compositions falling within the defined spatial and temporal domain (this will become clear further down).
+A composition can be a single file, like the map of global countries, or thousands of files, like the red reflectance of tiles from the MODIS sensor. When asking the Framework to do processes that involve data, the composition(s) to use must be stated. The processing will be done for all compositions falling within the defined spatial and temporal domain (this will become clear further down).
 
 All compositions have an _id_ that is composed of two parts, a thematic part and a content part, separated by an underscore:
 
@@ -49,40 +65,40 @@ All compositions have an _id_ that is composed of two parts, a thematic part and
 
 Neither the theme, nor the content are allowed to contain any underscore themselves.  Each composition _id_ is linked to a scale factor (_scalefac_), an offset add factor (_offsetadd_)  a data unit (_dataunit_), a nodata value (_cellnull_), and must have a scale _measure_ (_n_[ominal], _o_[rdinal], _i_[nterval)] or _r_[atio]).
 
-A composition can contain different products, as long as the _scalefac_, _offsetadd_, _dataunit_, _cellnull_ and _measure_ are identical. This means that two versions of the same data, for example with a slightly different algorithmic definition, can belong to the same composition. Also reflectance bands from different sensors can share the same composition, as can rainfall data from different sources. But normally data from different origins or sensors are also represented as different compositions.
+A composition can contain different products, as long as the _scalefac_, _offsetadd_, _dataunit_, _cellnull_ and _measure_ are identical. This means that two versions of the same data, for example derived with a slightly different algorithmic definition, can belong to the same composition. Also reflectance bands from different sensors can share the same composition, as can rainfall data from different sources. But normally data from different origins or sensors are also represented as different compositions.
 
-To identify a composition, the following components must be given:
+All compositions contain the following components or parts:
 
 - source
 - product
-- folder
+- folder (or theme)
 - band
 - prefix
 - suffix
 
-The _source_ is the origin of the dataset (e.g. the satellite platform or the organization or individual behind the data), _product_ is usually a coded product identifier or the producer, _folder_ is a thematic identifier (the "theme" part of the _compid_), _band_ is a content identifier with _prefix_ usually identical to _band_ but can be set differently, and _suffix_ is a more loose part that can be freely set but is intended to be a version identifier.
+The _source_ is the origin of the dataset (e.g. the satellite platform, the organization or individual behind the data), _product_ is usually a coded product identifier or the producer, _folder_ is a thematic identifier (the "theme" part of the _compid_), _band_ is a content identifier with _prefix_ usually identical to _band_ but can be set differently, and _suffix_ is a more loose part that can be freely set but usually represents a version identifier.
 
-Compositions do not usually relate to any spatial extent or temporal validity.
+Compositions as such do not relate to any spatial extent or temporal validity.
 
 ## Composition organization
 
-Karttur´s GeoImagine Framework forces a very strict file naming convention for all file stored data that is imported and produced. This file naming convention is intertwined with the composition. Alongside the strict file naming, also the hierarchical folder structure is strictly defined.
+The Framework forces a very strict file naming convention for all file-stored data that is imported and produced. This file naming convention is intertwined with the compositions. Alongside the strict file naming, also the hierarchical folder structure is strictly defined.
 
 ### File naming conventing
 
 All data file names are composed of five (5) parts of which three relate to the composition (above), and the remaining two to location and timestamp. In the filename, the parts are separated by underscore, ("\_"), and the parts are not allowed to contain any underscore themselves:
 
-- band or content identifier (from composition)
-- original product or producer (from composition)
-- location
-- timestamp
-- suffix (from composition)
+1. band or content identifier (from composition)
+2. original product or producer (from composition)
+3. location
+4. timestamp
+5. suffix (from composition)
 
 All files in the Framework thus have the following general format:
 
 content_product_location_timestamp_suffix.extension
 
-Within each part, a hyphen ("-") is used for separating different codes or labels. A hyphen in the timespan part, for example, denotes that the data in the file represents aggregated data for a timespan.
+Within each part, a hyphen ("-") is used for separating different codes or labels. A hyphen in the timespan part, for example, denotes that the data in the file represents aggregated data for the period between two dates.
 
 ### Hierarchical folder structure
 
@@ -95,17 +111,17 @@ All the data files are organized in a hierarchical folder structure with the fol
 - location
 - timestamp
 
-The two lowest hierarchical levels, _location_ and _timestamp_, are identical to the _location_ and _timestamp_ in the file name. The thematic _folder_ can be anything like "rainfall", "elevation", "landform" or other thematic identifier and equals the _folder_ in the composition. _division_ can only take three different values "tiles", "region" or "mosaic". The user can not set which of the three to use, that is linked to each process and coded in the database (put differently, the _division_ is a fixed attribute of the **process** object). The _source_ level identifies the source or origin of the data and is equal to the composition _source_, for instance "TRMM" for TRMM rainfall data. The top _system_ level is also a fixed attribute of each **process**, and relate to the different systems for representing data that is included in the Framework (e.g. _ancillary_, _modis_ or _sentinel_), plus one system (_system_) for some default data.
+The two lowest hierarchical levels, _location_ and _timestamp_, are identical to the _location_ and _timestamp_ in the file name. The thematic _folder_ can be anything like "rainfall", "elevation", "landform" or other thematic identifier and equals the _folder_ in the composition. _division_ can only take three different values "tiles", "region" or "mosaic". The user can not set which of the three to use, that is linked to each process and coded in the database (put differently, the _division_ is a fixed attribute of the process object). The _source_ level identifies the source or origin of the data and is equal to the composition _source_, for instance "TRMM" for TRMM rainfall data. The top _system_ level is also a fixed attribute of each process, and relate to the different systems for representing data that is included in the Framework (e.g. _ancillary_, _modis_ or _sentinel_), plus one system (_system_) for some default data.
 
 # XML coded parameterization
 
-All processes are initiated and parameterized using xml coded instructions. And all processes require some basic and common instructions, and then also process specific instruction. All processes must contain three child tags directly under the root:
+All processes are initiated and parameterized using xml coded instructions. And all processes require some basic and common instructions, and then also process specific instruction. All processes must contain three child tags directly under the root (the root itself can be called anything):
 
 - \<userproj\>
 - \<period\>
 - \<process\>
 
-A single xml can contain any number of \<process\> tags, they will be executed in the sequence of appearance. But the processes in a single xml file must be for a particular location and a particular time period and temporal resolution. The location must be predefined and owned by the user running the processes, and given in the \<userproj\> tag. The temporal framework of the process is defined in the \<period\> tag. Only the first instances of the \<userproj\> and \<period\> tags are read, and any duplicate tags are ignored.
+A single xml can contain any number of \<process\> tags, they will be executed in the sequence of appearance. But the processes in a single xml file must be for a particular location and a particular time period and temporal resolution. The location must be predefined and owned by the user running the processes and given in the \<userproj\> tag. The temporal framework of the process is defined in the \<period\> tag. Only the first instances of the \<userproj\> and \<period\> tags are read, any duplicate tags are ignored.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -121,7 +137,7 @@ A single xml can contain any number of \<process\> tags, they will be executed i
 
 ## \<userproj\>
 
-All the processes included in Karttur´s GeoImagine Framework must be associated with a _user_, a _project_, a _region_ and a _system_, all given in the \<userproj\> tag.
+All the processes included in Karttur´s GeoImagine Framework must be associated with a _user_, a _project_, a _region_ and a _system_, all given in the \<userproj\> tag. The Framework spatial definitions are also hierarchical, and the concept and setup of _region_ is introduced in [this](../blog-setup-regions) post.
 
 If you do not alter the default settings when setting up the Framework database, the topic of the [another](../blog-setup-db) post, the superuser \<userproj\> tag for running system processes (like installing processes) looks like this:
 
@@ -133,7 +149,7 @@ userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*
 
 The Framework default superuser is called _karttur_. The user _karttur_ is also by default given a _project_ that is also called _karttur_ and that include a _tractid_ that is also called _karttur_. _karttur_ is thus the name of a _user_, a _project_ and a global region (or tract). Thus defined, the user _karttur_ has the rights to perform all processes available within the Framework.
 
-You can change the name of the _user_, _project_ and _tractid_ for your superuser. That is done when you  setup the links to database in one of the [following](../blog-setup-dblink/) posts and then run the database installation in [yet another](../blog-setup-db/) post. To change the name of the superuser, and the associated project and tract you need to edit the xml files used for setting up the Framework database.
+You can change the name of the _user_, _project_ and _tractid_ for your superuser. That is done when you  setup the links to database in one of the [following](../blog-setup-dblink/) posts and then run the database installation as described in [yet another](../blog-setup-db/) post. To change the name of the superuser, and the associated project and tract you need to edit the xml files used for setting up the Framework database.
 
 ## \<period\>
 
@@ -154,7 +170,7 @@ In Karttur´s GeoImagine Framework the attribute _timestep_ is used for defining
 | XD      | --     | "yyyydoy"   | yyyymmdd  | day interval |
 
 
-While the pandas _offset aliases_ "M" represents month end frequency, in Karttur's coding it means the monthly aggregated value. In the file naming convention, monthly data is represented as "YYYYMM". In the database the datetime object for any "M" is represented by the first day of that month. Strictly speaking this corresponds to Pandas _offset alias_ "MS". Quarterly ("Q") and Annual ("A") _timesteps_ are constructed in a similar manner. Karttur does not use Pandas _offset alias_ weekly ("W"). Instead Karttur includes a day interval _timestep_ that can be set to any interval, and where "7D" would then correspond to a weekly _timestep_.
+While the pandas _offset aliases_ "M" represents month end frequency, in Karttur's coding it means the monthly aggregated value. In the file naming convention, monthly data is represented as "YYYYMM". In the database the datetime object for any "M" is represented by the first day of that month. Strictly speaking this corresponds to Pandas _offset alias_ "MS". Quarterly ("Q") and Annual ("A") _timesteps_ are constructed in a similar manner. Karttur does not use Pandas _offset alias_ weekly ("W"). Instead Karttur includes a day interval _timestep_ that can be set to any interval, and "7D" would then correspond to a weekly _timestep_.
 
 In the GeoImagine Framework, data representing statistical or aggregated conditions over a timespan are given derived temporal codings. These derived codes do not have any datetime code, only a string code.
 
@@ -165,7 +181,7 @@ In the GeoImagine Framework, data representing statistical or aggregated conditi
 | timespan-Q  | "yyyyq-yyyyq"       | aggregate quarterly data      |
 | timespan-A  | "yyyy-yyyy"         | aggregate annual data         |
 | timespan-XD | "yyyydoy-yyyydoy"   | aggregate day interval data   |
-| seasonal-D  | "yyyy-yyy@Ddoy"     | daily seasonal average        |
+| seasonal-D  | "yyyy-yyyy@Ddoy"    | daily seasonal average        |
 | seasonal-M  | "yyyy-yyyy@Mmm"     | monthly seasonal average      |
 | seasonal-Q  | "yyyy-yyyy@MQq"     | quarterly seasonal average    |
 | seasonal-XD | "yyyy-yyyy@XDdoy"   | day interval seasonal average |
@@ -190,9 +206,9 @@ To run a process, the xml file must also include at least a single \<process\> t
 	</process>
 ```
 
-### Boolean tags for \<overwrite\>, \<delete\> and \<update\>
+### Boolean tags for \<overwrite\>, \<delete\>, \<acceptmissing\>, and \<update\>
 
-All processes have three Boolean (Yes/No or True/False) parameters: _overwrite_, _delete_ and _update_. If not explicitly stated in the xml file, all are defaulted to _False_. The parameters "\<overwrite\>True\</overwrite\>" forces the process (_exporttobyteancillary_ in the example) to overwrite any existing destination (dst) files.
+All processes have four Boolean (Yes/No or True/False) parameters: _overwrite_, _delete_, _acceptmissing_ and _update_. If not explicitly stated in the xml file, all are defaulted to _False_. The parameters "\<overwrite\>True\</overwrite\>" forces the process (_exporttobyteancillary_ in the example above) to overwrite any existing destination (dst) files.
 
 ### \<parameters\>
 
@@ -205,14 +221,14 @@ If the process requires source (src) data stored in files as input, the tag \<sr
 ### \<srccomp\> and \<dstcomp\>
 
 \<srccomp\> must be given if the processes expects source data on file. The source data must state the composition components for identifying the composition as attributes:
-- sources
+- source
 - product
 - folder
-- bands
+- band
 - prefix
 - suffix
 
-Not all processes that produce destination data on file require that the \<dstcomp\> is given. Some processes include hardcoded definitions of both the destination composition, the file name and the hierarchical folder structure. Different time series analysis typically produces destination compositions with the folder hierarchy and the file name derived from the source compostion, with no possibility for user changes. Other processes does allow some restricted user changes, whereas the majority of processes require that the user give the full definitions of the destination composition(s). Apart from the components listed above, that then also includes:
+Not all processes that produce destination data on file require that the \<dstcomp\> is given. Some processes include hardcoded definitions of both the destination composition, the file name and the hierarchical folder structure. Different time series analysis typically produces destination compositions with the folder hierarchy and the file name derived from the source composition, with no possibility for user changes. Other processes does allow some restricted user changes, whereas the majority of processes require that the user give the full definitions of the destination composition(s). Apart from the components listed above that also includes:
 - scalefac
 - offsetadd
 - celltype

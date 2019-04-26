@@ -1,9 +1,9 @@
 ---
 layout: post
-title: Climate index decomposition
+title: Time series decomposition
 modified: '2018-11-19 20:17'
 categories: blog
-excerpt: Time series decomposition
+excerpt: Time series decomposition using climate indexes and atmospheric CO<sub>2</sub> levels
 tags:
   - climate index
   - timeseries
@@ -43,13 +43,7 @@ Multiplicative models show non-linear tendencies over time, where the tendency c
 
 value = level * seasonality * trend * noise
 
-## Content
-
-In this post you will use the climate indexes and the Mauna Loa record of atmospheric CO2 introduced in the previous posts.  
-
-Karttur's GeoImagine Framework includes two different methods for time series decomposition; a classical, or naive, decomposition as available in the [<span class='package'>statsmodel</span> package](https://www.statsmodels.org/stable/index.html), and a more advanced method from a customized version of the [<span class='package'>seasonal</span> package](https://github.com/welch/seasonal).
-
-# Prerequisites
+## Prerequisites
 
 You must have setup the Karttur's GeoImagine Framework as described in [earlier](../blog-import-project-eclipse/) posts. You must also have added the [climate indexes](../blog-climateindex) and atmospheric [carbon dioxide (CO2) records](../blog-c02records/) to the database.
 
@@ -59,11 +53,13 @@ The plotting functions of Karttur's GeoImagine Framework make use of [matplotlib
 
 # Framework process
 
+In this post you will use the climate indexes and the Mauna Loa record of atmospheric CO2 introduced in the previous posts.  
+
+Karttur's GeoImagine Framework includes two different methods for time series decomposition; a classical, or naive, decomposition as available in the [<span class='package'>statsmodel</span> package](https://www.statsmodels.org/stable/index.html), and a more advanced method from a customized version of the [<span class='package'>seasonal</span> package](https://github.com/welch/seasonal).
+
 The combined time series decomposition and plotting function for climate indexes (and other database recorded) time series in Karttur's GeoImagine Framework is [<span class='package'>componentdbtsgraphancillary</span>](../../subprocess/subproc-componentdbtsgraphancillary/).
 
-## XML commands
-
-### Additive decomposition
+## Additive decomposition
 
 By default the [<span class='package'>componentdbtsgraphancillary</span>](../../subprocess/subproc-autocorrdbtsclimate/) applies an additive model and the more advanced decomposition from the <span class='package'>seasonal</span>. To use the naive (classical) decomposition set the parameter _naive_ to _True_. The example below performs a naive, additive decomposition of a single climate index (pdo = Pacific Decadal Oscillation).
 
@@ -92,7 +88,7 @@ To change to a more advanced additive model, just remove the parameter _naive_, 
 	<figcaption>Decomposed time series of the Pacific Decadal Oscillation (PDO) climate index. The left image shows a classic or naive model and the right a spline based model.</figcaption>
 </figure>
 
-### Multiplicative decomposition
+## Multiplicative decomposition
 
 The time series of atmospheric CO2 content at Mauna Loa, Hawaii, show a non-linear increase from 1958 to 2017. The xml file below shows how to generate a mutiplicative naive decomposition using Karttur's GeoImagine Framework. The multiplicative model is only implemented for the naive (classical) decomposition. The regression model for capturing the tendency for mulitplicative models is simply using the log-normal transformation and then applies a robust liner regression model (Theil-Sen).
 
@@ -130,6 +126,6 @@ To change to an additive model ,just remove the parameter _additive_ or change t
 	<figcaption>Decomposed time series of atmospheric CO2 from Mauna Loa, Hawaii. The left image shows an additive model and the right a multiplicative model.</figcaption>
 </figure>
 
-# resources
+# Resources
 
 [How to Decompose Time Series Data into Trend and Seasonality](https://machinelearningmastery.com/decompose-time-series-data-trend-seasonality/) by Jason Brownlee at Machine Learning Mastery.

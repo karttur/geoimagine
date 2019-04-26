@@ -45,7 +45,6 @@ bottom of a valley.  TPI values near zero could
 mean either a flat area or a mid-slope area, so the
 cell slope can be used to distinguish the two.
 
-
 ## xml
 
 Cellnull is fixed at -9999; in Karttur's version the indexes (TPI, TRI, RN) are all defaulted to the cell type Int16. This can not be changed unless editing the source code.

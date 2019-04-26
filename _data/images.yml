@@ -706,32 +706,32 @@ tropwetlandmap:
     caption: Wetlands
     credit: null
     source: null
-avg-grace-ave_ave-cmwater_global_2003-2016_RL05-filled:
-    file: avg-grace-ave_ave-cmwater_global_2003-2016_RL05-filled.jpg
+avg-grace-ave_cmwater_global_2003-2016_RL05-f-A:
+    file: avg-grace-ave_cmwater_global_2003-2016_RL05-f-A.jpg
     author: Thomas Gumbricht
     caption: Average GRACE water equivalent thickness 2003-2016
     credit: null
     source: null
-ols-sl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled:
-    file: ols-sl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled.jpg
+ols-sl-grace-ave_cmwater_global_2003-2016_RL05-f-A:
+    file: ols-sl-grace-ave_cmwater_global_2003-2016_RL05-f-A.jpg
     author: Thomas Gumbricht
     caption:
     credit: null
     source: null
-ts-mdsl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled:
-    file: ts-mdsl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled.jpg
+ts-mdsl-grace-ave_cmwater_global_2003-2016_RL05-f-A:
+    file: ts-mdsl-grace-ave_cmwater_global_2003-2016_RL05-f-A.jpg
     author: Thomas Gumbricht
     caption:
     credit: null
     source: null
-ts-losl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled:
-    file: ts-losl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled.jpg
+ts-losl-grace-ave_cmwater_global_2003-2016_RL05-f-A:
+    file: ts-losl-grace-ave_cmwater_global_2003-2016_RL05-f-A.jpg
     author: Thomas Gumbricht
     caption:
     credit: null
     source: null
-ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled:
-    file: ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled.jpg
+ts-hisl-grace-ave_cmwater_global_2003-2016_RL05-f-A:
+    file: ts-hisl-grace-ave_cmwater_global_2003-2016_RL05-f-A.jpg
     author: Thomas Gumbricht
     caption:
     credit: null
@@ -1106,5 +1106,21 @@ landform_scandinavia-detail_standardized-tpi:
   source: landform_scandinavia-detail_standardized-tpi.jpg
   author: Thomas Gumbricht
   caption: Landform classification from dual scaled and locally standardized TPI (detail showing tile boundary).
+  credit: null
+  source: null
+
+eclipse_select_import:
+  file: eclipse_select_import.png
+  source: eclipse_select_import.png
+  author: Thomas Gumbricht
+  caption: Eclipse import window.
+  credit: null
+  source: null
+
+eclipse_import_project_from_file_system_or_archive:
+  file: eclipse_import_projecct_from_file_system_or_archive.png
+  source: eclipse_import_projecct_from_file_system_or_archive.png
+  author: Thomas Gumbricht
+  caption: Eclipse window for Import Project from File System or Archive.
   credit: null
   source: null

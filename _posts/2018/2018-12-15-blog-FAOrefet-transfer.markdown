@@ -1,9 +1,9 @@
 ---
 layout: post
-title: Transfer TRMM Framework data
+title: FAO reference evapotranspiration
 modified: '2018-12-15 20:17'
 categories: blog
-excerpt: Transfer TRMM Framework data to new machhine
+excerpt: Transfer FAO reference evapotranspiration (refET) data to new machhine
 tags:
   - TRMM
   - Tropical Rainfall Measurement Mission

@@ -1,11 +1,11 @@
 ---
 layout: post
-title: Setup database connections for Karttur's GeoImagine Framework
-modified: '2018-10-13 T18:17:25.000Z'
+title: Database connections
+modified: '2018-10-15 T18:17:25.000Z'
 categories: blog
 excerpt: "Setup database connections for Karttur's GeoImagine Framework"
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2018-10-13 T18:17:25.000Z'
+date: '2018-10-15 T18:17:25.000Z'
 comments: true
 share: true
 ---
@@ -13,7 +13,7 @@ share: true
 
 # Introduction
 
-This post goes through the steps needed for creating a (fairly) secure link between the processes and the postgres database of Karttur´s GeoImagine Framework.
+This post goes through the steps needed for creating a (fairly) secure link between users, processes and the postgres database of Karttur´s GeoImagine Framework.
 
 # Prerequisites
 
@@ -21,7 +21,7 @@ To follow this post you must have the complete Spatial Data Integrated Developme
 
 # Connect Python and PostgreSQL
 
-Karttur´s GeoImagine Framework relies on a postgres database that holds all the processes as well as all the data. The installation of the postgres database should already have been done as described in the blogpost [Install postgreSQL and postGIS](hhttps://karttur.github.io/setup-ide/setup-ide/install-postgres/). Then you must also have installed and setup <span class='package'>psycopg</span> for connecting Python to postgres, plus created a security solution for the connection as desribed in the post [Connect Python and PostgreSQL using psycopg2](https://karttur.github.io/setup-ide/setup-ide/connect-with-psycopg2/).
+Karttur´s GeoImagine Framework relies on a postgres database that holds information on all processes parameters as well as all data. The installation of the postgres database should already have been done as described in the blogpost [Install postgreSQL and postGIS](https://karttur.github.io/setup-ide/setup-ide/install-postgres/). Then you must also have installed and setup <span class='package'>psycopg</span> for connecting Python to postgres, plus created a security solution for the connection as desribed in the post [Connect Python and PostgreSQL using psycopg2](https://karttur.github.io/setup-ide/setup-ide/connect-with-psycopg2/).
 
 ## Principal solution
 
@@ -40,11 +40,13 @@ At present the Framework contains the following roles (apart from the superusers
 - managelandsat
 - managesmap
 
-These roles are given their rights using an xml file, and the process [<span class='package'>grant</span>](../../subprocess/subproc-grant/). The actual running of the process and setting up of the roles is covered in the next post, this post only describes how to define the roles in the xml file and the <span class='file'>.netrc</span> file used for storing the passwords associated with each role.
+The actual running of the process and setting up of the roles is covered in the [next](../blog-setup-db/) post. This post only describes how to define the roles in the xml file and the <span class='file'>.netrc</span> file used for storing the passwords associated with each role.
 
 ### Defining roles
 
-The xml file that defines the database roles is included in the [<span class='package'>setup_db</span>](../../package/package-setup_db/) package under the path <span class='file'>doc/xmlsql/general_grant_v80_sql.xml</span>. You need to edit this file and set your own passwords for each role. If you want to change the principal system solution with one role for each schema, say to a single role dealing with everything, you can do that by giving all the rights to the same role. And then also give this role as the "HOST" in each of the modules under in the package [<span class='package'>postgresdb</span>](../../package/package-postgresdb/).
+The xml file that defines the database roles is included in the [<span class='package'>setup_db</span>](../../package/package-setup_db/) package under the path [<span class='file'>doc/xmlsql/general_grant_v80_sql.xml</span>](../../../geoimagine-setup-db/doc/xmlsql/). You need to edit this file and set your own passwords for each role. If you want to change the principal system solution with one role for each schema, say to a single role dealing with everything, you can do that by giving all the rights to the same role. And then also give this role as the "HOST" in each of the modules under in the package [<span class='package'>postgresdb</span>](../../package/package-postgresdb/).
+
+Note that the process <span class='package'>grant</span> is not definied in the databasem, but a stand alone process and can only be run from the package [<span class='package'>setup_db</span>](../../package/package-setup_db/).
 
 <button id= "toggleTGrant" onclick="hiddencode('grant')">Hide/Show grant.xml</button>
 
@@ -61,7 +63,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	<!-- GRANTS rights to various db users -->
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='processread' pswd='jii8ubise'></parameters>
+		<parameters db = 'karttur' user='processread' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -73,7 +75,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='processmanage' pswd='31tjiir8ubise'></parameters>
+		<parameters db = 'karttur' user='processmanage' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -83,7 +85,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='userread' pswd='jii8iuWH87HUDd'></parameters>
+		<parameters db = 'karttur' user='userread' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -95,7 +97,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='managelayout' pswd='jWE-TW4-90m-JUH-'></parameters>
+		<parameters db = 'karttur' user='managelayout' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -105,7 +107,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='managemodis' pswd='95y-tbh-GgG-0BJ'></parameters>
+		<parameters db = 'karttur' user='managemodis' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -123,7 +125,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='manageregion' pswd='w94-388-uhH-5UH'></parameters>
+		<parameters db = 'karttur' user='manageregion' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -137,7 +139,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='formatread' pswd='jii-8ub-ise'></parameters>
+		<parameters db = 'karttur' user='formatread' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -147,7 +149,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='regionread' pswd='84i-oOH-thf-tj1'></parameters>
+		<parameters db = 'karttur' user='regionread' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -158,7 +160,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='manageancillary' pswd='w94-3R8-uhH-5CH'></parameters>
+		<parameters db = 'karttur' user='manageancillary' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -172,7 +174,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='managesoilmoisture' pswd='w84-3R8-uhH-5DH'></parameters>
+		<parameters db = 'karttur' user='managesoilmoisture' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -184,7 +186,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='managesentinel' pswd='95d-tBh-GuG-0mJ'></parameters>
+		<parameters db = 'karttur' user='managesentinel' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -198,7 +200,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='managelandsat' pswd='95t-gBh-GuG-1RM'></parameters>
+		<parameters db = 'karttur' user='managelandsat' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -214,7 +216,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='managesmap' pswd='95t-gBh-GuG-6RM'></parameters>
+		<parameters db = 'karttur' user='managesmap' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -230,7 +232,7 @@ The xml file that defines the database roles is included in the [<span class='pa
 	</process>
 
 	<process processid ='grant'>
-		<parameters db = 'karttur' user='manageexport' pswd='98k-gBh-GuB-6RM'></parameters>
+		<parameters db = 'karttur' user='manageexport' pswd='abc'></parameters>
 		<overwrite>N</overwrite>
 		<delete>N</delete>
 		<command>
@@ -285,6 +287,8 @@ machine managesentinel login managesentinel password abc
 machine managesoilmoisture login managesoilmoisture password abc
 machine managelandsat login managelandsat password abc
 machine managesmap login managesmap password abc
+machine manageexport login manageexport password abc
+machine ManageUserProj login manageuserproj password abc
 ```
 {% endraw %}
 {% endcapture %}
@@ -295,8 +299,8 @@ machine managesmap login managesmap password abc
 
 You should now have corresponding roles, passwords and rights for operating the Framework database. In summary:
 
-1. Roles, passwords and their granted rights are defined from an xml file and running the process <span class='package'>grant</span>
+1. Roles, passwords and their granted rights are defined in an xml file.
 2. Different roles are used for accessing and editing different schemas in the database. The linking of processes and database roles is hardcoded, and to change that you need to edit the modules in the <span class='package'>postgresdb</span> package.
-3. At runtime the name and password of each role is accessed from a <span class='file'>.netrc</span> file that must have access code, role name and role password that corresponds to the definitions in the xml file and the modules of the <span class='package'>postgresdb</span> pacakge.
+3. At runtime the name and password of each role is accessed from a <span class='file'>.netrc</span> file that must have access codes, role names and role passwords that corresponds to the definitions in the xml file and the modules of the <span class='package'>postgresdb</span> package.
 
 If you decided to keep the default roles, role names, passwords and codes, all the parts should correspond. If you changed the name, passwords and grants, the Framework will report errors and you can update any mistakes when you account them.

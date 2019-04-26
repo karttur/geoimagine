@@ -1,7 +1,7 @@
 ---
 layout: rootprocess
 title: ManageSqlDumps
-excerpt: Import sql dum to the database
+excerpt: Import sql dump to the database
 rootprocid: ManageSqlDumps
 search_omit: True
 share: True

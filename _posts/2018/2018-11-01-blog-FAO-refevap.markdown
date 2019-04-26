@@ -10,15 +10,60 @@ image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-11-01 22:03'
 comments: true
 share: true
+
+ancillary-import-FAO-refevap: ancillary-import-FAO-refevap
+convert-FAO-refevap_daytomonth: convert-FAO-refevap_daytomonth
 ---
+<script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
 
-## Introduction
+# Introduction
 
-this post takes you through the steps to download and prepare data on global reference evapotranspiration.
+This post takes you through the steps to download and prepare data on global monthly statistical reference evapotranspiration from the Food and Agriculture Organization of the United Nations (FAO).
 
-## FAO reference evapotranspiration
+# FAO reference evapotranspiration
 
-The FAO dataset on reference evapotranspiration (refET) is composed of monthly average layers representing 1961 to 1990. The refET varies dependent of many factors, including temperature, wind and atmospheric water vapor pressure, but for this study we will use monthly average data. The alternative, to calculate dynamic refET is complicated and the data demands exceeds the available. The dataset was created by [Climate Research Centre (Tyndall centre) in the UK as CL version 2.0](https://crudata.uea.ac.uk/~timm/grid/CRU_CL_2_0.html), but is no longer accassible from CRU, instead you have to download it from FAO.
+The FAO dataset on reference evapotranspiration (refET) is composed of monthly average layers representing 1961 to 1990. The refET varies dependent of many factors, including temperature, wind and atmospheric water vapor pressure, but for this study we will use monthly average data. The alternative, to calculate dynamic refET is complicated and the data demands exceeds the available. The dataset was created by [Climate Research Centre (Tyndall centre) in the UK as CL version 2.0](https://crudata.uea.ac.uk/~timm/grid/CRU_CL_2_0.html), but is no longer accessible from CRU, instead you have to download it from FAO.
+
+## Project module
+
+The project module file (<span class='file'>projFaoRefET.py</span>) is available in the <span class='package'>Project</span> package [projects](https://github.com/karttur/geoimagine-projects/).
+
+<button id= "toggleprojfile" onclick="hiddencode('projfile')">Hide/Show projFaoRefET.py</button>
+
+<div id="projfile" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+from geoimagine.kartturmain.readXMLprocesses import ReadXMLProcesses, RunProcesses
+
+if __name__ == "__main__":
+
+    verbose = True
+
+    #projFN ='/full/path/to/FAOrefet_YYYYMMDD.txt'
+    projFN ='doc/FAOrefet/FAOrefet_YYYYMMDD.txt'
+
+    procLL = ReadXMLProcesses(projFN,verbose)
+
+    RunProcesses(procLL,verbose)
+```
+
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+### Process chain
+
+The project file links to an ASCII text file that contains a single xml files to executes.
+
+```
+projFN ='doc/FAOrefet/faorefet_YYYYMMDD.txt'
+```
+
+As the path to the project file does **not** start with a slash "/", the path is relative to the project module itself. The [project package available on Karttur's GitHub page](../../../geoimagine-projects) contains the path and the files required for running the process chain. Both the text file and the xml files are available under the subfolder [<span class='file'>doc/FAOrefet</span>](../../../geoimagine-projects/doc/FAOrefet).
 
 ### Access FAO refET
 
@@ -28,7 +73,7 @@ At the top of the box called Transfer options there is an option to download the
 
 #### Import the refET
 
-The downloaded refET data is in ASCII (pure text) format, you can open one of the monthly files are read the values.
+The downloaded refET data is in ASCII (pure text) format, you can open one of the monthly files and read the centent.
 
 ```
 ncols  2160
@@ -42,98 +87,12 @@ NODATA_value  -9
 
 You can import the ASCII file to a more useful format (e.g. GeoTIFF) using GDAL. I use Karttur's GeoImagine framework, and all that is required is the following xml file.
 
-```
-<?xml version='1.0' encoding='utf-8'?>
-<organize>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
-	<period timestep='staticmonthly'></period>
-
-	<process processid ='organizeancillary' version = '3.0'>
-		<parameters importdef='ascii'
-		epsg = '4326'
-		instid = 'FAO'
-		dsname  = 'refevap'
-		dsversion = ""
-		accessdate = "20181104"
-		regionid = 'global'
-		regioncat = 'global'
-		replacestr = 'MM'
-		replacetag = 'monthlypet'
-		datadir ='FAO/refevap//ref_evap_fao_10min'
-		datafile ='etoMM.txt'
-		dataurl = "http://www.fao.org/geonetwork/srv/en/metadata.show?id=7416"
-		metapath ="GIAR-CSI/PET_he_monthly/CGIAR-CSI Global-PET-AI-Read Me.doc"  
-		metaurl="http://www.fao.org/geonetwork/srv/en/metadata.show?id=7416"
-		title = "Global reference evapotranspiration"
-		label = "Global map of monthy reference evapotranspiration 10 arc minutes"
-		> </parameters>
-		<overwrite>N</overwrite>
-		<delete>N</delete>
-
-		<srcpath volume = "Pegasus6/ANCILIMPORT" hdrfiletype = "asc" datfiletype = "aai"></srcpath>
-		<dstpath volume = "OPUS" hdrfiletype = "tif" datfiletype = "tif"></dstpath>
-
-
-		<srcraw id="fao-refet-dayx10"
-		  datadir = "FAO/refevap//ref_evap_fao_10min"
-		  datafile = "etoMM"
-		  datalayer = "etoMM"  
-		  accessdate = "20181104"
-		  theme = "climate"
-		  subtheme = "reference evapotranspiration"
-		  copyright =""
-		  title = "reference evapotranspiration"
-		  label = "Global map of monthy reference evapotranspiration 10 arc minutess"
-		></srcraw>
-		<dstcomp>
-		  <fao-refet-dayx10 source = "fao" product = "refet" folder = "refet" band = "fao-refet-dayx10" prefix = "fao-refet-dayx10" suffix = "M" scalefac = "0.1" offsetadd = "0" dataunit = "mm/day" celltype = 'Int16' cellnull = '-32768' measure = 'R' masked='Y'>
-		  </fao-refet-dayx10>
-		</dstcomp>
-
-		<monthlypet type = 'datum'>
-			<compinattribute>datafile</compinattribute>
-			<compinattribute>datalayer</compinattribute>
-			<compoutattribute>yyyydoy</compoutattribute>
-			<replace key = '01' compinreplace = '01' compoutreplace = '01'></replace>
-			<replace key = '02' compinreplace = '02' compoutreplace = '02'></replace>
-			<replace key = '03' compinreplace = '03' compoutreplace = '03'></replace>
-			<replace key = '04' compinreplace = '04' compoutreplace = '04'></replace>
-			<replace key = '05' compinreplace = '05' compoutreplace = '05'></replace>
-			<replace key = '06' compinreplace = '06' compoutreplace = '06'></replace>
-			<replace key = '07' compinreplace = '07' compoutreplace = '07'></replace>
-			<replace key = '08' compinreplace = '08' compoutreplace = '08'></replace>
-			<replace key = '09' compinreplace = '09' compoutreplace = '09'></replace>
-			<replace key = '10' compinreplace = '10' compoutreplace = '10'></replace>
-			<replace key = '11' compinreplace = '11' compoutreplace = '11'></replace>
-			<replace key = '12' compinreplace = '12' compoutreplace = '12'></replace>
-		</monthlypet>
-	</process>
-</organize>
-```
+{% capture foo %}{{page.ancillary-import-FAO-refevap}}{% endcapture %}
+{% include xml/ancillary-import-FAO-refevap.html foo=foo %}
 
 ### Convert to monthly refET
 
 The FAO refET data comes as average daily mm x 10. To simplify the calculations, I convert this to monthly refEt in mm (x 1) which also means that the unit changes to mm/month. You can do the conversion manually, but I use the Karttur GeoImagine Framework through the following xml file:
 
-```
-<?xml version='1.0' encoding='utf-8'?>
-<organize>
-	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*' plotid = '*' system = 'ancillary'></userproj>
-	<period timestep='staticmonthly'></period>
-	<process processid ='convertdaytomonth' version = '3.0'>
-		<parameters factor = '0.1' offset = '0' ></parameters>
-		<overwrite>Y</overwrite>
-		<delete>N</delete>
-		<srcpath volume = "OPUS"></srcpath>
-		<dstpath volume = "OPUS"></dstpath>
-    	<srccomp>
-			<fao-refet-dayx10 source = "fao" product = "refet" folder = "refet" band = "fao-refet-dayx10" prefix = "fao-refet-dayx10" suffix = "M">
-			</fao-refet-dayx10>
-		</srccomp>
-		<dstcomp>
-			<fao-refet source = "FAO" product = "refet" folder = "refet" band = "fao-refet" prefix = "fao-refet" suffix = "M" scalefac = "1" offsetadd = "0" dataunit = "mm" celltype = 'Int16' cellnull = '-32768' measure = 'R'>
-			</fao-refet>
-		</dstcomp>
-	</process>
-</organize>
-```
+{% capture foo %}{{page.convert-FAO-refevap_daytomonth}}{% endcapture %}
+{% include xml/convert-FAO-refevap_daytomonth.html foo=foo %}

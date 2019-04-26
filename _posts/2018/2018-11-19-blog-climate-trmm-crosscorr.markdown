@@ -35,7 +35,7 @@ fig4: crosscorr_multiindex_oka+lakevic_tendency_clim-TRMM
 
 Cross correlation is a measure of similarity between two (time) series given a lag (or displacement) of one relative to the other. In some cases one of the series can be regarded as a driver (e.g. rainfall) and the other as a slave (e.g. soil moisture or vegetation growth). Cross correlation is similar to [auto correlation](../blog-climate-autocorr/), but instead of finding the correlation in a single time series, cross correlation compares two time series while changing the lag time.
 
-In Karttur's GeoImagine Framework, cross correlation is tested using the same principles as in [numpy.crosscorr](https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.correlate.html), but with the customized code by [Jean-Rémi King available on GithHub](https://github.com/kingjr/jr-tools/blob/master/jr/stats/base.py). The difference is that the latter code allows the setting of a maximum number of lags, and thus faster compared to the former.
+In Karttur's GeoImagine Framework, cross correlation is tested using the same principles as in [numpy.crosscorr](https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.correlate.html), but with the customized code by [Jean-Rémi King available on GithHub](https://github.com/kingjr/jr-tools/blob/master/jr/stats/base.py). The difference is that the latter code allows the setting of a maximum number of lags, and is thus faster compared to the former.
 
 All cross correlations report two results: the lag and the Pearson correlation number for the best fitted lag.
 
@@ -54,11 +54,11 @@ You must have setup the Karttur's GeoImagine Framework as described in [earlier]
 To illustrate how the cross correlation works, you will use the Framework package for plotting cross correlations between an index and an image time series [<span class='package'>indexcompxcrosstsgraphancillary</span>](../../subprocess/subproc-indexcompxcrosstsgraphancillary/). There are many options for parameterizing this package and only a few options will be explored in the tutorial. If you go to the [process page](../../subprocess/subproc-indexcompxcrosstsgraphancillary/) you can see all options.
 
 
-## XML commands
+## Process commands
 
 ### Default setting
 
-By default the [<span class='package'>indexcompxcrosstsgraphancillary</span>](../../subprocess/subproc-indexcompxcrosstsgraphancillary/) analyses the cross correlation only for the original (observed) time series. You can state as many points to compare as you like, but only one climate index.
+By default the [<span class='package'>indexcompxcrosstsgraphancillary</span>](../../subprocess/subproc-indexcompxcrosstsgraphancillary/) analyses the cross correlation only for the original (observed) time series. You can state as many locations (\<xy \>) to compare as you like, but only one climate index.
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -94,7 +94,7 @@ The figure below illustrates the results for the xml parameterization above, but
 
 ### Cross correlation with time series components
 
-The cross correlation process can decompose the time series on the fly and also do the correlation by comparing any of the components (tendency, seasons or residual). The process can also compare all the components in one parameter setting.
+The cross correlation process can decompose the time series on the fly and then analyse the cross correlation for any combination of components (tendency, seasons or residual).
 
 ```
   <process processid = 'indexcompxcrosstsgraphancillary' version = '1.3'>
@@ -117,7 +117,7 @@ The cross correlation process can decompose the time series on the fly and also 
 	</process>
 ```
 
-When correlating a single index and a single local observation, setting the parameter _lagplot_ to _True_ infers the identified lag and shifts the plotted time series accordingly. By setting the parameter _abs_ to _True_ the best fitted lag is calculated from the absolute cross correlation. In effect this means that a highly negative  ("out of phase") correlation will be identified if it is stronger than the best positive cross correlation. The figure below shows all four possible combinations of the parameters _lagplot_ and _abs_ for the PDO index and rainfall at the Okavango Delta in Botswana.
+When correlating a single index and a single local observation, setting the parameter _lagplot_ to _True_ infers the identified lag and shifts the plotted time series accordingly. By setting the parameter _abs_ to _True_ the best fitted lag is calculated from the absolute cross correlation. In effect this means that a highly negative  ("out of phase") correlation will be identified if it is stronger than the best positive cross correlation. The figure below shows all four possible combinations of the parameters _lagplot_ and _abs_ for the PDO index and rainfall at the Okavango Delta in Botswana. The differences are easiest to see in the correlations of the seasonal signal.
 
 <figure class="half">
   <a href="{{ site.commonurl }}/images/{{ site.data.images[page.fig2a].file }}"><img src="{{ site.commonurl }}/images/{{ site.data.images[page.fig2a].file }}" alt="image"></a>
@@ -133,7 +133,7 @@ When correlating a single index and a single local observation, setting the para
 
 ### Multiple indexes
 
-You can compare multiple indexes in the same plot. Each index will be presented as a subplot. Thus you can only compare one kind of time series component (observation, tendency, seasons or residual) when comparing multiple indexes. The example compares several indexes with the rainfall over the Okavango Delta. The example code is for tendency. All examples plots the adjusted lag and all identify the absolute best cross correlation.
+You can compare multiple indexes in the same plot. Each index will be presented as a subplot. Thus you can only compare one kind of time series component (observation, tendency, seasons or residual) when comparing multiple indexes. The example compares several indexes with the rainfall over the Okavango Delta. The example code is for tendency. All examples plot the adjusted lag and all identify the absolute best cross correlation.
 
 ```
   <process processid = 'indexcompxcrosstsgraphancillary' version = '1.3'>
