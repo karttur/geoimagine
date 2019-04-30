@@ -23,10 +23,10 @@ comments: true
 share: true
 
 figure1: avg-grace-ave_cmwater_global_2003-2016_RL05-f-A
-figure2A: ols-sl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2B: ts-mdsl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2C: ts-losl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2D: ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
+figure2A: ols-sl-grace-ave_cmwater_global_2003-2016_RL05-f-A
+figure2B: ts-mdsl-grace-ave_cmwater_global_2003-2016_RL05-f-A
+figure2C: ts-losl-grace-ave_cmwater_global_2003-2016_RL05-f-A
+figure2D: ts-hisl-grace-ave_cmwater_global_2003-2016_RL05-f-A
 
 GRACE-0001_createscaling: GRACE-0001_createscaling
 GRACE-0002_createpalettes: GRACE-0002_createpalettes
