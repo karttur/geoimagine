@@ -5,17 +5,16 @@ modified: '2018-10-17 T18:17:25.000Z'
 categories: blog
 excerpt: "Add additional python packages to Anaconda"
 tags:
-  - GDAL
-  - pypng
-  - pyproj
-  - reportlab
-  - svgis
-  - svgwrite
-  - seasonal
-  - sentinelsat
-  - shapely
-  - xmltodict
-  - wget
+- landsatxplore
+- plotnine
+- pypng
+- reportlab
+- seasonal
+- sentinelsat
+- svgis
+- svgwrite
+- wget
+
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-17 T18:17:25.000Z'
 comments: true
@@ -29,76 +28,107 @@ The full suite of capabilities that come with Karttur's GeoImagine Framework req
 
 If you are going to download data from [https://earthdata.nasa.gov](https://earthdata.nasa.gov) (e.g.SMAP or MODIS) you must also setup your machine to handle <span class='terminalapp'>wget</span>, as explained towards the end of this blog.
 
-# Additional packages
+# Conda virtual environments
 
- With a full installation of the Framework and Anaconda3 installed with Python 3.6.7, I needed to add the following python packages:
+it is strongly recommended to setup your Python using conda virtual environment as described in a [previous](../blog-conda-environ/) post.
 
-- GDAL
-- pypng
-- pyproj
-- reportlab
-- svgis
-- svgwrite
-- seasonal
-- sentinelsat
-- shapely
-- xmltodict
+If you want to create an empty virtual environment instead, open the <span class='app'>terminal</span> and write the command:
 
-## GDAL
+<span class='terminal'>$ conda create --no-default-packages -n geoimagine0 python</span>
 
-The [Geographic Data Abstraction Library (GDAL)](https://www.gdal.org/) is the core of all spatial processing in Karttur's GeoImagine Framework. Anaconda suggests that GDAL be installed using [conda-forge](https://anaconda.org/conda-forge/gdal):
+where _geoimagine0_ is the name of the virtual environment.
 
-<span class='terminal'>$ conda install -c conda-forge gdal</span>
+# Additional core packages
 
-However, dependent on how you installed other packages it might be better to use [<span class='terminalapp'>pip install</span>](https://pypi.org/project/GDAL/):
+ With a full installation of the Framework and Anaconda3 installed with Python 3, you need to add the following default Python packages:
 
-<span class='terminal'>$ pip install gdal</span>
+ - numpy
+ - scipy
+ - pandas
+ - geopandas
+ - rasterio
+ - psycopg2
+ - statsmodels
+ - numba
+ - xmltodict
+
+If you followed the manual on [setting up a virtual Python environment in conda](../blog-conda-environ/), these are the same packages as listed for use as default when setting up a virtual environment. You should thus already have then installed. If not, you can also install the above packages into an (empty) existing virtual environment. It is best to install all packages at once, so that all of the dependencies are installed at the same time.
+
+Activate the virtual environment you want to use (e.g. _geoimagine0_)
+
+<span class='terminal'>$ conda activate geoimagine0</span>
+
+and then install all the core packages:
+
+<span class='terminal'>(geoimagine0) ... $ conda install numpy scipy pandas geopandas rasterio psycopg2 statsmodels numba xmltodict</span>
+
+## Packages installed with the above commands
+
+With the packages listed above a long list of other packages, called dependencies, are also installed. The trick is that all will be installed using shared resourices and there will not be any conflicts between different versions. A full list of installed packages are reported at the prompt, or you can tell <span class='terminalapp'>conda</span> to list all packages installed with a particular virtual environment:
+
+<span class='terminal'>(geoimagine0) ... $ conda list</span>
+
+Some of the packages installed with command above, or by setting up the virtual environment with using the defaul packages as sugegsted in [this](*) post, will also include the following packages (among others) for spatial data processing:
+
+ - GDAL
+ - fiona
+ - shapely
+ - pyproj
+ - proj4
+
+
+If you want to explore other Pythom packages for spatial data processing please have a look at the [excellent web page](https://automating-gis-processes.github.io/2016/Lesson1-Intro-Python-GIS.html).
+
+## Additional packages required
+
+Apart from the above packages, you also need to install some packages using other channels as well as other installation managers. The additional packages that are needed include:
+
+ - landsatxplore
+ - plotnine
+ - pypng
+ - reportlab
+ - seasonal
+ - sentinelsat
+ - svgis
+ - svgwrite
+ - wget
+
+## landsatxplore
+
+[Landsatxplore](https://pypi.org/project/landsatxplore/) is a package for searching and downloading Landsat satellite image scenes from [EarthExplorer](https://earthexplorer.usgs.gov). There are alternative packages that can be used for the same task, but Karttur's GeoImagine Framework is set up for using Landsatxplore. If you want to use Landsat data from EarthExplorer in your projects you need to need to register)
+[#](https://pypi.org/project/landsatxplore/).
+
+[Landsatxplore](https://pypi.org/project/landsatxplore/)is not available at any conda channel and you need to use the <span class='terminalapp'>pip</span> installation manager.
+
+<span class='terminal'>$ pip install landsatxplore</span>
+
+## plotnine
+
+[plotnine](https://plotnine.readthedocs.io/en/stable/) is a powerful graphics editor that you can use for composing maps and layouts in Python. It is like a Python version of the popular #Grammar of graphics" concept used by _ggplot_.The grammar allows users to compose plots by explicitly mapping data to the visual objects that make up the plot. plotnine is available on several conda channels, and can for instance be installed using the command:
+
+<span class='terminal'>$ conda install -c conda-forge plotnine</span>
 
 ## pypng
 
-The Pure Python PNG (pypng) image encoder/decoder is a stand alone module that is used for writing png images. In the Framework pypng is used both for generating image maps, including movie frames, and other graphical output (e.g. legends). Use [<span class='terminalapp'>pip install</span>](https://pypi.org/project/pypng/) to get pypng added to your project.
+The Pure Python PNG (pypng) image encoder/decoder is a stand alone module that is used for writing png images. In the Framework, pypng is used both for generating image maps, including movie frames, and other graphical output (e.g. legends). Use [<span class='terminalapp'>pip install</span>](https://pypi.org/project/pypng/) to get pypng added to your project.
 
 <span class='terminal'>$ pip install pypng</span>
 
-## pyproj
-
-The package pyproj is a map projection library. In the Framework it is used for importing SMAP data. You can install pyproj either using [conda-forge](https://anaconda.org/anaconda/reportlab):
-
-<span class='terminal'>$ conda install -c conda-forge pyproj</span>
-
-or [<span class='terminalapp'>pip install</span>](https://pypi.org/project/pyproj/)
-
-<span class='terminal'>$ pip install pyproj</span>
-
 ## reportlab
 
-In the Framework, reportlab is used for generating pdf outputs, mainly for creating map legends. You can install reportlab either using [conda](https://anaconda.org/anaconda/reportlab):
+In the Framework, reportlab is used for generating pdf outputs, mainly for creating map legends. the package is not required for all versions of the Framework, and is strictly not needed.
+
+if you want to install reportlab it is recommended that you use [<span class='terminalapp'>conda</span>](https://anaconda.org/anaconda/reportlab):
 
 <span class='terminal'>$ conda install -c anaconda reportlab</span>
 
-or [<span class='terminalapp'>pip install</span>](https://pypi.org/project/reportlab/)
+reportlab is also available as [<span class='terminalapp'>pip install</span>](https://pypi.org/project/reportlab/)
 
 <span class='terminal'>$ pip install reportlab</span>
 
-## svgis
-
-SVGIS converts vector geodata to Scalable Vector Graphics (SVG). SVG can be styled using Cascade Style Sheets (CSS) and also read and manipulated by drawing programs. In the Framework SVGIS is primarily used for exporting vector data to use as overlays in map layouts.
-
-SVGIS is installed with [<span class='terminalapp'>pip install</span>](https://pypi.org/project/svgis/)
-
-<span class='terminal'>$ pip install svgis</span>
-
-## svgwrite
-
-SVGwrite is a more general library for writing SVG formated vector graphics.
-
-SVGwrite is installed with [<span class='terminalapp'>pip install</span>](https://pypi.org/project/svgwrite/)
-
-<span class='terminal'>$ pip install svgwrite</span>
-
 ## seasonal
 
-The seasonal package estimate and remove trend and periodicity in time-series. In the Framework it is used for time-series decompostion and trend estimations.
+The seasonal package estimate and remove trend and periodicity in time-series. In the Framework it is used for time-series decomposition and trend estimations.
 
 **NOTE** that in the Framework [the seasonal package is edited to include more options and with altered default settings](#).
 
@@ -114,29 +144,23 @@ Sentinelsat is installed with [<span class='terminalapp'>pip install</span>](htt
 
 <span class='terminal'>$ pip install sentinelsat</span>
 
-## Shapely
+## svgis
 
-Shapley is a versatile tool for manipulation and analysis of geometric objects in the Cartesian plane. In the Framework it is used for vector processing.
+SVGIS converts vector geodata to Scalable Vector Graphics (SVG). SVG can be styled using Cascaded Style Sheets (CSS) and also read and manipulated by drawing programs. In the Framework SVGIS is primarily used for exporting vector data to use as overlays in map layouts.
 
-You can install shapely either using [conda-forge](https://anaconda.org/anaconda/shapely):
+SVGIS is installed with [<span class='terminalapp'>pip install</span>](https://pypi.org/project/svgis/)
 
-<span class='terminal'>$ conda install -c conda-forge shapely</span>
+<span class='terminal'>$ pip install svgis</span>
 
-or with [<span class='terminalapp'>pip install</span>](https://pypi.org/project/Shapely/).
+## svgwrite
 
-<span class='terminal'>$ pip install Shapely</span>
+SVGwrite is a more general library for writing SVG formated vector graphics. It is used for creating legends and other layout items for maps. The preferred installation is using [<span class='terminalapp'>conda</span>](https://anaconda.org/omnia/svgwrite):
 
-## xmltodict
+<span class='terminal'>$ conda install -c omnia svgwrite</span>
 
-In Karttur's GeoImagine Framework, xmltodict is used for reading all the instructions. The Framework will not function without it.
+svgwrite is also available as [<span class='terminalapp'>pip install</span>](https://pypi.org/project/svgwrite/)
 
-You can install shapely either using [conda-forge](https://anaconda.org/conda-forge/xmltodict):
-
-<span class='terminal'>$ conda install -c conda-forge xmltodist</span>
-
-or with [<span class='terminalapp'>pip install</span>](https://pypi.org/project/xmltodict/).
-
-<span class='terminal'>$ pip install xmltodict</span>
+<span class='terminal'>$ pip install svgwrite</span>
 
 ## wget
 
