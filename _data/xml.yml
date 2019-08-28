@@ -1113,3 +1113,48 @@ MODIS-0472_TWI-percent_singletile:
     caption: null
     credit: null
     source: null
+
+general_grant_v80_sql:
+    file: general_grant_v80_sql.xml
+    html: general_grant_v80_sql.html
+    id: general_grant_v80_sql
+    author: Thomas Gumbricht
+    caption: null
+    credit: null
+    source: null
+
+add_arbitrary_default_regions_v80:
+    file: add_arbitrary_default_regions_v80.xml
+    html: add_arbitrary_default_regions_v80.html
+    id: add_arbitrary_default_regions_v80
+    author: Thomas Gumbricht
+    caption: null
+    credit: null
+    source: null
+
+add_region_categories_v80:
+    file: add_region_categories_v80.xml
+    html: add_region_categories_v80.html
+    id: add_region_categories_v80
+    author: Thomas Gumbricht
+    caption: null
+    credit: null
+    source: null
+
+ancillary-import-kartturROI_2014:
+    file: ancillary-import-kartturROI_2014.xml
+    html: ancillary-import-kartturROI_2014.html
+    id: ancillary-import-kartturROI_2014
+    author: Thomas Gumbricht
+    caption: null
+    credit: null
+    source: null
+
+add_default_regions_from-vector_v80:
+    file: add_default_regions_from-vector_v80.xml
+    html: add_default_regions_from-vector_v80.html
+    id: add_default_regions_from-vector_v80
+    author: Thomas Gumbricht
+    caption: null
+    credit: null
+    source: null

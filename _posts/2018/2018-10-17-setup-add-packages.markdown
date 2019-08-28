@@ -2,7 +2,7 @@
 layout: post
 title: Additional packages
 modified: '2018-10-17 T18:17:25.000Z'
-categories: blog
+categories: setup
 excerpt: "Add additional python packages to Anaconda"
 tags:
 - landsatxplore
@@ -26,19 +26,27 @@ share: true
 
 The full suite of capabilities that come with Karttur's GeoImagine Framework requires that you install some extra python packages with <span class='app'>Anaconda</span>. Which packages to install depends both on the Anaconda distribution and version, as well as the GeoImagine Framework packages.
 
+If you have setup the GeoImagine Framework with a [conda virtual python environment](../setup-conda-environ/) you probably already have all the required python packages installed.
+
 If you are going to download data from [https://earthdata.nasa.gov](https://earthdata.nasa.gov) (e.g.SMAP or MODIS) you must also setup your machine to handle <span class='terminalapp'>wget</span>, as explained towards the end of this blog.
 
 # Conda virtual environments
 
-it is strongly recommended to setup your Python using conda virtual environment as described in a [previous](../blog-conda-environ/) post.
+it is strongly recommended to setup your Python interpreter using conda virtual environment as described in a [previous](../setup-conda-environ/) post.
 
-If you want to create an empty virtual environment instead, open the <span class='app'>terminal</span> and write the command:
+If, for some reason, you want to create an empty virtual environment instead, open the <span class='app'>terminal</span> and write the command:
 
 <span class='terminal'>$ conda create --no-default-packages -n geoimagine0 python</span>
 
 where _geoimagine0_ is the name of the virtual environment.
 
-# Additional core packages
+Activate the virtual Python environment by typing:
+
+<span class='terminal'>$ conda activate geoimagine0</span>
+
+You can now install any packages to your virtual environment using eg. <span class='terminal'>$ conda install</span> or <span class='terminal'>$ pip install</span>.
+
+# Core (default) packages
 
  With a full installation of the Framework and Anaconda3 installed with Python 3, you need to add the following default Python packages:
 
@@ -52,7 +60,7 @@ where _geoimagine0_ is the name of the virtual environment.
  - numba
  - xmltodict
 
-If you followed the manual on [setting up a virtual Python environment in conda](../blog-conda-environ/), these are the same packages as listed for use as default when setting up a virtual environment. You should thus already have then installed. If not, you can also install the above packages into an (empty) existing virtual environment. It is best to install all packages at once, so that all of the dependencies are installed at the same time.
+If you followed the manual on [setting up a virtual Python environment in conda](../setup-conda-environ/), these are the same packages as listed as defaults when setting up a virtual environment. You should thus already have then installed. If not, you can also install the above packages into an (empty) existing virtual environment. It is best to install all packages at once, so that all of the dependencies are installed at the same time.
 
 Activate the virtual environment you want to use (e.g. _geoimagine0_)
 
@@ -64,11 +72,11 @@ and then install all the core packages:
 
 ## Packages installed with the above commands
 
-With the packages listed above a long list of other packages, called dependencies, are also installed. The trick is that all will be installed using shared resourices and there will not be any conflicts between different versions. A full list of installed packages are reported at the prompt, or you can tell <span class='terminalapp'>conda</span> to list all packages installed with a particular virtual environment:
+Installing the default packages above, results in a long list of also other packages, called dependencies, that are also installed. The trick is that all will be installed using shared resources and there will not be any conflicts between different versions. A full list of installed packages are reported at the prompt, or you can use <span class='terminalapp'>conda</span> to list all packages installed with a particular virtual environment:
 
 <span class='terminal'>(geoimagine0) ... $ conda list</span>
 
-Some of the packages installed with command above, or by setting up the virtual environment with using the defaul packages as sugegsted in [this](*) post, will also include the following packages (among others) for spatial data processing:
+Some of the additional packages installed with the command above include the following packages (among others) for spatial data processing:
 
  - GDAL
  - fiona
@@ -76,8 +84,7 @@ Some of the packages installed with command above, or by setting up the virtual 
  - pyproj
  - proj4
 
-
-If you want to explore other Pythom packages for spatial data processing please have a look at the [excellent web page](https://automating-gis-processes.github.io/2016/Lesson1-Intro-Python-GIS.html).
+If you want to explore other Python packages for spatial data processing please have a look at [this excellent web page](https://automating-gis-processes.github.io/2016/Lesson1-Intro-Python-GIS.html).
 
 ## Additional packages required
 
@@ -95,16 +102,15 @@ Apart from the above packages, you also need to install some packages using othe
 
 ## landsatxplore
 
-[Landsatxplore](https://pypi.org/project/landsatxplore/) is a package for searching and downloading Landsat satellite image scenes from [EarthExplorer](https://earthexplorer.usgs.gov). There are alternative packages that can be used for the same task, but Karttur's GeoImagine Framework is set up for using Landsatxplore. If you want to use Landsat data from EarthExplorer in your projects you need to need to register)
-[#](https://pypi.org/project/landsatxplore/).
+[Landsatxplore](https://pypi.org/project/landsatxplore/) is a package for searching and downloading Landsat satellite image scenes from [EarthExplorer](https://earthexplorer.usgs.gov). There are alternative packages that can be used for the same task, but Karttur's GeoImagine Framework is set up for using Landsatxplore. If you want to use Landsat data from EarthExplorer you need to register as an EarthExplorer user.
 
-[Landsatxplore](https://pypi.org/project/landsatxplore/)is not available at any conda channel and you need to use the <span class='terminalapp'>pip</span> installation manager.
+[Landsatxplore](https://pypi.org/project/landsatxplore/) is not available at any conda channel and you need to use the <span class='terminalapp'>pip</span> installation manager.
 
 <span class='terminal'>$ pip install landsatxplore</span>
 
 ## plotnine
 
-[plotnine](https://plotnine.readthedocs.io/en/stable/) is a powerful graphics editor that you can use for composing maps and layouts in Python. It is like a Python version of the popular #Grammar of graphics" concept used by _ggplot_.The grammar allows users to compose plots by explicitly mapping data to the visual objects that make up the plot. plotnine is available on several conda channels, and can for instance be installed using the command:
+[plotnine](https://plotnine.readthedocs.io/en/stable/) is a powerful graphics editor that you can use for composing maps and layouts in Python. It is like a Python version of the popular "Grammar of graphics" concept used by _ggplot_. The grammar allows users to compose plots by explicitly mapping data to the visual objects that make up the plot. plotnine is available on several conda channels, and can for instance be installed using the command:
 
 <span class='terminal'>$ conda install -c conda-forge plotnine</span>
 
@@ -116,9 +122,9 @@ The Pure Python PNG (pypng) image encoder/decoder is a stand alone module that i
 
 ## reportlab
 
-In the Framework, reportlab is used for generating pdf outputs, mainly for creating map legends. the package is not required for all versions of the Framework, and is strictly not needed.
+Reportlab is not used in the present FRamework version. It can be used for generating pdf outputs, mainly for creating map legends.
 
-if you want to install reportlab it is recommended that you use [<span class='terminalapp'>conda</span>](https://anaconda.org/anaconda/reportlab):
+if you want to install reportlab make sure it can be installed without conflicts using [<span class='terminalapp'>conda</span>](https://anaconda.org/anaconda/reportlab):
 
 <span class='terminal'>$ conda install -c anaconda reportlab</span>
 
@@ -130,7 +136,7 @@ reportlab is also available as [<span class='terminalapp'>pip install</span>](ht
 
 The seasonal package estimate and remove trend and periodicity in time-series. In the Framework it is used for time-series decomposition and trend estimations.
 
-**NOTE** that in the Framework [the seasonal package is edited to include more options and with altered default settings](#).
+**NOTE** that in the Framework __the seasonal package is edited to include more options and with altered default settings__.
 
 The seasonal package is installed with [<span class='terminalapp'>pip install</span>](https://pypi.org/project/seasonal/)
 

@@ -8,8 +8,8 @@
   url: /
   include: 'N'
 
-- title: Articles
-  url: /overview/
+- title: Setup
+  url: /setup/
   include: 'N'
 
 - title: Blog

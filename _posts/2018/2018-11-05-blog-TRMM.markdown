@@ -47,7 +47,7 @@ This post steps through how to order, download, import and process global precip
 
 ## Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). The Framework [postgres database must be setup](../blog-setup-db/) and the [processes defined](../blog-setup-processes/). The [default region "TRMM"](../blog-setup-regions) must also be defined.
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/). The [default region "TRMM"](../blog-setup-regions) must also be defined.
 
 # TRMM
 
@@ -140,7 +140,7 @@ def WgetErthDataTRMM(srcFPN, dstFP):
             if not 'https' in url:
                 url = url.replace('http','https')
             cmd = '/usr/local/bin/wget --load-cookies ~/.urs_cookies --save-cookies ~/.urs_cookies --keep-session-cookies --directory-prefix=%(dst)s %(url)s' %{'dst': dstFP, 'url':url}
-            os.system(cmd)  
+            os.system(cmd)
         else:
             print ('already done', FN)
 
@@ -233,7 +233,7 @@ As the path to the project file does **not** start with a slash "\\", the path m
 #TRMM-0120_monthdaytomonth.xml
 
 ###################################
-###   Time series processing    ###
+###   Time Series Processing    ###
 ###################################
 
 ## Resample TRMM to annual ##
@@ -314,7 +314,7 @@ The process loads the complete dataset and checks the complete time series one c
 
 ### Renaming and editing the date format
 
-The original TRMM data have filenames that include the date of acquisition, but with the month represented by the first day of the month. In Karttur´s GeoImaginge Framework, [data representing a month is denoted by year + month (YYYYMM)](../blog-xml/). The Framework code for this date format is "M" (or "MS" in agreement with the Pandas coding). (The Framework, however, can use the first day of each month for representing monthly data, with the code "montlhyday").
+The original TRMM data have filenames that include the date of acquisition, but with the month represented by the first day of the month. In Karttur´s GeoImaginge Framework, [data representing a month is denoted by year + month (YYYYMM)](../setup-xml/). The Framework code for this date format is "M" (or "MS" in agreement with the Pandas coding). (The Framework, however, can use the first day of each month for representing monthly data, with the code "montlhyday").
 
 To change the date format YYYYMMDD ("monthlyday") to YYYYMM ("M"), run the process [<span class='package'>MonthlyDayToMonthlyAncillary</span>](../../subprocess/subproc-MonthlyDayToMonthlyAncillary/):
 
@@ -330,9 +330,9 @@ The TRMM product that is used here, 3B43, represents monthly time steps. For tre
 {% capture foo %}{{page.TRMM-0290_resample-2-annual}}{% endcapture %}
 {% include xml/TRMM-0290_resample-2-annual.html foo=foo %}
 
-### Annual statistics and trends
+### Analyse precipitation trends
 
-From the annual data of summed precipitation, calculate statistics and trends using both Ordinary Least Square (OLS) regression, and Theil-Sen regression along with a Mann-Kendall test using the processes [<span class='package'>trendtsancillary</span>](../../subprocess/subproc-trendtsancillary/) (see the [GRACE post](../blog-GRACE/) for details).
+From the annual data of summed precipitation, calculate the trend using both Ordinary Least Square (OLS) regression, and Theil-Sen regression along with a Mann-Kendall test using the processes [<span class='package'>trendtsancillary</span>](../../subprocess/subproc-trendtsancillary/) (see the [GRACE post](../blog-GRACE/) for details).
 
 You can calculate the trend for any period; the example under the <span class='button'>Hide/Show</span> button is for the period 1998-2017. If you want to compare the precipitation trend with trends in Gravity observed water pillar (from GRACE) or MODIS derived soil moisture, you need to calculate trends for the time-period (years) overlapping with these other datasets (e.g 2003-2016 for GRACE).
 

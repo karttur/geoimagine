@@ -1,0 +1,327 @@
+---
+layout: post
+title: Vertical Water Balance
+modified: '2018-11-10 20:17'
+categories: blog
+excerpt: Calculating Vertical Water Balance from TRMM rainfall FAO reference evapotranspiration
+tags:
+  - Vertical Water Balance
+  - rainfall
+  - evapotranspiration
+  - TRMM
+  - Tropical Rainfall Measurement Mission
+  - FAO refET
+image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
+date: '2018-11-10 22:03'
+comments: true
+share: true
+
+VWB-0170_TRMM-applymask: VWB-0170_TRMM-applymask
+VWB-0290_resample-2-annual: VWB-0290_resample-2-annual
+VWB-0950_movieframes_M: VWB-0950_movieframes_M
+VWB-0320_changes_A_2003-2016: VWB-0320_changes_A_2003-2016
+VWB-0320_changes_A_1998-2017: VWB-0320_changes_A_1998-2017
+VWB-0002_createpalettes: VWB-0002_createpalettes
+VWB-0160_FAOrefet_createmask: VWB-0160_FAOrefet_createmask
+VWB-0140_FAOrefet_translate_2_TRMM: VWB-0140_FAOrefet_translate_2_TRMM
+VWB-0310_trend_A_2003-2016: VWB-0310_trend_A_2003-2016
+VWB-0910_ExporttoByte_timespanA_1998-2017: VWB-0910_ExporttoByte_timespanA_1998-2017
+VWB-0190_udatedb: VWB-0190_udatedb
+VWB-0130_FAOrefet_convert_daytomonth: VWB-0130_FAOrefet_convert_daytomonth
+VWB-0001_createscaling: VWB-0001_createscaling
+VWB-0960_movieclock_M.xml: VWB-0960_movieclock_M.xml
+VWB-0900_ExporttoByte_M: VWB-0900_ExporttoByte_M
+VWB-0004_addmovieclock: VWB-0004_addmovieclock
+VWB-0241_subtract_seasonal_trmm-refet: VWB-0241_subtract_seasonal_trmm-refet
+VWB-0003_createlegends: VWB-0003_createlegends
+VWB-0310_trend_A_1998-2017: VWB-0310_trend_A_1998-2017
+
+---
+<script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
+
+# Introduction
+
+The Vertical Water Balance (VWB) is the local difference between precipitation and evapotranspiration. Regions with precipitation exceeding evapotranspiration are called humid, and areas where evapotranspiration exceed precipitation arid. Many regions have both wet and dry seasons, with humid conditions during the wet season and arid during the dry. Differentiating between humid and arid regions and seasons is important, for instance for understanding and predicting changes in water availability as a consequence of climate changes.
+
+## Prerequisites
+
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/). You must also have imported and processed data representing precipitation and evapotranspiration.
+
+
+# Vertical Water Balance
+
+Herein, VWB is calculated as the monthly precipitation minus the monthly evapotranspiration. In this post I use the [Tropical Rainfall Measurement Mission (TRMM)](../blog-TRMM/) dataset together with the [FAO reference evapotranspiration (refET)](../blog-FAO-refevap/) to calculate VWB. To calculate the global VWB you can use the [IMERG](../blog-IMERG/) rainfall dataset instead.
+
+## Project module
+
+As explained in the post on [Running processes](../setup-run/) you can create a project module for running specific tasks. The module below links to a single file (<span class='file'>VWB_TRMM-vs-FAOrefevap.txt</span>), that in turn links to a set of xml files. Running the module below will run all processes in the listed xml files.
+
+<button id= "toggleprojfile" onclick="hiddencode('projfile')">Hide/Show projVWB.py</button>
+<div id="projfile" style="display:none">
+{% capture text-capture %}
+{% raw %}
+
+```
+from geoimagine.kartturmain.readXMLprocesses import ReadXMLProcesses, RunProcesses
+
+if __name__ == "__main__":
+
+    verbose = True
+
+    projFN = '/Volume/and/path/to/VWB_TRMM-vs-FAOrefevap_YYYYMMDD.txt'
+    projFN ='doc/VWB/VWB_TRMM-vs-FAOrefevap_YYYYMMDD.txt'
+
+    procLL = ReadXMLProcesses(projFN,verbose)
+
+    RunProcesses(procLL,verbose)
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+At the very end of the post you find the process chain (i.e. the file <span class='file'>VWB_TRMM-vs-FAOrefevap.txt</span>) that will run the complete VWB calculation outlined below; including the time series analysis and export as images and animations.
+
+### Preprocessing
+
+Before running the VWB you have to process the precipitation and evapotranspiration data to use as input. Accessing and organizing the [TRMM](../blog-TRMM/) and [refET](../blog-FAO-refevap/) datasets are covered in two previous posts.
+
+Before actually calculating the VWB you must fit the two datasets (rainfall and evapotranspiration) together. For the two datasets used here there are several issues that must be regarded for fitting the datasets:
+
+- Units must be the same (e.g mm/month)
+- The spatial extent must be the same
+- The spatial resolution must be the same
+- The regions of nodata should match
+
+The TRMM data was converted to mm/month when [imported to the Framework](../blog-TRMM/). The FAO reference evapotranspiration data were [imported with the original scaling](../blog-FAO-refevap/) that represent mm/day times 10. Unless you already converted the FAO refET to mm/month, it must be done prior to calculating VWB.
+
+The TRMM dataset covers a smaller spatial region (between 50 degrees latitude) and has a slightly coarser spatial resolution. The easiest way to fit the dataset is thus to reduce the spatial extent and spatial coverage of the FAO reference evapotranspiration. The TRMM data have estimated rainfall for all pixels, including over the oceans. The FAO reference evapotranspiration only covers land. Fitting the datasets should thus also include masking out the same land area.
+
+#### Adjust the data units
+
+Convert the reference evapotranspiration data in mm/day to mm/month by using the process [<span class='package'>convertdaytomonth</span>](../../subprocess/subproc-convertdaytomonth/).
+
+{% capture foo %}{{page.VWB-0130_FAOrefet_convert_daytomonth}}{% endcapture %}
+{% include xml/VWB-0130_FAOrefet_convert_daytomonth.html foo=foo %}
+
+#### Transform the refET
+
+The global refET dataset with monthly average evapotranspiration needs to be fitted to the TRMM dataset. In Karttur's GeoImagine Framework the process for doing that is [<span class='package'>gdal_translateancillary</span>](../../subprocess/subproc-gdal_translateancillary/). This process is just an interface to the GDAL utility <span class='terminalapp'>gdal_translate</span>. In the xml file below, the parameters define the translation by setting a pre-defined default region ('trmm') and the columns ('xsize') and rows ('ysize') spanning the default region:
+
+{% capture foo %}{{page.VWB-0140_FAOrefet_translate_2_TRMM}}{% endcapture %}
+{% include xml/VWB-0140_FAOrefet_translate_2_TRMM.html foo=foo %}
+
+#### Create a landmask
+
+The FAO refET data only cover land areas. To create a mask, use the transformed version of the refET that fits the TRMM region for defining a mask. You could use any of the months in the refET dataset for defining the mask but to make sure you mask out all regions you can also use all 12 months of refET to define the mask (just to make sure in case there are errors in the FAO refET nodata mask). The process [<span class='package'>createstaticmaskancillary</span>](../../subprocess/subproc-createstaticmaskancillary/) will do it for you:
+
+{% capture foo %}{{page.VWB-0160_FAOrefet_createmask}}{% endcapture %}
+{% include xml/VWB-0160_FAOrefet_createmask.html foo=foo %}
+
+
+Note that the tractid is set to 'karttur-trmm', which is the region owned by the user karttur that is based on the default region trmm. When operating on the spatial data, the karttur region 'karttur-trmm' will use the default region ('trmm') for all naming. This prevents any user (including super users) to operate directly on any default region. A user can only operate on its own regions.
+
+#### Apply mask
+
+The mask you just created from the refET data must be applied to the complete time series of TRMM rainfall data. This is done with the process [<span class='package'>applystaticmaskancillary</span>](../../subprocess/subproc-applystaticmaskancillary/).
+
+{% capture foo %}{{page.VWB-0170_TRMM-applymask}}{% endcapture %}
+{% include xml/VWB-0170_TRMM-applymask.html foo=foo %}
+
+### Calculate Vertical Water Balance
+
+You should now have two time series covering the same spatial region, with the same spatial resolution and the same area of valid data: the dynamic TRMM precipitation dataset and the statistical FAO refET dataset. You can now calculate the Vertical Water Balance (VWB). As the refET dataset is a statistical seasonal dataset, the calculation of VWB equals removing the seasonal signal from the precipitation time series. As this is water balance data, it can be done in three ways: 1) as the complete difference, 2) only retaining rainfall surplus, or 3) only retaining rainfall deficit. In Karttur's GeoImagine Framework you can do all three options using the process [<span class='package'>subtractseasonsancillary</span>](../../subprocess/subproc-subtractseasonsancillary/).
+
+{% capture foo %}{{page.VWB-0241_subtract_seasonal_trmm-refet}}{% endcapture %}
+{% include xml/VWB-0241_subtract_seasonal_trmm-refet.html foo=foo %}
+
+### Resample to annual timestep
+
+To simplify the statistical evaluation and trend analysis, you can translate the data to annual time steps with the process [<span class='package'>resampletsancillary</span>](../../subprocess/subproc-resampletsancillary/).
+
+{% capture foo %}{{page.VWB-0290_resample-2-annual}}{% endcapture %}
+{% include xml/VWB-0290_resample-2-annual.html foo=foo %}
+
+### Trend analysis
+
+There are indications that climate change is causing a drying in dry regions/seasons and wetting in wet regions/seasons. To test that you can analyse the overall trends in VWB and compare it with the trends in humid and arid regions. Details about linear trend analysis in Karttur's GeoImagine Framework is given in the [post on SMAP processing](../blog-SMAP/). Time series linear trend analysis for ancillary data is done using the process [<span class='package'>trendtsancillary</span>](../../subprocess/subproc-trendtsancillary/):
+
+{% capture foo %}{{page.VWB-0310_trend_A_1998-2017}}{% endcapture %}
+{% include xml/VWB-0310_trend_A_1998-2017.html foo=foo %}
+
+If you want to calculate the trends for other periods (than 1998-2017) you just alter the \<period\> tag in the xml file.
+
+### Change detection
+
+You can use the results from the analysis of VWB trends to identify regions where the change has been significant, and how strong the changes have been. The process for that is [<span class='package'>signiftrendsancillary</span>](../../subprocess/subproc-signiftrendsancillary/)
+
+{% capture foo %}{{page.VWB-0320_changes_A_1998-2017}}{% endcapture %}
+{% include xml/VWB-0320_changes_A_1998-2017.html foo=foo %}
+
+## Layout
+
+If you want to create color maps/images and animations for presenting the VWB data you must create the required layout (see post on [TRMM](../blog-TRMM/) for more details).
+
+### Set scaling
+
+Layout exports require scaling the original data to byte (0 - 255) range. Details on the scaling are given in the posts on [SMAP](../blog-SMAP/) and [TRMM](../blog-TRMM/). The xml below calls the scaling definition process [<span class='package'>createscaling</span>](../../subprocess/subproc-createscaling/) and sets the scaling of both the monthly and annual VWB layers, and all the layers produced as part of the trend analysis.
+
+{% capture foo %}{{page.VWB-0001_createscaling}}{% endcapture %}
+{% include xml/VWB-0001_createscaling.html foo=foo %}
+
+### Add palette
+
+The VWB palettes below, created with the process [<span class='package'>addrasterpalette</span>](../../subprocess/subproc-addrasterpalette/), are Karttur's default palettes for VWB.
+
+<{% capture foo %}{{page.VWB-0002_createpalettes}}{% endcapture %}
+{% include xml/VWB-0002_createpalettes.html foo=foo %}
+
+### Add movieclock
+
+You do not need to add a special movieclock for VWB, the default movieclock works fine. But if you want to create a customised movieclock, the process is [<span class='package'>addmovieclock</span>](../../subprocess/subproc-addmovieclock/). The only parameter that is required is the name of the movieclock, all other parameters are set to default unless explicitly given as parameters (thus the movieclock added below will be identical to the default movieclock).
+
+{% capture foo %}{{page.VWB-0004_addmovieclock}}{% endcapture %}
+{% include xml/VWB-0004_addmovieclock.html foo=foo %}
+
+### Export images and create animation
+
+With the scaling and palettes defined, you can export any of the VWB layers created above.
+
+#### Export monthly images
+
+The full series of monthly VWB images is needed if you want to create an animation.
+The following xml calls the process [<span class='package'>exporttobyteancillary</span>](../../subprocess/subproc-exporttobyteancillary/) and exports all the monthly VWB data, including the overall VWB, the humid VWB and the arid VWB.
+
+{% capture foo %}{{page.VWB-0900_ExporttoByte_M}}{% endcapture %}
+{% include xml/VWB-0900_ExporttoByte_M.html foo=foo %}
+
+#### Export statistical and trend results
+
+All exports use the same process [<span class='package'>exporttobyteancillary</span>](../../subprocess/subproc-exporttobyteancillary/), you just have to set the timestep and compostions to export all the statistical data, including the results of the trend analysis.
+
+{% capture foo %}{{page.VWB-0910_ExporttoByte_timespanA_1998-2017}}{% endcapture %}
+{% include xml/VWB-0910_ExporttoByte_timespanA_1998-2017.html foo=foo %}
+
+#### Create movie frames
+
+The process [<span class='package'>movieframeancillary</span>](../../subprocess/subproc-movieframeancillary/) converts the exported images (from previous step) to movie frames. The process is basically a dimension conversion that can also create an embossed text on the fly. For the process [<span class='package'>movieframeancillary</span>](../../subprocess/subproc-movieframeancillary/) to work you must have installed <span class='terminalapp'>imagemagick</span> as explained in [another blogpost](https://karttur.github.io/setup-theme-blog/blog/install-imagemagick/).
+
+To run the process fully automated you must set the parameter _asscript_ to _False_, otherwise you must manually execute the shell script file reported when the process comes to an end.
+
+Note that because the three versions of VWB (the total VWB, suplus VWB and deficit VWB) were organized to be stored in the same directory (or folder) path, you can only create one animation at the time. If you want to create animations of all three versions you must delete the "movieframe" folder between each creation.
+
+{% capture foo %}{{page.VWB-0950_movieframes_M}}{% endcapture %}
+{% include xml/VWB-0950_movieframes_M.html foo=foo %}
+
+#### Create movie clock and animation
+
+The process [<span class='package'>movieclockancillary</span>](../../subprocess/subproc-movieclockancillary/) first creates the movieclocks to combine with the movie frames from the previous step, and then creates the movie/animation itself. To run the process fully automated you must set the parameter _asscript_ to _False_, otherwise you must manually execute the shell script files reported when the process comes to an end. By default the process will create script files so you must explicitly enter asscript=\"False\" if you want the process to generate the complete animation on the fly.
+
+For the process [<span class='package'movieclockancillary</span>](../../subprocess/subproc-movieclockancillary/) to work you must have installed <span class='terminalapp'>FFmpeg</span> as explained in [another blogpost](https://karttur.github.io/setup-theme-blog/blog/ffmpeg-movie/).
+
+{% capture foo %}{{page.VWB-0960_movieclock_M}}{% endcapture %}
+{% include xml/VWB-0960_movieclock_M.html foo=foo %}
+
+## Process Chain
+
+All of the above processes can be assembled into a single process chain as shown below. To run the process chain you just have to remove the comment marker "#" and run the Framework pointing at the text file with the process chain.
+
+<button id= "toggleprocesschain" onclick="hiddencode('processchain')">Hide/Show VWB processchain</button>
+
+<div id="processchain" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
+
+```
+##### Vertical Water Balance using TRMM and FAO ref evap ######
+
+#Uncomment the processes you want to run by removing the "#"
+
+###################################
+###  Scaling, palette & legend  ###
+###################################
+
+## Create scaling for VWB data ##
+#VWB-0001_createscaling.xml
+
+## Create the VWB palettes ##
+#VWB-0002_createpalettes.xml
+
+# Create legends for VWB ##
+#VWB-0003_createlegends.xml
+
+## Create TRMM movieclock ##
+#VWB-0004_addmovieclock.xml
+
+###################################
+###           Import            ###
+###################################
+
+### NOTE: if you have access to VWB data processed from the Framework you can import it here
+### Otherwise you need to follow the steps under # prepare data #. ###
+
+## Update db with monthly VWB from existing Framework
+#VWB-0190_udatedb.xml
+
+###################################
+###        Prepare data         ###
+###################################
+
+### NOTE: If you have imported VWB in the above # Import # step you can skip this (# Prepare data #) section. ###
+
+## Convert FAO refet to mm/month
+#VWB-0130_FAOrefet_convert_daytomonth.xml
+
+## Translate FAO refet to spatial extent of TRMM ##
+#VWB-0140_FAOrefet_translate_2_TRMM.xml
+
+## create mask from FAO refet (land) that fits the TRMM data
+#VWB-0160_FAOrefet_createmask.xml
+
+## mask out land from TRMM (using the FAO refet mask)
+#VWB-0170_TRMM-applymask.xml
+
+###################################
+###   Time Series Processing    ###
+###################################
+
+## Monthly vertical water balance ##
+#VWB-0241_subtract_seasonal_trmm-refet.xml
+
+## Resample VWB to annual ##
+#VWB-0290_resample-2-annual.xml
+
+###################################
+###     Time Series Analysis    ###
+###################################
+
+## Estimate VWB annual trends (1998-2017 is for the complete timeseries, 2003-2016 for overlap with GRACE ##
+#VWB-0310_trend_A_1998-2017.xml
+#VWB-0310_trend_A_2003-2016.xml
+
+## Identify regions with significant trends (1998-2017 is for the complete timeseries, 2003-2016 for overlap with GRACE ##
+#VWB-0320_changes_A_1998-2017.xml
+#VWB-0320_changes_A_2003-2016.xml
+
+###################################
+###        Export media         ###
+###################################
+
+## Export png images ##
+#VWB-0900_ExporttoByte_M.xml
+#VWB-0910_ExporttoByte_timespanA_1998-2017.xml
+
+## Create TRMM movieframes (1998 to 2017)
+## For fully automated processing you need to set parameter "asscript" to False
+## If you set the parameter "asscript" to True (= default), you have to execute the shell script file reported by the process ##
+#VWB-0950_movieframes_M.xml
+
+## Create movieclock, the process creates two shell scripts that must by run ##
+#VWB-0960_movieclock_M.xml
+
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>

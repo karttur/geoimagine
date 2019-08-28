@@ -2,7 +2,7 @@
 layout: post
 title: Conda environment
 modified: '2018-10-09 T18:17:25.000Z'
-categories: blog
+categories: setup
 excerpt: "Create Conda environment for Karttur's GeoImagaine project"
 tags:
   - Conda environment
@@ -18,17 +18,17 @@ figure2: eclipse_import_project_from_file_system_or_archive
 
 # Introduction
 
-With conda, you can create, update, export and import virtual Python environments that have different versions of Python and/or packages installed in them. If you use Eclipe as your Integrated Development Envrionment (IDE) you can easily reset your Python source to a virtual version created in conda. You can also share an environment by exporting and then importing it.
+With conda, you can create, update, export and import virtual Python environments that have different versions of Python and/or packages installed in them. If you use <span class='app'>Eclipe</span> as your Integrated Development Envrionment (IDE) you can easily reset your Python source to a virtual version created in conda. You can also share an environment by first exporting and then importing it.
 
 # Prerequisites
 
-Conda must be installed as described in [this](*) post.
+Conda must be installed as described in [this](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/) post.
 
 # Conda virtual environments
 
-Karttur's GeoImagine Framework requires requires a large set for python packages to work. You have to install these packages and then link them to the Framework Spatial Data IDE (SPIDE). Most packages depend on other, more basic, packages. When installing many packages there is a risk of conflicting requirements regarding the versions of shared packages. To avoid having your complete system corrupted, it is recommended that you build the python system and packages using a "virtual" environment. In essence this means that you build a system that is working as a stand-alone solution that is not affecting the core system.
+Karttur's GeoImagine Framework requires requires a large set of python packages to work. You have to install these packages and then link them to the Framework Spatial Data IDE (SPIDE). Most packages depend on other, more basic, packages. When installing many packages there is a risk of conflicting requirements regarding the versions of shared packages. To avoid having your complete system corrupted, it is recommended that you build the python system and packages using a "virtual" environment. In essence this means that you build a system that is working as a stand-alone solution that is not affecting the core system.
 
-This is easily done in conda, the recommended system for the [Framework SPIDE python setup](#). This tutorial will take your through the steps of creating, exporting and importing a virtual python environment in conda.
+This is easily done in conda, the recommended system for the [Framework SPIDE python setup](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/). This tutorial will take your through the steps of creating, exporting and importing a virtual python environment in conda.
 
 ## conda configuration with .condarc
 
@@ -39,7 +39,7 @@ The <span class='file'>.condarc</span> is not included by default when you insta
 
  Look for the line <span class='terminal'>user config file:</span> in the results.
 
- You can create the <span class='file'>.condarc</span> file using a text editor (e.g. [<span class='atom'>Atom</span>](#)), directrly from the command line ( <span class='terminal'>~$ pico .condarc</span>) or by running the command:
+ You can create the <span class='file'>.condarc</span> file using a text editor (e.g. [<span class='atom'>Atom</span>](https://karttur.github.io/setup-blog/2017/12/21/setup-blog-tools.html#install-atom)), directly from the command line ( <span class='terminal'>~$ pico .condarc</span>) or by running the command:
 
  <span class='terminal'>$ conda config</span>
 
@@ -300,7 +300,7 @@ If the -forge installation reports that a package is to be UPGRADE(D) that *migh
 
 If the package you want to install is neither available with <span class='terminal'>$ conda install</span>, nor available as a span class='terminal'>$ conda -forge</span> installation, you need to use an alternative package manager (as described [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages)). This more or less always boils down to <span class='terminalapp'>pip</span>.
 
-The pacakge _sentinelsat_, used for searching and downloading satellte data from the European Space Agency (ESA) is only avalailable suing <span class='terminalapp'>pip</span>:
+The package _sentinelsat_, used for searching and downloading satellte data from the European Space Agency (ESA) is only avalailable suing <span class='terminalapp'>pip</span>:
 
 <span class='terminal'>(geoimagine0) ... $ pip install sentinelsat</span>
 

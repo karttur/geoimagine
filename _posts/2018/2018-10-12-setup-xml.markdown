@@ -2,7 +2,7 @@
 layout: post
 title: Framework key concepts
 modified: '2018-10-12 T18:17:25.000Z'
-categories: blog
+categories: setup
 excerpt: "Key concepts: processes and compositions, and how they are represented in xml."
 tags:
   - processes
@@ -63,9 +63,9 @@ All compositions have an _id_ that is composed of two parts, a thematic part and
 
 **theme_content**
 
-Neither the theme, nor the content are allowed to contain any underscore themselves.  Each composition _id_ is linked to a scale factor (_scalefac_), an offset add factor (_offsetadd_)  a data unit (_dataunit_), a nodata value (_cellnull_), and must have a scale _measure_ (_n_[ominal], _o_[rdinal], _i_[nterval)] or _r_[atio]).
+Neither the theme, nor the content are allowed to contain any underscore themselves.  Each composition _id_ is linked to a scale factor (_scalefac_), an offset add factor (_offsetadd_)   a pre-defined numeric type (_celltype_ [.e.g  Byte, Int16, UInt16 etc]) a nodata value (_cellnull_), a data unit (_dataunit_), and must have a scale _measure_ (_n_[ominal], _o_[rdinal], _i_[nterval)] or _r_[atio]).
 
-A composition can contain different products, as long as the _scalefac_, _offsetadd_, _dataunit_, _cellnull_ and _measure_ are identical. This means that two versions of the same data, for example derived with a slightly different algorithmic definition, can belong to the same composition. Also reflectance bands from different sensors can share the same composition, as can rainfall data from different sources. But normally data from different origins or sensors are also represented as different compositions.
+A composition can contain different products, as long as the _scalefac_, _offsetadd_, _celltype_, _cellnull_, _dataunit_  and _measure_ are identical. This means that two versions of the same data, for example derived with a slightly different algorithmic definition, can belong to the same composition. Also reflectance bands from different sensors can share the same composition, as can rainfall data from different sources. But normally data from different origins or sensors are also represented as different compositions.
 
 All compositions contain the following components or parts:
 
@@ -89,7 +89,7 @@ The Framework forces a very strict file naming convention for all file-stored da
 All data file names are composed of five (5) parts of which three relate to the composition (above), and the remaining two to location and timestamp. In the filename, the parts are separated by underscore, ("\_"), and the parts are not allowed to contain any underscore themselves:
 
 1. band or content identifier (from composition)
-2. original product or producer (from composition)
+2. product or producer (from composition)
 3. location
 4. timestamp
 5. suffix (from composition)
@@ -149,7 +149,7 @@ userproj userid = 'karttur' projectid = 'karttur' tractid= 'karttur' siteid = '*
 
 The Framework default superuser is called _karttur_. The user _karttur_ is also by default given a _project_ that is also called _karttur_ and that include a _tractid_ that is also called _karttur_. _karttur_ is thus the name of a _user_, a _project_ and a global region (or tract). Thus defined, the user _karttur_ has the rights to perform all processes available within the Framework.
 
-You can change the name of the _user_, _project_ and _tractid_ for your superuser. That is done when you  setup the links to database in one of the [following](../blog-setup-dblink/) posts and then run the database installation as described in [yet another](../blog-setup-db/) post. To change the name of the superuser, and the associated project and tract you need to edit the xml files used for setting up the Framework database.
+You can change the name of the _user_, _project_ and _tractid_ for your superuser. That is done when you  setup the links to database in one of the [following](../setup-dblink/) posts and then run the database installation as described in [yet another](../setup-db/) post. To change the name of the superuser, and the associated project and tract you need to edit the xml files used for setting up the Framework database.
 
 ## \<period\>
 

@@ -74,7 +74,7 @@ This post introduces processing of data from the [Soil Moisture Active Passive (
 
 ## Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). The Framework [postgres database must be setup](../blog-setup-db/) and the [processes defined](../blog-setup-processes/).
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/).
 
 If you want to use the Framework for searching and registering avaiable SMAP data you must have the terminal command line tool <span class='terminalapp'>wget</span> ("web get") installed. Mac osx does not come with <span class='terminalapp'>wget</span>, you have to install it. I use <span class='app'>Homebrew</span> for that:
 
