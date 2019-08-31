@@ -33,7 +33,7 @@ The package <span class='package'>kartturmain</span> contains the modules that t
 
 ## Running processes from Eclipse
 
-To run any process in the Framework you need to give the path to either a text file listing xml files, or the path to a single xml file. To execute the process(es) you first call *ReadXMLProcesses* and then *RunProcesses*. *ReadXMLProcesses* reads the xml coded commands and creates the process object, that is then sent to *RunProcesses* that identifies and executes the process.
+To run any process in the Framework you need to give the path to either a text file listing xml files, or the path to a single xml file. When a process is executed the function *ReadXMLProcesses* reads the xml coded commands and creates the process object, that is then sent to the function *RunProcesses* that identifies and executes the process.
 
 ```
 from geoimagine.kartturmain.readXMLprocesses import ReadXMLProcesses, RunProcesses

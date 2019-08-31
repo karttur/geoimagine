@@ -29,7 +29,7 @@ If your PyDev project does not compile and stop because imports are not found, c
 
 All functionalities of Karttur's GeoImagine Framework are called processes and operate based on parameters defined in the Framework database. Thus a process must be defined in the database before it can be used. Processes are grouped in roots, where a root is usually associated either with a typical class of functions (e.g. overlay, scalar, export) or data sources (e.g Landsat, Sentinel, MODIS etc).
 
-If you followed the tutorial on [set up the database](../setup-db/) one root group ([_manageprocess_](../../rootproc-manageprocess/) and one process ([_addsubproc_](../../subprocess/subproc-addsubproc/)) were inserted in the database. This added the capability of defining all other processes.
+If you followed the tutorial on [set up the database](../setup-db/) one root group ([_manageprocess_](../../rootproc-manageprocess/)) and one process ([_addsubproc_](../../subprocess/subproc-addsubproc/)) were inserted in the database. This added the capability of defining all other processes.
 
 A complete list of both root and sub processes are available from the top menu, or [here](../../rootprocesses/) and [here](../../subprocesses/).
 

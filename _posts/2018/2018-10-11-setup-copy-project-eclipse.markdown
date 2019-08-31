@@ -19,7 +19,7 @@ A PyDev project in <span class='app'>Eclipse</span> can be imported either as a 
 
 # Prerequisites
 
-To follow this post you must have the complete Spatial Data Integrated Development Environment (SPIDE) installed, including <span class='app'>Eclipse</span> set up for PyDev, <span class='app'>Anaconda</span> and <span class='app'>PostgreSQL</span>. How to do that is described in a separate blog: [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You need to install and setup all the parts in that blog, preferably using [Python3 and Anaconda3](https://karttur.github.io/setup-ide/blog/python3-upgrade/). How to create a customized virtual Python environment for Karttur's GeoImagine Framework within conda is described in the [previous](../setup-conda-environ/) post.
+To follow this post you must have the complete Spatial Data Integrated Development Environment (SPIDE) installed, including <span class='app'>Eclipse</span> set up for PyDev, <span class='app'>Anaconda</span> and <span class='app'>PostgreSQL</span>. How to do that is described in a separate blog: [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You need to install and setup all the parts in that blog, preferably using [Python3 and Anaconda3](https://karttur.github.io/setup-ide/blog/python3-upgrade/). How to create a customized virtual Python environment for Karttur's GeoImagine Framework within conda is described in a [previous](../setup-conda-environ/) post.
 
 The rest of this post assumes that you have accomplished the installation of the SPIDE.
 
@@ -27,7 +27,7 @@ The rest of this post assumes that you have accomplished the installation of the
 
 The core of Karttur's GeoImagine Framework is freely available at Github.com. To see which parts are available at any time, check the [GeoImagine Python Packages](https://karttur.github.io/geoimagine/packages/) page.
 
-What packages you need depends on the kind of data you are going to process in the framework. In general you need all packages, but packages for specific data sources can be excluded. Data source packages include:
+What packages you need depends on the kind of data you are going to process in the framework. In general you need all packages, but packages for specific data sources can be excluded. Data source specific packages include:
 
 - [Landsat (geoimagine-landsat)](https://github.com/karttur/geoimagine-landsat)
 - [MODIS (geoimagine-modis)](https://github.com/karttur/geoimagine-modis)

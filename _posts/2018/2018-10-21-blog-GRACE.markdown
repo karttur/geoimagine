@@ -44,13 +44,13 @@ This post presents a processing chain for organizing, analyzing and presenting d
 
 # Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/).
+You must have the complete SPIDE installed as described in the blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/).
 
 # GRACE
 
 GRACE was built around two identical satellites orbiting the Earth and was operational from 2003 to 2017. Traveling with a fixed distance in between them the gravitational pull caused minute changes in the vertical elevation difference between the two satellites. This change can be used for estimating the gravitational pull. Short term (days to months) changes in the gravitation over land is primarily related to the Earth's water reservoirs, earthquakes and crustal deformations.
 
-This tutorial makes use of GRACE TELLUS [Level-3 data grids of monthly surface mass changes](https://grace.jpl.nasa.gov/data/monthly-mass-grids/) to detect trends in water storage on land. This GRACE data represent the changes in equivalent water thickness relative to a time-mean baseline. There are three different solutions for the calculations of equivalent water thickness, respectively produced by CSR (Center for Space Research at University of Texas, Austin), GFZ (GeoforschungsZentrum Potsdam) and JPL (Jet Propulsion Laboratory). You can use any of these solutions, but the official recommendation is that [users obtain all three data center's solutions (JPL, CSR, GFZ) and simply average them](https://grace.jpl.nasa.gov/data/choosing-a-solution/).
+This tutorial makes use of GRACE TELLUS [Level-3 data grids of monthly surface mass changes](https://grace.jpl.nasa.gov/data/monthly-mass-grids/) to detect trends in water storage on land. This GRACE data represent the changes in equivalent water thickness relative to a (time-mean) baseline. There are three different solutions for the calculations of equivalent water thickness, respectively produced by CSR (Center for Space Research at University of Texas, Austin), GFZ (GeoforschungsZentrum Potsdam) and JPL (Jet Propulsion Laboratory). You can use any of these solutions, but the official recommendation is that [users obtain all three data center's solutions (JPL, CSR, GFZ) and simply average them](https://grace.jpl.nasa.gov/data/choosing-a-solution/).
 
 ## Python Package
 

@@ -18,7 +18,7 @@ This post goes through the steps needed for creating a (fairly) secure link betw
 
 # Prerequisites
 
-To follow this post you must have the complete Spatial Data Integrated Development Environment (SPIDE) installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must also have setup Karttur's GeoImagine Framework, either by [importing](../blog-import-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/).
+To follow this post you must have the complete Spatial Data Integrated Development Environment (SPIDE) installed as described in the blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must also have setup Karttur's GeoImagine Framework, either by [importing](../blog-import-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/).
 
 # Connect Python and PostgreSQL
 

@@ -36,7 +36,7 @@ The package also contains a subfolder called [<span class='file'>doc</span>](htt
 
 ### Package processes
 
-The databse setup is accomplished through a set of special processes:
+The database setup is accomplished through a set of special processes:
 
 - createschema
 - createtable

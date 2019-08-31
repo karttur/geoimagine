@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Conda environment
+title: Conda virtual environments II
 modified: '2018-10-09 T18:17:25.000Z'
 categories: setup
 excerpt: "Create Conda environment for Karttur's GeoImagaine project"
@@ -15,18 +15,18 @@ share: true
 figure1: eclipse_select_import
 figure2: eclipse_import_project_from_file_system_or_archive
 ---
-
+<script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
 # Introduction
 
 With conda, you can create, update, export and import virtual Python environments that have different versions of Python and/or packages installed in them. If you use <span class='app'>Eclipe</span> as your Integrated Development Envrionment (IDE) you can easily reset your Python source to a virtual version created in conda. You can also share an environment by first exporting and then importing it.
 
 # Prerequisites
 
-Conda must be installed as described in [this](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/) post.
+Anaconda/conda must be installed as described in [this](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/) post. If you [created a conda virtual environment when setting up the SPIDE](https://karttur.github.io/setup-ide/setup-ide/conda-environ/) you can skip to the section called "Install additional packages in your environments".
 
 # Conda virtual environments
 
-Karttur's GeoImagine Framework requires requires a large set of python packages to work. You have to install these packages and then link them to the Framework Spatial Data IDE (SPIDE). Most packages depend on other, more basic, packages. When installing many packages there is a risk of conflicting requirements regarding the versions of shared packages. To avoid having your complete system corrupted, it is recommended that you build the python system and packages using a "virtual" environment. In essence this means that you build a system that is working as a stand-alone solution that is not affecting the core system.
+Karttur's GeoImagine Framework requires a large set of python packages to work. You have to install these packages and then link them to the Framework Spatial Data IDE (SPIDE). Most packages depend on other, more basic, packages. When installing many packages there is a risk of conflicting requirements regarding the versions of shared packages. To avoid having your complete system corrupted, it is recommended that you build the python system and packages using a "virtual" environment. In essence this means that you build a system that is working as a stand-alone solution unlinked from the core system.
 
 This is easily done in conda, the recommended system for the [Framework SPIDE python setup](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/). This tutorial will take your through the steps of creating, exporting and importing a virtual python environment in conda.
 
@@ -76,6 +76,12 @@ If you now create a new environment:
 <span class='terminal'>$ conda create --name geoimagine0</span>,
 
 the rather short list of default packages will create a rather long list of package to install:
+
+<button id= "toggleCondaCreate" onclick="hiddencode('CondaCreate')">Hide/Show conda create terminal response</button>
+
+<div id="CondaCreate" style="display:none">
+{% capture text-capture %}
+{% raw %}
 
 ```
 $ conda create --name geoimagine1
@@ -198,6 +204,10 @@ The following NEW packages will be INSTALLED:
 
 Proceed ([y]/n)?
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 Just press <span class='terminal'>y</span> and let conda setup your environment. The terminal response should then be like this:
 

@@ -29,7 +29,7 @@ In Karttur's GeoImagine Framework all spatial data processing requires a pre-def
 
 # Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must also have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). You must also have setup the complete Framework database as described in of the [previous](../setup-db/) posts.
+You must have the complete SPIDE installed as described in the blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must also have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). You must also have setup the complete Framework database as described in of the [previous](../setup-db/) posts.
 
 How to run processes, including the setup described in this post, is covered in an [earlier](../setup-run/) post. The xml files required for running the processes described in the post are included in the [<span class='pacakge'>setup_processes</span>](https://github.com/karttur/geoimagine-setup_processes/) package. To understand the structure of the xml file you can read [this](../setup-xml/) post.
 
@@ -37,7 +37,7 @@ If your PyDev project does not compile and stop because imports are not found, c
 
 # Python module
 
-The setup of regions is done from the python module <span class='file'>setup_process_regions.py</span>. In the main section you can define which parts to install. If you want to change the region categories or default regions that are installed in more detail you need to edit the linked xml files.
+The setup of regions is done from the python module <span class='file'>setup_process_regions.py</span>. In the main section you can define which parts to install. If you want to change the region categories or default regions that are installed you need to edit the linked xml files.
 
 <button id= "togglesetuptxt" onclick="hiddencode('setuptxt')">Hide/Show setup_process_regions.py (main section)</button>
 
@@ -149,11 +149,11 @@ Region categories are added to the Framework through the process [<span class='p
 {% capture foo %}{{page.add_region_categories_v80}}{% endcapture %}
 {% include xml/add_region_categories_v80.html foo=foo %}
 
-the above xml file is included in <span class='file'>regions_karttur_setup_20181116.txt</span>, and if you set _DefaultRegions_ to _True_ in the main section on <span class='file'>setup_process_regions.py</span> (hidden above) and run the script, you will add the default region categories to the Framework.
+the above xml file is included in <span class='file'>regions_karttur_setup_20181116.txt</span>, and if you set _DefaultRegions_ to _True_ in the main section on <span class='file'>setup_process_regions.py</span> (hidden above) and run the script, the default region categories will be added to the Framework.
 
 # Adding default regions
 
-Default regions (at stratum 1 to 11) can be added using either a rectangular area defined from the corner points or from existing polygons. The Framework comes with two types of default regions: arbitrary (rectangular) default regions, and the world's continents and countries in two different formats (bounded by the land-sea and including marine areas). If you run the module <span class='file'>setup_process_regions.py</span> with _DefaultRegions_ set to _True_ all the default arbitrary regions as well as both formats of global continents and countries are added.
+Default regions (at stratum 1 to 11) can be added using either a rectangular area defined from the corner points or from existing polygons. The Framework comes with two types of default regions: arbitrary (rectangular) default regions, and the world's continents and countries in two different formats (bounded by the land-sea shoreline and including marine areas). If you run the module <span class='file'>setup_process_regions.py</span> with _DefaultRegions_ set to _True_ all the default arbitrary regions as well as both formats of global continents and countries are added.
 
 ## Arbitrary default regions
 

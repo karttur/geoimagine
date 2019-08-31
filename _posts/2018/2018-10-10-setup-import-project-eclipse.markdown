@@ -45,7 +45,7 @@ An Eclipse PyDev project is defined by two files:
 - <span class='file'>.project</span>
 - <span class='file'>.pydevproject</span>
 
-These are hidden files that must exist directly under the root folder of the PyDev project. To actually see and access the files use the <span class='app'>Terminal</span> and change directory (<span class='terminal'>cd</span>) to the cloned project:
+These are hidden files that must exist directly under the root folder of the PyDev project. To actually see and access the files, use the <span class='app'>Terminal</span> and change directory (<span class='terminal'>cd</span>) to the cloned project:
 
 <span class='terminal'>$ cd /path/to/cloned/project/rootfolder</span>
 
