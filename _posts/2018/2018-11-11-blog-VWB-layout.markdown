@@ -144,11 +144,11 @@ VWB-0005_exportlegend.xml
 
 #### Layout
 
-If you want to create color maps/images and animations for presenting the VWB data you must create the required layout (see post on [TRMM](../blog-TRMM/) for more details).
+If you want to create color maps/images and animations for presenting the VWB data you must create the required layout (see post on [TRMM layout](../blog-TRMM-layout/) for more details).
 
 ##### Set scaling
 
-Layout exports require scaling the original data to byte (0 - 255) range. Details on the scaling are given in the posts on [SMAP](../blog-SMAP/) and [TRMM](../blog-TRMM/). The xml below calls the scaling definition process [<span class='package'>createscaling</span>](../../subprocess/subproc-createscaling/) and sets the scaling of both the monthly and annual VWB layers, and all the layers produced as part of the trend analysis.
+Layout exports require scaling the original data to byte (0 - 255) range. Details on the scaling are given in the posts on layout of [SMAP](../blog-SMAP-layout/) and [TRMM](../blog-TRMM-layout/). The xml on _createscaling_ below calls the scaling definition process [<span class='package'>createscaling</span>](../../subprocess/subproc-createscaling/) and sets the scaling of both the monthly and annual VWB layers, and all the layers produced as part of the trend analysis.
 
 {% capture foo %}{{page.VWB-0001_createscaling}}{% endcapture %}
 {% include xml/VWB-0001_createscaling.html foo=foo %}

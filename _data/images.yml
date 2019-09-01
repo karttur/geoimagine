@@ -1124,3 +1124,43 @@ eclipse_import_project_from_file_system_or_archive:
   caption: Eclipse window for Import Project from File System or Archive.
   credit: null
   source: null
+
+avg-trmm-3b43v7-precip_3b43_trmm_1998-2017_v7-f-A:
+  file: avg-trmm-3b43v7-precip_3b43_trmm_1998-2017_v7-f-A.jpg
+  source: avg-trmm-3b43v7-precip_3b43_trmm_1998-2017_v7-f-A.jpg
+  author: Thomas Gumbricht
+  caption: rainfall-a-stats_avg-trmm-3b43v7-precip-precipln.
+  credit: null
+  source: null
+
+rainfall-a-stats_avg-trmm-3b43v7-precip-precipln:
+  file: rainfall-a-stats_avg-trmm-3b43v7-precip-precipln.png
+  source: rainfall-a-stats_avg-trmm-3b43v7-precip-precipln.png
+  author: Thomas Gumbricht
+  caption: rainfall-a-stats_avg-trmm-3b43v7-precip-precipln.
+  credit: null
+  source: null
+
+ts-mdsl-trmm-3b43v7-precip_3b43_trmm_1998-2017_v7-f-A:
+  file: ts-mdsl-trmm-3b43v7-precip_3b43_trmm_1998-2017_v7-f-A.jpg
+  source: ts-mdsl-trmm-3b43v7-precip_3b43_trmm_1998-2017_v7-f-A.jpg
+  author: Thomas Gumbricht
+  caption: ts-mdsl-trmm-3b43v7-precip_3b43_trmm_1998-2017_v7-f-A
+  credit: null
+  source: null
+
+rainfall-a-trend_ts-mdsl-trmm-3b43v7-precip-precipdelta:
+  file: rainfall-a-trend_ts-mdsl-trmm-3b43v7-precip-precipdelta.png
+  source: rainfall-a-trend_ts-mdsl-trmm-3b43v7-precip-precipdelta.png
+  author: Thomas Gumbricht
+  caption: rainfall-a-trend_ts-mdsl-trmm-3b43v7-precip-precipdelta
+  credit: null
+  source: null
+
+trmm-3b43v7-precip-delta_3b43_trmm_1998-2017_slope@p-v7-f-A:
+  file: trmm-3b43v7-precip-delta_3b43_trmm_1998-2017_slope@p-v7-f-A.jpg
+  source: trmm-3b43v7-precip-delta_3b43_trmm_1998-2017_slope@p-v7-f-A.jpg
+  author: Thomas Gumbricht
+  caption: rainfall-a-trend_ts-mdsl-trmm-3b43v7-precip-precipdelta
+  credit: null
+  source: null

@@ -30,7 +30,7 @@ You can choose any records you like. In this tutorial post, and all the followin
 
 ### Data format
 
-Karttur's import function for CO<sub>2</sub> records expects an ASCII (normal text) file with comma separation (.csv). The first row should be the row headers, with the columns as shown in the example below:
+Karttur's import function for CO<sub>2</sub> records expects an ASCII (normal text) file with comma separation (.csv). The first row should be the column headers, with the columns as shown in the example below:
 
 ```
 Date,Decimal Date,Average,Interpolated,Trend,Number of Days
@@ -41,11 +41,11 @@ Date,Decimal Date,Average,Interpolated,Trend,Number of Days
 ### Download data
 
 Download the CO2 record(s) that you want to include in your database from [datahub.io](https://datahub.io/core/co2-ppm). At present the Framework only uses monthly data.
-Make sure that the filename does not contain any underscore ("\_") and that the file extension is ".csv". You can save the files to any location on your machine. You only need to remember where you put them when you define the import path in the next section.
+Make sure that the destination filename does not contain any underscore ("\_") and that the file extension is ".csv". You can save the files to any location on your machine. You only need to remember where you put them when you define the import path in the next section.
 
 ### Import as ancillary Data
 
-The observed CO2 records data are imported into Karttur´s GeoImagine Framework as ancillary data. But the CO<sub>2</sub> observatioans are saved in the database schema _climateindex_. The xml file below imports the Mauna Loa and global monthly records.
+The observed CO<sub>2</sub> records data are imported into Karttur´s GeoImagine Framework as ancillary data. But the CO<sub>2</sub> observatioans are saved in the database schema _climateindex_. The xml file below imports the Mauna Loa and global monthly records.
 
 {% capture foo %}{{page.climateIndex-0100_import-co2records}}{% endcapture %}
 {% include xml/climateIndex-0100_import-co2records.html foo=foo %}

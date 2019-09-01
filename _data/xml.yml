@@ -997,6 +997,15 @@ VWB-0003_createlegends:
     credit: null
     source: null
 
+VWB-0005_exportlegends:
+    file: VWB-0005_exportlegends.xml
+    html: VWB-0005_exportlegends.html
+    id: VWB-0005_exportlegends
+    author: Thomas Gumbricht
+    caption: null
+    credit: null
+    source: null
+
 VWB-0310_trend_A_1998-2017:
     file: VWB-0310_trend_A_1998-2017.xml
     html: VWB-0310_trend_A_1998-2017.html

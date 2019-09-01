@@ -45,7 +45,7 @@ value = level * seasonality * trend * noise
 
 ## Prerequisites
 
-You must have setup the Karttur's GeoImagine Framework as described in [earlier](../blog-import-project-eclipse/) posts. You must also have added the [climate indexes](../blog-climateindex) and atmospheric [carbon dioxide (CO2) records](../blog-c02records/) to the database.
+You must have setup the Karttur's GeoImagine Framework as described in [earlier](../blog-import-project-eclipse/) posts. You must also have added the [climate indexes](../blog-climateindex) and atmospheric [carbon dioxide (CO<sub>2</sub>) records](../blog-co2records/) to the database.
 
 If you want to use the ore advanced decomposition method you must also [install the package <span class='package'>seasonal</span>](../blog-seasonal/).
 
@@ -61,7 +61,7 @@ The combined time series decomposition and plotting function for climate indexes
 
 ## Additive decomposition
 
-By default the [<span class='package'>componentdbtsgraphancillary</span>](../../subprocess/subproc-autocorrdbtsclimate/) applies an additive model and the more advanced decomposition from the <span class='package'>seasonal</span>. To use the naive (classical) decomposition set the parameter _naive_ to _True_. The example below performs a naive, additive decomposition of a single climate index (pdo = Pacific Decadal Oscillation).
+By default the [<span class='package'>componentdbtsgraphancillary</span>](../../subprocess/subproc-autocorrdbtsclimate/) applies an additive model and the more advanced decomposition from the modified <span class='package'>seasonal</span> package. To use the naive (classical) decomposition set the parameter _naive_ to _True_. The example below performs a naive, additive decomposition of a single climate index (pdo = Pacific Decadal Oscillation).
 
 ```
 <?xml version='1.0' encoding='utf-8'?>
@@ -113,7 +113,7 @@ The xml file for running a naive, multiplicative decomposition using the monthly
 </plotdbtsclimate>
 ```
 
-To change to an additive model ,just remove the parameter _additive_ or change to _additive_='_True_' (as this is the default it does not matter if you state it explicitly or not).
+To change to an additive model, just remove the parameter _additive_ or change to _additive_='_True_' (as this is the default it does not matter if you state it explicitly or not).
 
 <figure class="half">
 
