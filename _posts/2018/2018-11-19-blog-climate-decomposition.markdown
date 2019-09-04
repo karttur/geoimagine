@@ -45,7 +45,7 @@ value = level * seasonality * trend * noise
 
 ## Prerequisites
 
-You must have setup the Karttur's GeoImagine Framework as described in [earlier](../blog-import-project-eclipse/) posts. You must also have added the [climate indexes](../blog-climateindex) and atmospheric [carbon dioxide (CO<sub>2</sub>) records](../blog-co2records/) to the database.
+You must have setup Karttur's GeoImagine Framework as described in [earlier](../../setup-import-project-eclipse/) posts. You must also have added the [climate indexes](../blog-climateindex) and atmospheric [carbon dioxide (CO<sub>2</sub>) records](../blog-co2records/) to the database.
 
 If you want to use the ore advanced decomposition method you must also [install the package <span class='package'>seasonal</span>](../blog-seasonal/).
 
