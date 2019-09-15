@@ -8,11 +8,6 @@ image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-26 08:32'
 comments: true
 share: true
-figure1: avg-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2A: ols-sl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2B: ts-mdsl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2C: ts-losl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2D: ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 ---
 <script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Import Karttur's GeoImagine Framework to Eclipse
+title: Import Project to Eclipse
 modified: '2018-10-10 T18:17:25.000Z'
 categories: setup
 excerpt: "Import Karttur's entire GeoImagine Framework as a PyDev project to Eclipse"
@@ -22,7 +22,7 @@ A PyDev project in <span class='app'>Eclipse</span> can be imported either as a 
 
 # Prerequisites
 
-To follow this post you must have the complete Spatial Data Integrated Development Environment (SPIDE) installed, including <span class='app'>Eclipse</span> set up for PyDev, <span class='app'>Anaconda</span> and <span class='app'>PostgreSQL</span>. How to do that is described in a separate blog: [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You need to install and setup all the parts in that blog, preferably using [Python3 and Anaconda3](https://karttur.github.io/setup-ide/blog/python3-upgrade/). How to create a customized virtual Python environment for Karttur's GeoImagine Framework within conda is described in the [previous](../setup-conda-environ/) post.
+To follow this post you must have the complete Spatial Data Integrated Development Environment (SPIDE) installed, including <span class='app'>Eclipse</span> set up for PyDev, <span class='app'>Anaconda</span> and <span class='app'>PostgreSQL</span>. How to do that is described in a separate blog: [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You need to install and setup all the parts in that blog, preferably using [Python3 and Anaconda3](https://karttur.github.io/setup-ide/blog/python3-upgrade/). How to create a customised virtual Python environment for Karttur's GeoImagine Framework within conda is described in the [previous](../setup-conda-environ/) post.
 
 The rest of this post assumes that you have accomplished the installation of the SPIDE.
 
