@@ -14,11 +14,11 @@ climateIndex-0100_import-NOAA: climateIndex-0100_import-NOAA
 
 # Introduction
 
-Internal dynamics of the climate system is an important forcing of both seasonal and inter-annual climate variations. Climate indexes capturing the key system variability have been widely used for understanding and forecasting e.g. the El Nino Southern Oscillation (ENSO), the North Atlantic Oscillation (NAO) and Pacific Decadal Oscillation (PDO). This post shows how to import various climate system indices into Karttur's GeoImagine Framework. Some of the most popular indices are summarized by [Universität Hamburg](https://icdc.cen.uni-hamburg.de/1/daten/climate-indices/popular-climate-indices.html) that also links to some of the original data sources. In here, however, you will get all the indexes from [NOAA ESRL](https://www.esrl.noaa.gov/psd/data/climateindices/list/) as that is easier. Also because all the the data are then in the same format.
+Internal dynamics of the climate system is an important forcing of both seasonal and inter-annual climate variations. Climate indexes capturing the key system variability have been widely used for understanding and forecasting e.g. the El Nino Southern Oscillation (ENSO), the North Atlantic Oscillation (NAO) and Pacific Decadal Oscillation (PDO). This post shows how to import various climate system indices into Karttur's GeoImagine Framework. Some of the most popular indices are summarized by [Universität Hamburg](https://icdc.cen.uni-hamburg.de/1/daten/climate-indices/popular-climate-indices.html) that also links to some of the original data sources. In here, however, you will get all the indexes from [NOAA ESRL](https://www.esrl.noaa.gov/psd/data/climateindices/list/) as that is easier. Also because all the data are then in the same format.
 
 ## Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). The Framework [postgres database must be setup](../blog-setup-db/) and the [processes defined](../blog-setup-processes/).
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/).
 
 # Climate indexes
 

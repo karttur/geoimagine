@@ -31,7 +31,7 @@ This post illustrates how to search, download and organize remote sensing data f
 
 ## Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). The Framework [postgres database must be setup](../blog-setup-db/) and the [processes defined](../blog-setup-processes/). The Framework MODIS python package must be installed, and the MODIS tiling system added to the postgres database.
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/). The Framework MODIS python package must be installed, and the MODIS tiling system added to the postgres database.
 
 <figure>
 <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure1].file }}">
@@ -138,14 +138,14 @@ The way Karttur´s GeoImagine Framework is organized, you first have to search t
 
 #### Search
 
-I have tried to find some library or database that lists the data available in the Data Pool, but have failed to find any. Instead I created a solution where I use <span class ='terminalapp'>wget</span> ("web get") for downloading an html coded list of available data. If you do not have <span class ='terminalapp'>wget</span>, [this](../blog-add-packages/) post includes the installation instructions
+I have tried to find some library or database that lists the data available in the Data Pool, but have failed to find any. Instead I created a solution where I use <span class ='terminalapp'>wget</span> ("web get") for downloading an html coded list of available data. If you do not have <span class ='terminalapp'>wget</span>, [this](../setup-add-packages/) post includes the installation instructions
 
 The Framework process for searching the online repository for MODIS data using <span class ='terminalapp'>wget</span> is <span class='package'>searchdatapool</span>. As the MODIS tiles are stored per date in the Data Pool that is how the data search is done. This means that the globally available tiles are always captured for each product and date that are included in the search.
 
 {% capture foo %}{{page.MODIS-0100_search-datapool}}{% endcapture %}
 {% include xml/MODIS-0100_search-datapool.html foo=foo %}
 
-Before running the process [<span class='package'>searchdatapool</span>](../../subprocess/subproc-searchdatapool/) you must have the credentials for accessing the [Data Pool](https://lpdaac.usgs.gov/data_access/data_pool) in a <span class='file'>.netrc</span> file, with the username corresponding to the one given in the xml file ('YourEarthDataUser'). How to use <span class='file'>.netrc</span> for handling connection is detailed in [this](../blog-setup-dblink/) post.
+Before running the process [<span class='package'>searchdatapool</span>](../../subprocess/subproc-searchdatapool/) you must have the credentials for accessing the [Data Pool](https://lpdaac.usgs.gov/data_access/data_pool) in a <span class='file'>.netrc</span> file, with the username corresponding to the one given in the xml file ('YourEarthDataUser'). How to use <span class='file'>.netrc</span> for handling connection is detailed in [this](../setup-dblink/) post.
 
 The process will drill into the Data Pool and load all the available data as html coded files. By default the process saves all the html files under the path <span class='file'>../modis/source/yyyy.mm.dd/</span> under the volume identified in the xml file. The files are ordinary html files, but with the <span class='file'>.html</span> extension omitted.
 

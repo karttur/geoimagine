@@ -2,7 +2,7 @@
 layout: post
 title: Setup processes
 modified: '2018-10-18 T18:17:25.000Z'
-categories: blog
+categories: setup
 excerpt: "Setup the processes for Karttur's GeoImagine Framework"
 tags:
  - addsubproc
@@ -19,9 +19,9 @@ This post will demonstrate how to add the process parameters in Karttur's GeoIma
 
 # Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must also have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). You must also have setup the complete Framework database as described in the [previous](../blog-setup-db/) post.
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must also have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). You must also have setup the complete Framework database as described in [this](../setup-db/) post.
 
-How to run processes, including the setup described in this post, is covered in an [earlier](../blog-run/) post. The xml files required for running the processes described in the post are included in the [<span class='package'>setup_processes</span>](https://github.com/karttur/geoimagine-setup_processes/) package. To understand the structure of the xml file you can read [this](../blog-xml/) post.
+How to run processes, including the setup described in this post, is covered in an [earlier](../setup-run/) post. The xml files required for running the processes described in the post are included in the [<span class='package'>setup_processes</span>](https://github.com/karttur/geoimagine-setup_processes/) package. To understand the structure of the xml file you can read [this](../setup-xml/) post.
 
 If your PyDev project does not compile and stop because imports are not found, check which package that is lacking and use the post on [Additional packages](../blog-add-packages) for support on adding the missing package to you PyDev project.
 
@@ -29,19 +29,18 @@ If your PyDev project does not compile and stop because imports are not found, c
 
 All functionalities of Karttur's GeoImagine Framework are called processes and operate based on parameters defined in the Framework database. Thus a process must be defined in the database before it can be used. Processes are grouped in roots, where a root is usually associated either with a typical class of functions (e.g. overlay, scalar, export) or data sources (e.g Landsat, Sentinel, MODIS etc).
 
-If you followed the tutorial on [set up the database](../blog-setup-db/) one root group ([_manageprocess_](../../rootproc-manageprocess/) and one process ([_addsubproc_](../../subprocess/subproc-addsubproc/)) were inserted in the database. This added the capability of defining all other processes.
+If you followed the tutorial on [set up the database](../setup-db/) one root group ([_manageprocess_](../../rootproc-manageprocess/)) and one process ([_addsubproc_](../../subprocess/subproc-addsubproc/)) were inserted in the database. This added the capability of defining all other processes.
 
 A complete list of both root and sub processes are available from the top menu, or [here](../../rootprocesses/) and [here](../../subprocesses/).
 
 # Python package setup_processes
 
-The setup of processes is done from the special package [<span class='package'>setup_processes</span>](https://github.com/karttur/geoimagine-setup_processes/). This package contains five <span class='file'>.py</span> files, the standard modules <span class='package'>\_\_init\_\_.py</span> and <span class='package'>version.py</span>, plus one main module, one class module and one module for adding regions:
+The setup of processes is done from the special package [<span class='package'>setup_processes</span>](https://github.com/karttur/geoimagine-setup_processes/). This package contains four <span class='file'>.py</span> files, the standard modules <span class='package'>\_\_init\_\_.py</span> and <span class='package'>version.py</span>, plus one main module and one module for adding regions:
 
 - setup_process_main.py
-- setup_process_class.py
 - setup_process_regions.py
 
-The package contains several subfolders. The package subfolder [<span class='file'>dbdoc</span>](../../package/package-setup_processes/dbdoc/xml) contains all the core processes, whereas the other [subfolders](../../package/package-setup_processes/dbdoc) contain thematic processes and default or template data related to different data source systems.
+The package also contains several subfolders. The package subfolder [<span class='file'>dbdoc</span>](../../package/package-setup_processes/dbdoc/xml) contains all the core processes, whereas the other [subfolders](../../package/package-setup_processes/) contain thematic processes and default or template data related to different data source systems.
 
 ## setup_processes_main.py
 
@@ -217,4 +216,4 @@ Running <span class='file'>setup\_processes\_main.py</span> installs all the int
 
 ## setup_process_regions.py
 
-The module <span class='file'>setup_process_regions.py</span> can be used to setup regional datasets, including the predefined tiling systems. It is the main topic of the [next](../blog-setup-regions/) post.
+The module <span class='file'>setup_process_regions.py</span> can be used to setup regional datasets, including the predefined tiling systems. It is the main topic of the [next](../setup-regions/) post.

@@ -38,3 +38,11 @@ rainfall_3b43_trmm_199801-201807_v7-f:
     source: null
     width: 800
     height: 222
+trmm-fao-vwb_3b43_trmm_199801-201807_v7-f-m:
+    file: trmm-fao-vwb_3b43_trmm_199801-201807_v7-f-m.mp4
+    author: Thomas Gumbricht
+    caption: Monthly Vertical Water Balance estimated from TRMM rainfall and reference evapotranspiration.
+    credit: null
+    source: null
+    width: 800
+    height: 222

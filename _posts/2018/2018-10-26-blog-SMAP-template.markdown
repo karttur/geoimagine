@@ -8,11 +8,6 @@ image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-26 08:32'
 comments: true
 share: true
-figure1: avg-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2A: ols-sl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2B: ts-mdsl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2C: ts-losl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
-figure2D: ts-hisl-grace-ave_ave-cmwater_global_2003-2016_RL05-filled
 ---
 <script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
 
@@ -22,11 +17,11 @@ Data products from the Soil Moisture Active Passive (SMAP) mission contain many 
 
 # Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). The Framework [postgres database must be setup](../blog-setup-db/) and the [processes defined](../blog-setup-processes/).
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/).
 
 # Get the layers
 
-The layers included in each SMAP product are summarised on the [Earthdata pages of the National Snow and Ice Data Center (NSIDC)](https://nsidc.org/data/SMAP). The description of the layers, however, is much better in the downloadable <span class='file'>.hdf</span> files. To insert the layers in the database semi-automatically you need one (1) downloaded fie representing the product you want register. Further, the downloaded file must be saved in the [predefined hierarchical structure](../blog-xml/) of the Framework. This will assure that layers exploded from the <span class='file'>.hdf</span> are saved under the correct path. The easiest way to achieve this is to download SMAP products with the Framework itself, as described in the [previous](../blog-SMAO/) post. You can also download a single product file manually from [NSIDC](https://n5eil01u.ecs.nsidc.org/SMAP) and create the correct path manually.
+The layers included in each SMAP product are summarised on the [Earthdata pages of the National Snow and Ice Data Center (NSIDC)](https://nsidc.org/data/SMAP). The description of the layers, however, is much better in the downloadable <span class='file'>.hdf</span> files. To insert the layers in the database semi-automatically you need one (1) downloaded fie representing the product you want register. Further, the downloaded file must be saved in the [predefined hierarchical structure](../setup-xml/) of the Framework. This will assure that layers exploded from the <span class='file'>.hdf</span> are saved under the correct path. The easiest way to achieve this is to download SMAP products with the Framework itself, as described in the [previous](../blog-SMAO/) post. You can also download a single product file manually from [NSIDC](https://n5eil01u.ecs.nsidc.org/SMAP) and create the correct path manually.
 
 With a <span class='file'>.hdf</span> file representing the SMAP prodict you want to register in the _SMAP.template_ table in place, open a <span class='app'>terminal</span> window. The newly opened window should have your home directory as working directory (you can try that by typing <span class='terminal'>$ pwd</span> at the prompt.)
 

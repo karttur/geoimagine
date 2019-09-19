@@ -1,7 +1,7 @@
 ---
 layout: post
 title: GRACE
-modified: '2018-10-23 T18:17:25.000Z'
+modified: '2018-10-21 T18:17:25.000Z'
 categories: blog
 excerpt: "Processing GRACE data using Karttur's GeoImagine Framework"
 tags:
@@ -14,24 +14,13 @@ tags:
   - extractseasonancillary
   - resampletsancillary
   - trendtsancillary
-  - createscaling
-  - addrasterpalette
-  - exporttobyteancillary
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2018-10-23 T18:17:25.000Z'
+date: '2018-10-21 T18:17:25.000Z'
 comments: true
 share: true
 
 figure1: avg-grace-ave_cmwater_global_2003-2016_RL05-f-A
-figure2A: ols-sl-grace-ave_cmwater_global_2003-2016_RL05-f-A
-figure2B: ts-mdsl-grace-ave_cmwater_global_2003-2016_RL05-f-A
-figure2C: ts-losl-grace-ave_cmwater_global_2003-2016_RL05-f-A
-figure2D: ts-hisl-grace-ave_cmwater_global_2003-2016_RL05-f-A
 
-GRACE-0001_createscaling: GRACE-0001_createscaling
-GRACE-0002_createpalettes: GRACE-0002_createpalettes
-GRACE-0003_createlegends: GRACE-0003_createlegends
-GRACE-0005_exportlegend: GRACE-0005_exportlegend
 GRACE-0101_organize: GRACE-0101_organize
 GRACE-0111_mendts: GRACE-0111_mendts
 GRACE-0115_average: GRACE-0115_average
@@ -41,13 +30,12 @@ GRACE-0231_extract-season: GRACE-0231_extract-season
 GRACE-0290_resample-2-annual: GRACE-0290_resample-2-annual
 GRACE-0310_trend_A_2003-2016: GRACE-0310_trend_A_2003-2016
 GRACE-0320_changes_A_2003-2016: GRACE-0320_changes_A_2003-2016
-GRACE-0910_ExporttoByte_timespanA_2003-2016: GRACE-0910_ExporttoByte_timespanA_2003-2016
 ---
 <script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
 
 # Introduction
 
-This post presents a processing chain for organizing, analyzing and presenting data from [Gravity Recovery and Climate Experiment (GRACE)](https://grace.jpl.nasa.gov) mission in Kartur's GeoImagine Framework.
+This post presents a processing chain for organizing, analyzing and presenting data from [Gravity Recovery and Climate Experiment (GRACE)](https://grace.jpl.nasa.gov) mission in Karttur's GeoImagine Framework.
 
 <figure>
 <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure1].file }}">
@@ -56,13 +44,13 @@ This post presents a processing chain for organizing, analyzing and presenting d
 
 # Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). The Framework [postgres database must be setup](../blog-setup-db/) and the [processes defined](../blog-setup-processes/).
+You must have the complete SPIDE installed as described in the blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/).
 
 # GRACE
 
-GRACE was built around two identical satellites orbiting the Earth and was operational from 2003 to 2017. Traveling with a fixed distance in between them the gravitational pull caused minute changes in the vertical elevation difference between the two satellites. This change can be used for estimating the gravitational pull. Short term (days to months) changes in the gravitation is primarily related to the Earth's water reservoirs over land, ice and oceans, and earthquakes and crustal deformations.
+GRACE was built around two identical satellites orbiting the Earth and was operational from 2003 to 2017. Traveling with a fixed distance in between them the gravitational pull caused minute changes in the vertical elevation difference between the two satellites. This change can be used for estimating the gravitational pull. Short term (days to months) changes in the gravitation over land is primarily related to the Earth's water reservoirs, earthquakes and crustal deformations.
 
-This tutorial makes use of GRACE TELLUS [Level-3 data grids of monthly surface mass changes](https://grace.jpl.nasa.gov/data/monthly-mass-grids/) to detect trends in water storage on land. This GRACE data represent the changes in equivalent water thickness relative to a time-mean baseline. There are three different solutions for the calculations of equivalent water thickness, respectively produced by CSR (Center for Space Research at University of Texas, Austin), GFZ (GeoforschungsZentrum Potsdam) and JPL (Jet Propulsion Laboratory). You can use any of these solutions, but the official recommendation is that [users obtain all three data center's solutions (JPL, CSR, GFZ) and simply average them](https://grace.jpl.nasa.gov/data/choosing-a-solution/).
+This tutorial makes use of GRACE TELLUS [Level-3 data grids of monthly surface mass changes](https://grace.jpl.nasa.gov/data/monthly-mass-grids/) to detect trends in water storage on land. This GRACE data represent the changes in equivalent water thickness relative to a (time-mean) baseline. There are three different solutions for the calculations of equivalent water thickness, respectively produced by CSR (Center for Space Research at University of Texas, Austin), GFZ (GeoforschungsZentrum Potsdam) and JPL (Jet Propulsion Laboratory). You can use any of these solutions, but the official recommendation is that [users obtain all three data center's solutions (JPL, CSR, GFZ) and simply average them](https://grace.jpl.nasa.gov/data/choosing-a-solution/).
 
 ## Python Package
 
@@ -106,7 +94,7 @@ The project file links to an ASCII text file that contains a list of the xml fil
 projFN ='doc/GRACE/grace_20181018_0.txt'
 ```
 
-As the path to the project file does **not** start with a slash "\\", the path must be relative to the project module itself. The [project package available on Karttur's GitHub page](../../../geoimagine-projects) contains the path and the files required for running the process chain. Both the text file and the xml files are available under the subfolder [<span class='file'>doc/GRACE</span>](../../../geoimagine-projects/doc/GRACE).
+As the path to the project file does **not** start with a slash "/", the path must be relative to the project module itself. The [project package available on Karttur's GitHub page](../../../geoimagine-projects) contains the path and the files required for running the process chain. Both the text file and the xml files are available under the subfolder [<span class='file'>doc/GRACE</span>](../../../geoimagine-projects/doc/GRACE).
 
 <button id= "toggleProcessChain" onclick="hiddencode('ProcessChain')">Hide/Show grace_YYYYMMDD.txt</button>
 
@@ -120,26 +108,6 @@ As the path to the project file does **not** start with a slash "\\", the path m
 ###            GRACE            ###
 ###################################
 ###################################
-
-###################################
-###            Layout           ###
-###################################
-
-## Create scaling for GRACE compids ##
-#GRACE-0001_createscaling.xml
-
-## Create palettes for GRACE ##
-#GRACE-0002_createpalettes.xml
-
-## Create legend for GRACE ##
-#GRACE-0003_createlegends.xml
-
-## Export legends for GRACE ##
-#GRACE-0005_exportlegend.xml
-
-## Create movie clock ##
-##NOTDONE##
-#smap_createmovieclock.xml
 
 ###################################
 ###     Download & organize     ###
@@ -180,12 +148,6 @@ GRACE-0290_resample-2-annual.xml
 ## Calculate annual changes 2003 t0 2016 ##
 #GRACE-0320_changes_A_2003-2016.xml
 
-###################################
-###        Export media         ###
-###################################
-
-## Export annual statistics, trends and changes ##
-#GRACE-0910_ExporttoByte_timespanA_2003-2016
 ```
 {% endraw %}
 {% endcapture %}
@@ -222,7 +184,7 @@ In the xml above, the region is defined by the _tract_:
 tractid= 'karttur'
 ```
 
-Where the _tractid_ _karttur_ is the default superuser owned tract representing global extent (see [this](../blog-xml/) post for details).
+Where the _tractid_ _karttur_ is the default superuser owned tract representing global extent (see [this](../setup-xml/) post for details).
 
 The time span and the temporal resolution is defined in the \<period\> tag:
 
@@ -295,41 +257,4 @@ The process [<span class='package'>signiftrendsancillary</span>](../../subproces
 {% capture foo %}{{page.GRACE-0320_changes_A_2003-2016}}{% endcapture %}
 {% include xml/GRACE-0320_changes_A_2003-2016.html foo=foo %}
 
-## Layout
-
-To produce a color map, you need to scale your original map to range between 0 and 255, and then assign the palette. To create and export a layout map or image, you must pre-define the scaling for the _composition_ to export. All exported images (maps) are scaled to Byte range (0 to 255), and the scaling should achieve that while preserving a relevant distribution of numerical cell values. By default, the Framework assumes that null (nodata) will equal 255 in the scaled export, and that the values 251 to 254 represent colors for overlays, frames and text etc. Values in the range 0 to 250 should represent the thematic feature of the layer.
-
-### Scaling
-
-The GRACE data is strongly skewed because of the glacier melt in Greenland and West Antarctica. The melting of the glaciers causes a loss in water and thus is gravitational pull. Using a linear scale for representing the global change in water equivalent thickness that included the melting glacier thus becomes tricky, I choose to use a solution where I use a power function to capture both large and small changes. This, however, can be deceptive but you need to choose some legend scaling in order to show your map. The process [<span class='package'>createscaling</span>](../../subprocess/subproc-createscaling/) adds the scaling to the database.
-
-{% capture foo %}{{page.GRACE-0001_createscaling}}{% endcapture %}
-{% include xml/GRACE-0001_createscaling.html foo=foo %}
-
-### Palette
-
-![Grace palette]({{ site.commonurl }}/images/cmwater-annual-stats-a_avg-grace-ave_grace.png){: .pull-right}
-
-If you want to produce color maps showing the GRACE data and the results of your trend analysis, you also need to create the palette(s) to use. All palettes must be saved to the database before use, with the process [<span class='package'>addrasterpalette</span>](../../subprocess/subproc-addrasterpalette/). Glancing at the color ramp of the online GRACE data at the [official homepage](https://grace.jpl.nasa.gov/data/get-data/monthly-mass-grids-land/), I set the following palette:
-
-{% capture foo %}{{page.GRACE-0002_createpalettes}}{% endcapture %}
-{% include xml/GRACE-0002_createpalettes.html foo=foo %}
-
-### Export color map
-
-Having defined the scaling and a palette for the different layers, you can export the layers as color maps (colored GeoTiff images). The process for doing that is [<span class='package'>exporttobyteancillary</span>](../../subprocess/subproc-exporttobyteancillary/).
-
-{% capture foo %}{{page.GRACE-0910_ExporttoByte_timespanA_2003-2016}}{% endcapture %}
-{% include xml/GRACE-0910_ExporttoByte_timespanA_2003-2016.html foo=foo %}
-
-<figure class="half">
-	<img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2A].file }}">
-
-	<img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2B].file }}">
-
-  <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2C].file }}">
-
-	<img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2D].file }}">
-
-	<figcaption>Maps of the change in water equivalent thickness 2003 to 2016. The top row shows the Ordinary Least Square (OLS) slope and the Theil-Sen (TS) median slope. The bottom row shows the lower and higher 95 % confidence limit for TS slope. </figcaption>
-</figure>
+The [next](../blog-GRACE-layout) post covers how to define palettes and scaling for the GRACE data and then export the data as media files.

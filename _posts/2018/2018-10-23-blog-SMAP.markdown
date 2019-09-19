@@ -1,7 +1,7 @@
 ---
 layout: post
 title: SMAP
-modified: '2018-10-25 T18:17:25.000Z'
+modified: '2018-10-23 T18:17:25.000Z'
 categories: blog
 excerpt: "Soil Moisture Active Passive (SMAP) mission processing using Karttur's GeoImagine Framework"
 tags:
@@ -14,29 +14,19 @@ tags:
   - resampletssmap
   - extractseasonsmap
   - seasonfilltssmap
-  - createscaling
-  - addrasterpalette
-  - addmovieclock
-  - exporttobytesmap
-  - movieclocksmap
-  - movieframesmap
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2018-10-25 T18:17:25.000Z'
+date: '2018-10-23 T18:17:25.000Z'
 comments: true
 share: true
 figure1: soil-moisture-avg_SPL3SMP_global_2015-2018@D001_005
-figure2A: soil-moisture-am_SPL3SMP_global_20160122_005
-figure2B: soil-moisture-avg_SPL3SMP_global_20160122_005
-figure2C: soil-moisture-pm_SPL3SMP_global_20160122_005
+fig2a: soil-moisture-am_SPL3SMP_global_20160122_005
+fig2b: soil-moisture-avg_SPL3SMP_global_20160122_005
+fig2c: soil-moisture-pm_SPL3SMP_global_20160122_005
 figure3: soil-moisture-avg_SPL3SMP_global_2016009_005
 movie1: soil-moisture-avg_SPL3SMP_global_2015121-2018345_005
 movie2: soil-moisture-avg_SPL3SMP_global_2015-2018@16D_005
 
-SMAP-0001_createscaling: SMAP-0001_createscaling
-SMAP-0002_createpalettes: SMAP-0002_createpalettes
-SMAP-0003_createlegends: SMAP-0003_createlegends
-SMAP-0004_createmovieclock: SMAP-0004_createmovieclock
-SMAP-0005_add-movieclock: SMAP-0005_add-movieclock
+
 SMAP-0100_search-daac_20150331-20150807: SMAP-0100_search-daac_20150331-20150807
 SMAP-0100_search-daac_20150331-20181231: SMAP-0100_search-daac_20150331-20181231
 SMAP-0100_search-daac_20150413-20150807: SMAP-0100_search-daac_20150413-20150807
@@ -67,19 +57,15 @@ SMAP-0310_tsresample-M_2018: SMAP-0310_tsresample-M_2018
 SMAP-0310_tsresample-M_2019: SMAP-0310_tsresample-M_2019
 SMAP-0320_extract-season_16D: SMAP-0320_extract-season_16D
 SMAP-0320_extract-season_M: SMAP-0320_extract-season_M
-SMAP-0900_ExporttoByte_16D: SMAP-0900_ExporttoByte_16D
-SMAP-0905_ExporttoByte_16D-seasons: SMAP-0905_ExporttoByte_16D-seasons
-SMAP-0950_movieframes_16D-seasons: SMAP-0950_movieframes_16D-seasons
-SMAP-0950_movieframes_16D: SMAP-0950_movieframes_16D
-SMAP-0960_movieclock_16D-seasons: SMAP-0960_movieclock_16D-seasons
-SMAP-0960_movieclock_16D: SMAP-0960_movieclock_16D
 SMAP-0330_interpolseasn_16D_2015-2019: SMAP-0330_interpolseasn_16D_2015-2019
 ---
 <script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
 
 # Introduction
 
-This post introduces processing of data from the [Soil Moisture Active Passive (SMAP)](https://smap.jpl.nasa.gov) mission in Karttur's GeoImagine Framework. The two following posts deals with [capturing SMAP products to the Framework database](../blog-SMAP-template/) and how to [use SQL to alter the layers to extract from each SMAP products](../blog-SMAP-sql/). Then follows a post on how to [adjust the SMAP estimates for open water bodies](../blog-SMAP-adjust/).
+![SMAP palette]({{ site.commonurl }}/images/soil-moisture_smap_legend.jpg){: .pull-right}
+
+This post introduces processing of data from the [Soil Moisture Active Passive (SMAP)](https://smap.jpl.nasa.gov) mission in Karttur's GeoImagine Framework. The [next](../blog-SMAP-layout/) post covers defining layouts and exporting the results as different media files. The two following posts deals with [capturing SMAP products to the Framework database](../blog-SMAP-template/) and how to [use SQL to alter the layers to extract from each SMAP products](../blog-SMAP-sql/). Then follows a post on how to [adjust the SMAP estimates for open water bodies](../blog-SMAP-adjust/).
 
 <figure>
 <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure1].file }}">
@@ -88,7 +74,7 @@ This post introduces processing of data from the [Soil Moisture Active Passive (
 
 ## Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). The Framework [postgres database must be setup](../blog-setup-db/) and the [processes defined](../blog-setup-processes/).
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/).
 
 If you want to use the Framework for searching and registering avaiable SMAP data you must have the terminal command line tool <span class='terminalapp'>wget</span> ("web get") installed. Mac osx does not come with <span class='terminalapp'>wget</span>, you have to install it. I use <span class='app'>Homebrew</span> for that:
 
@@ -165,22 +151,6 @@ As the path to the project file does **not** start with a slash "/", the path is
 ###             SMAP            ###
 ###################################
 ###################################
-
-###################################
-###             Layout          ###
-###################################
-
-## Create scaling for smap compids ##
-#SMAP-0001_createscaling.xml
-
-## Create palettes for smap ##
-#SMAP-0002_createpalettes.xml
-
-## Create legend for smap ##
-#SMAP-0003_createlegends.xml
-
-## Create movie clock for smap##
-#SMAP-0004_createmovieclock.xml
 
 ###################################
 ###          Update db          ###
@@ -271,80 +241,11 @@ SMAP-0130_extract_2019-present.xml
 ## Interpolate nodata supported with seasonal signal ##
 #SMAP-0330_interpolseasn_16D_2015-2019.xml
 
-###################################
-###        Export media         ###
-###################################
-
-## Export 16D SMAP ##
-#SMAP-0900_ExporttoByte_16D.xml
-
-## Export seasonal signals 16D ##
-#SMAP-0905_ExporttoByte_16D-seasons.xml
-
-###        Movie         ###
-
-## Create image frames ##
-#SMAP-0950_movieframes_16D-seasons.xml
-#SMAP-0950_movieframes_16D
-
-## Create clock frames and movie ##
-#SMAP-0960_movieclock_16D-seasons.xml
-#SMAP-0960_movieclock_16D
 ```
 {% endraw %}
 {% endcapture %}
 {% include widgets/toggle-code.html  toggle-text=text-capture  %}
 </div>
-
-### Layout
-
-Processing to pleasing looking maps requires that different layout aspects are pre-defined, including:
-
-- scaling
-- legends
-- palettes
-- movieclock
-
-You must define scaling and palettes. You need legends if you want to add that to your map layouts. You can also define a customized layout of the clock and time line for animations, but you can also use the Framework default.
-
-#### Create scaling
-
-To export a layer to a color map the scaling must be set using the process [<span class='package'>createscaling</span>](../../subprocess/subproc-createscaling/). All exported maps are in byte format (valid numerical range between 0 and 255). Thus all compositions that are not defined as byte must be rescaled to fit between 0 and 255. The Framework default is to use 255 to denote nodata and values between 251 and 255 for layout.
-
-{% capture foo %}{{page.SMAP-0001_createscaling}}{% endcapture %}
-{% include xml/SMAP-0001_createscaling.html foo=foo %}
-
-#### Create palettes
-
-To set up a palette, use the process [<span class='package'>addrasterpalette</span>](../../subprocess/subproc-addrasterpalette/). In the example below three different SMAP related palettes are defined: for soil moisture (vol/vol), for change in soil moisture and for variations in soil moisture.
-
-{% capture foo %}{{page.SMAP-0002_createpalettes}}{% endcapture %}
-{% include xml/SMAP-0002_createpalettes.html foo=foo %}
-
-#### Create legends
-
-To export legends for use together with maps, use the process [<span class='package'>createlegend</span>](../../subprocess/subproc-createlegend/).
-
-{% capture foo %}{{page.SMAP-0003_createlegends}}{% endcapture %}
-{% include xml/SMAP-0003_createlegends.html foo=foo %}
-
-#### movieclock
-
-As part of Karttur´s GeoImagine Framework, time series images can be converted to animations with a timeline and a clock showing the year and the season. To create animations you must have installed the terminal apps <span class='terminalapp'>ImageMagick</span> (for command line image processing) and <span class='terminalapp'>ffmpeg</span> (for command line movie making). Here are the links to my blog posts on how to install and use <span class='terminalapp'>ImageMagick</span> and <span class='terminalapp'>ffmpeg</span>:
-
-- [ImageMagick](https://karttur.github.io/setup-theme-blog/blog/install-imagemagick/)
-- [FFmpeg](https://karttur.github.io/setup-theme-blog/blog/ffmpeg-movie/)
-
-The post on <span class='terminalapp'>ffmpeg</span> also illustrates the use of the GeoImagine Framework movieclock.
-
-#### Defining a movieclock
-
-An animation requires a pre-defined movieclock (but usually the "default" movieclock is OK), and that the time series data is first exported and then converted to movie frames.
-
-A movieclock object defines the colors, types and sizes of the elements building the clock and timeline in the animation.  Basically you do not need to define any of the elements, they are all defaulted. But if you want other postions, widths, margins, colors etc, all can be set using the process [<span class='package'>addmovieclock</span>](../../subprocess/subproc-addmovieclock/).
-
-{% capture foo %}{{page.SMAP-0005_add-movieclock}}{% endcapture %}
-{% include xml/SMAP-0005_add-movieclock.html foo=foo %}
 
 ### Update DB
 
@@ -493,6 +394,8 @@ The daily data for most SMAP L3 products are separated into morning (am) and eve
 
 #### Overlay am and pm to daily average
 
+![SMAP palette]({{ site.commonurl }}/images/soil-moisture_smap_legend.jpg){: .pull-right}
+
 The overlay of am and pm data to daily averages as defined in the xml commands below are done for several of the sub-datasets of the different SMAP products.
 
 {% capture foo %}{{page.SMAP-0240_overlaydaily_20150331-20181231}}{% endcapture %}
@@ -500,13 +403,15 @@ The overlay of am and pm data to daily averages as defined in the xml commands b
 
 <figure class="third">
 
-<a href="{{ site.commonurl }}/images/{{ site.data.images[page.figure2A].source }}"><img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2A].file }}" alt="image"></a>
+  <a href="{{ site.commonurl }}/images/{{ site.data.images[page.fig2a].file }}"><img src="{{ site.commonurl }}/images/{{ site.data.images[page.fig2a].file }}" alt="image"></a>
 
-<a href="{{ site.commonurl }}/images/{{ site.data.images[page.figure2B].source }}"><img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2B].file }}" alt="image"></a>
+  <a href="{{ site.commonurl }}/images/{{ site.data.images[page.fig2b].file }}">
+  <img src="{{ site.commonurl }}/images/{{ site.data.images[page.fig2b].file }}" alt="image"></a>
 
-<a href="{{ site.commonurl }}/images/{{ site.data.images[page.figure2C].source }}"><img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure2C].file }}" alt="image"></a>
+  <a href="{{ site.commonurl }}/images/{{ site.data.images[page.fig2c].file }}">
+  <img src="{{ site.commonurl }}/images/{{ site.data.images[page.fig2c].file }}" alt="image"></a>
 
-<figcaption>Daily SMAP maps for the 22 January 2016. The left image is the morning (am) soil moisture, the right image is the afternoon (pm) soil moisture and the central image is a combination of the other two. </figcaption>
+  <figcaption>Daily SMAP maps for the 22 January 2016. The left image is the morning (am) soil moisture, the right image is the afternoon (pm) soil moisture and the central image is a combination of the other two. </figcaption>
 </figure>
 
 ### Time series processing
@@ -567,54 +472,6 @@ Karttur´s GeoImagine Framework provides some different methods for interpolatin
 {% capture foo %}{{page.SMAP-0330_interpolseasn_16D_2015-2019}}{% endcapture %}
 {% include xml/SMAP-0330_interpolseasn_16D_2015-2019.html foo=foo %}
 
-### Export
-
-Exporting layers requires that you have defined the scaling for the composition and a suitable palette. SMAP layers are exported suing the process [<span class='package'>exporttobytesmap</span>](../../subprocess/subproc-exporttobytesmap/).
-
-### Export time series images
-
-If you want to do a movie (animation) of the SMAP time-series data you have to export all the individual SMAP dates. To make the movie look pleasing it is best to export the force filled 16D period time series. Below, both the force filled time series and the seasonal signals are exported, and then used for creating movie animations.
-
-{% capture foo %}{{page.SMAP-0900_ExporttoByte_16D}}{% endcapture %}
-{% include xml/SMAP-0900_ExporttoByte_16D.html foo=foo %}
-
-### Export seasonal signal
-
-{% capture foo %}{{page.SMAP-0905_ExporttoByte_16D-seasons}}{% endcapture %}
-{% include xml/SMAP-0905_ExporttoByte_16D-seasons.html foo=foo %}
-
-### Create movie
-
-To create movie frames, you must first have exported the time-series images. You then convert the individual images to movie frames with the process [<span class='package'>movieframesmap</span>](../../subprocess/subproc-movieframesmap/) and then create the clock and timeline with the process [<span class='package'>movieclocksmap</span>](../../subprocess/subproc->movieclocksmap/). The latter process also generates the shell scripts for joining the map frames and the clock frames, and for assembling the joined frames to a movie. If you set the parameter _asscript_ to _False_ the scripts are called and executed from within the process.
-
-### Create movie frames
-
-{% capture foo %}{{page.SMAP-0950_movieframes_16D}}{% endcapture %}
-{% include xml/SMAP-0950_movieframes_16D.html foo=foo %}
-
-By default the process [<span class='package'>movieframesmap</span>](../../subprocess/subproc-movieframesmap/) produces a shell script file that you must execute manually to produce the movie frames. The advantage with the script file is that you can edit the area of the map to appear in the movie as well as the embossed watermark text. The link to the script file is reported by the process.
-
-### Create movie clock and timeline
-
-The final step before producing the movie (time series animation) is to create the movie clock/timeline that fits with your movie frames. You need to set the dimensions of the movie clock manually as parameters in the process [<span class='package'>>movieclocksmap</span>](../../subprocess/subproc->movieclocksmap/). The process uses a combination of python image processing and <span class='terminalapp'>ImageMagick</span> commands.
-
-The process also produces two shell script files. The first joins (overlays) the movieclock and the image frames (with <span class='terminalapp'>ImageMagick</span>), and the second produces the movie using <span class='terminalapp'>ffmpeg</span>. If you do not set the parameter _asscript_ to _False_ you need to execute both scripts manually as reported by the script.
-
-{% capture foo %}{{page.SMAP-0960_movieclock_16D}}{% endcapture %}
-{% include xml/SMAP-0960_movieclock_16D.html foo=foo %}
-
-<figure>
-<iframe src="{{ site.commonurl }}/movies/{{ site.data.movies[page.movie1].file }}" width="{{ site.data.movies[page.movie1].width }}" height="{{ site.data.movies[page.movie1].height }}" frameborder="0">
-</iframe>
-<figcaption> {{ site.data.movies[page.movie1].caption }} </figcaption>
-</figure>
-
-<figure>
-<iframe src="{{ site.commonurl }}/movies/{{ site.data.movies[page.movie2].file }}" width="{{ site.data.movies[page.movie2].width }}" height="{{ site.data.movies[page.movie2].height }}" frameborder="0">
-</iframe>
-<figcaption> {{ site.data.movies[page.movie2].caption }} </figcaption>
-</figure>
-
 # Resources
 
 [Karttur´s GeoImagine Framework](https://karttur.github.io/setup-ide/)
@@ -622,7 +479,3 @@ The process also produces two shell script files. The first joins (overlays) the
 [the EASE-Grid Projection](https://nsidc.org/ease/clone-ease-grid-projection-gt) by NSIDC
 
 [hdf5_to_geotiff](https://github.com/Zepy1/satellite_analysis/blob/master/hdf5_2_geotiff.py) GitHub script for projecting SMAP layers in EASE-Grid 2
-
-[ImageMagick for batch processing maps](https://karttur.github.io/setup-theme-blog/blog/install-imagemagick/)
-
-[FFmpeg for map animations](https://karttur.github.io/setup-theme-blog/blog/ffmpeg-movie/)

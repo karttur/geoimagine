@@ -45,7 +45,7 @@ The Vertical Water Balance (VWB) is the local difference between precipitation a
 
 ## Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). The Framework [postgres database must be setup](../blog-setup-db/) and the [processes defined](../blog-setup-processes/). You must also have imported and processed data representing precipitation and evapotranspiration.
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/). You must also have imported and processed data representing precipitation and evapotranspiration.
 
 
 # Vertical Water Balance
@@ -54,7 +54,7 @@ Herein, VWB is calculated as the monthly precipitation minus the monthly evapotr
 
 ## Project module
 
-As explained in the post on [Running processes](../blog-run/) you can create a project module for running specific tasks. The module below links to a single file (<span class='file'>VWB_TRMM-vs-FAOrefevap.txt</span>), that in turn links to a set of xml files. Running the module below will run all processes in the listed xml files.
+As explained in the post on [Running processes](../setup-run/) you can create a project module for running specific tasks. The module below links to a single file (<span class='file'>VWB_TRMM-vs-FAOrefevap.txt</span>), that in turn links to a set of xml files. Running the module below will run all processes in the listed xml files.
 
 <button id= "toggleprojfile" onclick="hiddencode('projfile')">Hide/Show projVWB.py</button>
 <div id="projfile" style="display:none">

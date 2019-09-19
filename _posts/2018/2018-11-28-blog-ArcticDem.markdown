@@ -246,7 +246,7 @@ DEM data is imported to the Framework as ancillary data, in the example import b
 			</dem100>
 		</dstcomp>
 
-	</process>		
+	</process>
 </importarcticdem>
 ```
 
@@ -259,7 +259,7 @@ DEM data is imported to the Framework as ancillary data, in the example import b
 
 The ArcticDEM mosaics at 100 and 500 m downloaded and imported above are too large for some of the processes. One of the basic concepts behind Karttur´s GeoImagine Framework is to use tiling systems for processing the Earth's surface piecewise. The two main tiling systems in use are the MODIS sinusoidal system and MGRS.
 
-The xml below identifies all MODIS SIN tiles that overlap with the Arctic regions defined in the xml above. The process <span class='package'>LinkDefaultRegionsToMODIS</span> by default identifies all MODIS tiles for all regions. But if you set _overwrite_ = _False_ (the default setting) only default regions that do not have any identified MODIS tiles are tested. The source composition (\<srccomp\>) defined in the xml is for the shape file with the MODIS tiles as polygons. If your Framework lack the MODIS tiles, you need to setup the regions, including the MODIS tiling system as described in [this](../blog-setup-regions/) post.
+The xml below identifies all MODIS SIN tiles that overlap with the Arctic regions defined in the xml above. The process <span class='package'>LinkDefaultRegionsToMODIS</span> by default identifies all MODIS tiles for all regions. But if you set _overwrite_ = _False_ (the default setting) only default regions that do not have any identified MODIS tiles are tested. The source composition (\<srccomp\>) defined in the xml is for the shape file with the MODIS tiles as polygons. If your Framework lack the MODIS tiles, you need to setup the regions, including the MODIS tiling system as described in [this](../setup-regions/) post.
 
 <button id= "togglelinkmodis" onclick="hiddencode('linkmodis')">Hide/Show regions-modtiles_v80.xml</button>
 

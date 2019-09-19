@@ -1,0 +1,481 @@
+---
+layout: post
+title: Conda virtual environments II
+modified: '2018-10-09 T18:17:25.000Z'
+categories: setup
+excerpt: "Create Conda environment for Karttur's GeoImagaine project"
+tags:
+  - Conda environment
+image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
+date: '2018-10-09
+ T18:17:25.000Z'
+comments: true
+share: true
+
+figure1: eclipse_select_import
+figure2: eclipse_import_project_from_file_system_or_archive
+---
+<script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
+# Introduction
+
+With conda, you can create, update, export and import virtual Python environments that have different versions of Python and/or packages installed in them. If you use <span class='app'>Eclipe</span> as your Integrated Development Envrionment (IDE) you can easily reset your Python source to a virtual version created in conda. You can also share an environment by first exporting and then importing it.
+
+# Prerequisites
+
+Anaconda/conda must be installed as described in [this](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/) post. If you [created a conda virtual environment when setting up the SPIDE](https://karttur.github.io/setup-ide/setup-ide/conda-environ/) you can skip to the section called "Install additional packages in your environments".
+
+# Conda virtual environments
+
+Karttur's GeoImagine Framework requires a large set of python packages to work. You have to install these packages and then link them to the Framework Spatial Data IDE (SPIDE). Most packages depend on other, more basic, packages. When installing many packages there is a risk of conflicting requirements regarding the versions of shared packages. To avoid having your complete system corrupted, it is recommended that you build the python system and packages using a "virtual" environment. In essence this means that you build a system that is working as a stand-alone solution unlinked from the core system.
+
+This is easily done in conda, the recommended system for the [Framework SPIDE python setup](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/). This tutorial will take your through the steps of creating, exporting and importing a virtual python environment in conda.
+
+## Activate your conda environment
+
+When you have created a new virtual environment ('geoimagine002'), activate it:
+
+<span class='terminal'>$ conda activate geoimagine002</span>
+
+ Look for the line <span class='terminal'>user config file:</span> in the results.
+
+ You can create the <span class='file'>.condarc</span> file using a text editor (e.g. [<span class='atom'>Atom</span>](https://karttur.github.io/setup-blog/2017/12/21/setup-blog-tools.html#install-atom)), directly from the command line ( <span class='terminal'>~$ pico .condarc</span>) or by running the command:
+
+ <span class='terminal'>$ conda config</span>
+
+You can set a lot of parameters and functions in .condarc (as described [here](https://docs.conda.io/projects/conda/en/latest/user-guide/configuration/use-condarc.html), but for now you will use it for defining a set of default packages that will always be included when creating a new environment.
+
+### Default packages
+
+The manual for setting default packages to install with every new environment is described [here](https://docs.conda.io/projects/conda/en/latest/user-guide/configuration/use-condarc.html#config-add-default-pkgs). Lists of available packages for different conda distributions are found [here](https://docs.anaconda.com/anaconda/packages/pkg-docs/).
+
+For creating virtual conda python environments for Karttur's GeoImagine Framework, add the following lines to your <span class='file'>.condarc</span> file:
+
+```
+create_default_packages:
+  - pip
+  - numpy
+  - scipy
+  - pandas
+  - geopandas
+  - rasterio
+  - psycopg2
+  - statsmodels
+  - numba
+  - xmltodict
+```
+
+The above list will also install several other packages that are required by the Framework. Not as support packages but as core packages, including for instance <span class='package'>GDAL</span>, <span class='package'>fiona</span>and <span class='package'>shapely</span>.
+
+The advantage with installing the core components in a single command is that conda will solve conflicts among dependancies. It is best to install all packages at once, so that all of the dependencies are installed at the same time.
+
+## Create a new environment
+
+If you now create a new environment:
+
+<span class='terminal'>$ conda create --name geoimagine0</span>,
+
+the rather short list of default packages will create a rather long list of package to install:
+
+<button id= "toggleCondaCreate" onclick="hiddencode('CondaCreate')">Hide/Show conda create terminal response</button>
+
+<div id="CondaCreate" style="display:none">
+{% capture text-capture %}
+{% raw %}
+
+```
+$ conda create --name geoimagine1
+Collecting package metadata: done
+Solving environment: done
+
+## Package Plan ##
+
+  environment location: /Applications/anaconda3/envs/geoimagine1
+
+  added / updated specs:
+    - geopandas
+    - numba
+    - numpy
+    - pandas
+    - pip
+    - psycopg2
+    - scipy
+    - statsmodels
+    - xmltodict
+
+The following NEW packages will be INSTALLED:
+
+  attrs              pkgs/main/osx-64::attrs-19.1.0-py37_1
+  blas               pkgs/main/osx-64::blas-1.0-mkl
+  bzip2              pkgs/main/osx-64::bzip2-1.0.6-h1de35cc_5
+  ca-certificates    pkgs/main/osx-64::ca-certificates-2019.5.15-0
+  cairo              pkgs/main/osx-64::cairo-1.14.12-hc4e6be7_4
+  certifi            pkgs/main/osx-64::certifi-2019.3.9-py37_0
+  click              pkgs/main/osx-64::click-7.0-py37_0
+  click-plugins      pkgs/main/noarch::click-plugins-1.1.1-py_0
+  cligj              pkgs/main/osx-64::cligj-0.5.0-py37_0
+  curl               pkgs/main/osx-64::curl-7.64.1-ha441bb4_0
+  cycler             pkgs/main/osx-64::cycler-0.10.0-py37_0
+  descartes          pkgs/main/osx-64::descartes-1.1.0-py37_0
+  expat              pkgs/main/osx-64::expat-2.2.6-h0a44026_0
+  fiona              pkgs/main/osx-64::fiona-1.8.4-py37h9a122fd_0
+  fontconfig         pkgs/main/osx-64::fontconfig-2.13.0-h5d5b041_1
+  freetype           pkgs/main/osx-64::freetype-2.9.1-hb4e5f40_0
+  freexl             pkgs/main/osx-64::freexl-1.0.5-h1de35cc_0
+  gdal               pkgs/main/osx-64::gdal-2.3.3-py37hbe65578_0
+  geopandas          pkgs/main/noarch::geopandas-0.4.1-py_0
+  geos               pkgs/main/osx-64::geos-3.7.1-h0a44026_0
+  gettext            pkgs/main/osx-64::gettext-0.19.8.1-h15daf44_3
+  giflib             pkgs/main/osx-64::giflib-5.1.4-h1de35cc_1
+  glib               pkgs/main/osx-64::glib-2.56.2-hd9629dc_0
+  hdf4               pkgs/main/osx-64::hdf4-4.2.13-h39711bb_2
+  hdf5               pkgs/main/osx-64::hdf5-1.10.4-hfa1e0ec_0
+  icu                pkgs/main/osx-64::icu-58.2-h4b95b61_1
+  intel-openmp       pkgs/main/osx-64::intel-openmp-2019.4-233
+  jpeg               pkgs/main/osx-64::jpeg-9b-he5867d9_2
+  json-c             pkgs/main/osx-64::json-c-0.13.1-h3efe00b_0
+  kealib             pkgs/main/osx-64::kealib-1.4.7-hf5ed860_6
+  kiwisolver         pkgs/main/osx-64::kiwisolver-1.1.0-py37h0a44026_0
+  krb5               pkgs/main/osx-64::krb5-1.16.1-hddcf347_7
+  libboost           pkgs/main/osx-64::libboost-1.67.0-hebc422b_4
+  libcurl            pkgs/main/osx-64::libcurl-7.64.1-h051b688_0
+  libcxx             pkgs/main/osx-64::libcxx-4.0.1-hcfea43d_1
+  libcxxabi          pkgs/main/osx-64::libcxxabi-4.0.1-hcfea43d_1
+  libdap4            pkgs/main/osx-64::libdap4-3.19.1-h3d3e54a_0
+  libedit            pkgs/main/osx-64::libedit-3.1.20181209-hb402a30_0
+  libffi             pkgs/main/osx-64::libffi-3.2.1-h475c297_4
+  libgdal            pkgs/main/osx-64::libgdal-2.3.3-h0950a36_0
+  libgfortran        pkgs/main/osx-64::libgfortran-3.0.1-h93005f0_2
+  libiconv           pkgs/main/osx-64::libiconv-1.15-hdd342a3_7
+  libkml             pkgs/main/osx-64::libkml-1.3.0-hbe12b63_4
+  libnetcdf          pkgs/main/osx-64::libnetcdf-4.6.1-hd5207e6_2
+  libpng             pkgs/main/osx-64::libpng-1.6.37-ha441bb4_0
+  libpq              pkgs/main/osx-64::libpq-11.2-h051b688_0
+  libspatialindex    pkgs/main/osx-64::libspatialindex-1.8.5-h2c08c6b_2
+  libspatialite      pkgs/main/osx-64::libspatialite-4.3.0a-h644ec7d_19
+  libssh2            pkgs/main/osx-64::libssh2-1.8.2-ha12b0ac_0
+  libtiff            pkgs/main/osx-64::libtiff-4.0.10-hcb84e12_2
+  libxml2            pkgs/main/osx-64::libxml2-2.9.9-hab757c2_0
+  llvmlite           pkgs/main/osx-64::llvmlite-0.28.0-py37h8c7ce04_0
+  mapclassify        pkgs/main/noarch::mapclassify-2.0.1-py_0
+  matplotlib         pkgs/main/osx-64::matplotlib-3.1.0-py37h54f8f79_0
+  mkl                pkgs/main/osx-64::mkl-2019.4-233
+  mkl_fft            pkgs/main/osx-64::mkl_fft-1.0.12-py37h5e564d8_0
+  mkl_random         pkgs/main/osx-64::mkl_random-1.0.2-py37h27c97d8_0
+  munch              pkgs/main/osx-64::munch-2.3.2-py37_0
+  ncurses            pkgs/main/osx-64::ncurses-6.1-h0a44026_1
+  numba              pkgs/main/osx-64::numba-0.43.1-py37h6440ff4_0
+  numpy              pkgs/main/osx-64::numpy-1.16.4-py37hacdab7b_0
+  numpy-base         pkgs/main/osx-64::numpy-base-1.16.4-py37h6575580_0
+  openjpeg           pkgs/main/osx-64::openjpeg-2.3.0-hb95cd4c_1
+  openssl            pkgs/main/osx-64::openssl-1.1.1c-h1de35cc_1
+  pandas             pkgs/main/osx-64::pandas-0.24.2-py37h0a44026_0
+  patsy              pkgs/main/osx-64::patsy-0.5.1-py37_0
+  pcre               pkgs/main/osx-64::pcre-8.43-h0a44026_0
+  pip                pkgs/main/osx-64::pip-19.1.1-py37_0
+  pixman             pkgs/main/osx-64::pixman-0.38.0-h1de35cc_0
+  poppler            pkgs/main/osx-64::poppler-0.65.0-ha097c24_1
+  poppler-data       pkgs/main/osx-64::poppler-data-0.4.9-0
+  proj4              pkgs/main/osx-64::proj4-5.2.0-h0a44026_1
+  psycopg2           pkgs/main/osx-64::psycopg2-2.7.6.1-py37ha12b0ac_0
+  pyparsing          pkgs/main/noarch::pyparsing-2.4.0-py_0
+  pyproj             pkgs/main/osx-64::pyproj-1.9.6-py37h9c430a6_0
+  python             pkgs/main/osx-64::python-3.7.3-h359304d_0
+  python-dateutil    pkgs/main/osx-64::python-dateutil-2.8.0-py37_0
+  pytz               pkgs/main/noarch::pytz-2019.1-py_0
+  readline           pkgs/main/osx-64::readline-7.0-h1de35cc_5
+  rtree              pkgs/main/osx-64::rtree-0.8.3-py37_0
+  scipy              pkgs/main/osx-64::scipy-1.2.1-py37h1410ff5_0
+  setuptools         pkgs/main/osx-64::setuptools-41.0.1-py37_0
+  shapely            pkgs/main/osx-64::shapely-1.6.4-py37he8793f5_0
+  six                pkgs/main/osx-64::six-1.12.0-py37_0
+  sqlalchemy         pkgs/main/osx-64::sqlalchemy-1.3.3-py37h1de35cc_0
+  sqlite             pkgs/main/osx-64::sqlite-3.28.0-ha441bb4_0
+  statsmodels        pkgs/main/osx-64::statsmodels-0.9.0-py37h1d22016_0
+  tk                 pkgs/main/osx-64::tk-8.6.8-ha441bb4_0
+  tornado            pkgs/main/osx-64::tornado-6.0.2-py37h1de35cc_0
+  wheel              pkgs/main/osx-64::wheel-0.33.4-py37_0
+  xerces-c           pkgs/main/osx-64::xerces-c-3.2.2-h44e365a_0
+  xmltodict          pkgs/main/noarch::xmltodict-0.12.0-py_0
+  xz                 pkgs/main/osx-64::xz-5.2.4-h1de35cc_4
+  zlib               pkgs/main/osx-64::zlib-1.2.11-h1de35cc_3
+  zstd               pkgs/main/osx-64::zstd-1.3.7-h5bba6e5_0
+
+
+Proceed ([y]/n)?
+```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
+
+Just press <span class='terminal'>y</span> and let conda setup your environment. The terminal response should then be like this:
+
+```
+Proceed ([y]/n)? y
+
+Preparing transaction: done
+Verifying transaction: done
+Executing transaction: done
+#
+# To activate this environment, use
+#
+#     $ conda activate geoimagine1
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+```
+
+If something goes wrong you just simply delete the virtual environment:
+
+<span class='terminal'>$ conda remove --name geoimagine0 --all</span>
+
+or
+
+<span class='terminal'>$ conda env remove --name geoimagine0</span>
+
+To verify that the environment was removed:
+
+<span class='terminal'>$ conda info --envs</span>
+
+The conda base setup is not affected when you delete a virtual environment.
+
+## Activate your environment
+
+Activate your environment in the terminal:
+
+<span class='terminal'>$ conda activate geoimagine0</span>
+
+The prompt should change to say
+
+With the new virtual environment active, list the installed packages:
+
+<span class='terminal'>(geoimagine002) ... $ conda list</span>
+
+
+The returned list should correspond to the list of installed packages in the post on [Conda virtual environments](https://karttur.github.io/setup-ide/setup-ide/conda-environ/).
+
+### Install additional packages in your environments
+
+There are two main methods for installing additional Python packages to your environment, either using _conda install_ or _pip_. The general recommendaton is to use one of these for individual environments, with _conda install_ being the preferred method. But not all packages are available as default conda installations. All available packages are listed [here](https://docs.anaconda.com/anaconda/packages/pkg-docs/). Some of the packages required by Karttur´s GeoImagaine Framework are only available via _pip_, and you thus have to mix _conda install_ and _pip_ as installations methods when setting up the complete library needed.
+
+#### conda install
+
+You can install new packages into your environment in the usual way that <span class='terminalapp'>conda</span> packages are installed. Just make sure that the terminal prompt points at your environment:
+
+<span class='terminal'>(geoimagine002) ... $ conda install -c omnia svgwrite</span>
+
+or tell <span class='terminalapp'>conda</span> under which environment to install the packages:
+
+<span class='terminal'>$ conda install --name geoimagine002 -c omnia svgwrite</span>
+
+Once the installation is finished you should see the installed packages under the <span class='file'>site-packages<(span)> path and in the <span class='terminal'>$ conda list</span>
+
+### Install non-listed conda packages
+
+If you want to install a package that is not listed as an available package for your conda distribution (see above) you should first search for it as it might have been a recent addition.
+
+<span class='terminal'>$ conda search plotnine</span>
+
+If the search identifies the package just go ahead and install it. If the package is not found you might still find it by looking for it using your web-browser, as also suggested by a non-successful search:
+
+```
+To search for alternate channels that may provide the conda package you're
+looking for, navigate to
+
+    https://anaconda.org
+
+and use the search bar at the top of the page.
+```
+
+For the example with _plotnine_, it is available for installation from a conda -forge channel, e.g.:
+
+<span class='terminal'>$ conda install -c conda-forge plotnine</span>
+
+If your package is available, it is likely that it is listed under a "-forge" command. This means that when <span class='terminal'>conda install </span> tries to solve the environment it will first report any conflicts with existing packages, and then forge conflicts. There are three alternative conflicts:
+
+- SUPERSEED
+- UPGRADE
+- DOWNGRADE
+
+Superseed means that the new package comes with a dependency that is already installed, but that the dependency will be replaced by the alternative found with the new package. It _should_ be exactly the same package with the same content as the existing dependency, but it will nevertheless be replaces. For all cases I have encountered it has worked out fine to accept the superseed. Otherwise this is the reason you are using a (virtual) environment. You just repeat the setup until the point where it went wrong, and then try another solution.
+
+If the -forge installation reports that a package is to be UPGRADE(D) that *might* work. If it reports that a package is in for a DOWNGRADE then proceeding with the installation is likely to cause problems with other packages. One solution is then to export your environment and try other versions or alternatives. Change the conflicting packages to use the same version of the common dependency (you have to look in the documentation to find versions that can go together).
+
+#### Install using pip
+
+If the package you want to install is neither available with <span class='terminal'>$ conda install</span>, nor available as a span class='terminal'>$ conda -forge</span> installation, you need to use an alternative package manager (as described [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages)). This more or less always boils down to <span class='terminalapp'>pip</span>.
+
+The package _sentinelsat_, used for searching and downloading satellte data from the European Space Agency (ESA) is only avalailable suing <span class='terminalapp'>pip</span>:
+
+<span class='terminal'>(geoimagine0) ... $ pip install sentinelsat</span>
+
+Again you can check that the package was installed in the correct place by exploring the <span class='file'>site-packages<(span)> path.
+
+### Export and import environments
+
+Once you have created a virtual environment that satisfies your needs, you can export it as <span class='file'>.yml</span> file. You can then use the <span class='file'>.yml</span> file to setup a new virtual environment, or share it to allow others to set up identical environments.
+
+#### Export environment file (yml)
+
+Activate the environment you want export
+<span class ='terminal'>$ source activate geoimagine0</span>,
+
+and then export
+
+<span class='terminal'>(geoimagine) ... $ conda env export > geoimagine0.yml</span>.
+
+The exported <span class='file'>.yml</span> file below shows the complete installation of all packages required for Karttur's GeoImagine Farmework.
+
+```
+name: geoimagine1
+channels:
+  - omnia
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+  - affine=2.2.2=py37_0
+  - attrs=19.1.0=py37_1
+  - blas=1.0=mkl
+  - bzip2=1.0.6=h1de35cc_5
+  - ca-certificates=2019.5.15=0
+  - cairo=1.14.12=hc4e6be7_4
+  - certifi=2019.3.9=py37_0
+  - click=7.0=py37_0
+  - click-plugins=1.1.1=py_0
+  - cligj=0.5.0=py37_0
+  - curl=7.64.1=ha441bb4_0
+  - cycler=0.10.0=py37_0
+  - descartes=1.1.0=py37_0
+  - expat=2.2.6=h0a44026_0
+  - fiona=1.8.4=py37h9a122fd_0
+  - fontconfig=2.13.0=h5d5b041_1
+  - freetype=2.9.1=hb4e5f40_0
+  - freexl=1.0.5=h1de35cc_0
+  - gdal=2.3.3=py37hbe65578_0
+  - geopandas=0.4.1=py_0
+  - geos=3.7.1=h0a44026_0
+  - gettext=0.19.8.1=h15daf44_3
+  - giflib=5.1.4=h1de35cc_1
+  - glib=2.56.2=hd9629dc_0
+  - hdf4=4.2.13=h39711bb_2
+  - hdf5=1.10.4=hfa1e0ec_0
+  - icu=58.2=h4b95b61_1
+  - intel-openmp=2019.4=233
+  - jpeg=9b=he5867d9_2
+  - json-c=0.13.1=h3efe00b_0
+  - kealib=1.4.7=hf5ed860_6
+  - kiwisolver=1.1.0=py37h0a44026_0
+  - krb5=1.16.1=hddcf347_7
+  - libboost=1.67.0=hebc422b_4
+  - libcurl=7.64.1=h051b688_0
+  - libcxx=4.0.1=hcfea43d_1
+  - libcxxabi=4.0.1=hcfea43d_1
+  - libdap4=3.19.1=h3d3e54a_0
+  - libedit=3.1.20181209=hb402a30_0
+  - libffi=3.2.1=h475c297_4
+  - libgdal=2.3.3=h0950a36_0
+  - libgfortran=3.0.1=h93005f0_2
+  - libiconv=1.15=hdd342a3_7
+  - libkml=1.3.0=hbe12b63_4
+  - libnetcdf=4.6.1=hd5207e6_2
+  - libpng=1.6.37=ha441bb4_0
+  - libpq=11.2=h051b688_0
+  - libspatialindex=1.8.5=h2c08c6b_2
+  - libspatialite=4.3.0a=h644ec7d_19
+  - libssh2=1.8.2=ha12b0ac_0
+  - libtiff=4.0.10=hcb84e12_2
+  - libxml2=2.9.9=hab757c2_0
+  - llvmlite=0.28.0=py37h8c7ce04_0
+  - mapclassify=2.0.1=py_0
+  - matplotlib=3.1.0=py37h54f8f79_0
+  - mizani=0.5.4=py_0
+  - mkl=2019.4=233
+  - mkl_fft=1.0.12=py37h5e564d8_0
+  - mkl_random=1.0.2=py37h27c97d8_0
+  - munch=2.3.2=py37_0
+  - ncurses=6.1=h0a44026_1
+  - numba=0.43.1=py37h6440ff4_0
+  - numpy=1.16.4=py37hacdab7b_0
+  - numpy-base=1.16.4=py37h6575580_0
+  - olefile=0.46=py37_0
+  - openjpeg=2.3.0=hb95cd4c_1
+  - openssl=1.1.1=h1de35cc_0
+  - palettable=3.1.1=py_0
+  - pandas=0.24.2=py37h0a44026_0
+  - patsy=0.5.1=py37_0
+  - pcre=8.43=h0a44026_0
+  - pillow=6.0.0=py37hb68e598_0
+  - pip=19.1.1=py37_0
+  - pixman=0.38.0=h1de35cc_0
+  - plotnine=0.5.1=py_0
+  - poppler=0.65.0=ha097c24_1
+  - poppler-data=0.4.9=0
+  - proj4=5.2.0=h0a44026_1
+  - psycopg2=2.7.6.1=py37ha12b0ac_0
+  - pyparsing=2.4.0=py_0
+  - pyproj=1.9.6=py37h9c430a6_0
+  - python=3.7.3=h359304d_0
+  - python-dateutil=2.8.0=py37_0
+  - pytz=2019.1=py_0
+  - rasterio=1.0.21=py37h9a122fd_0
+  - readline=7.0=h1de35cc_5
+  - reportlab=3.5.19=py37hdea1bd8_0
+  - rtree=0.8.3=py37_0
+  - scipy=1.2.1=py37h1410ff5_0
+  - setuptools=41.0.1=py37_0
+  - shapely=1.6.4=py37he8793f5_0
+  - six=1.12.0=py37_0
+  - snuggs=1.4.3=py_0
+  - sqlalchemy=1.3.3=py37h1de35cc_0
+  - sqlite=3.28.0=ha441bb4_0
+  - statsmodels=0.9.0=py37h1d22016_0
+  - svgwrite=1.1.6=py37_0
+  - tk=8.6.8=ha441bb4_0
+  - tornado=6.0.2=py37h1de35cc_0
+  - wheel=0.33.4=py37_0
+  - xerces-c=3.2.2=h44e365a_0
+  - xmltodict=0.12.0=py_0
+  - xz=5.2.4=h1de35cc_4
+  - zlib=1.2.11=h1de35cc_3
+  - zstd=1.3.7=h5bba6e5_0
+  - pip:
+    - chardet==3.0.4
+    - fionautil==0.5.4
+    - geojson==2.4.1
+    - geomet==0.2.0.post2
+    - html2text==2018.1.9
+    - idna==2.8
+    - landsatxplore==0.0.5
+    - pypng==0.0.19
+    - requests==2.22.0
+    - seasonal==0.3.1
+    - sentinelsat==0.13
+    - svgis==0.4.6
+    - tinycss==0.4
+    - tqdm==4.32.1
+    - urllib3==1.25.3
+    - utm==0.4.2
+prefix: /Applications/anaconda3/envs/geoimagine1
+```
+
+### Import
+
+
+
+## Test if the following works (not installed with create_default_packages)
+
+- array
+- struct
+- os
+- shutil
+- subprocess
+- gc
+- collections
+- sys
+- math
+
+# Resources
+
+[Eclipse / Pydev features: Import existing project](https://sites.google.com/site/bcgeopython/examples/eclipse-pydev/eclipse-pydev-features-import-existing-project)

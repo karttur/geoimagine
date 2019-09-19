@@ -63,7 +63,7 @@ At present you have to create the default region from the <span class='package'>
 
 ## Link MODIS tiles
 
-The xml below identifies all MODIS SIN tiles that overlap with the African Sub-Sahara region defined in the xml above. The process <span class='package'>LinkDefaultRegionsToMODIS</span> by default identifies all MODIS tiles for all regions. But if you set _overwrite_ = _False_ (the default setting) only default regions that do not have any identified MODIS tiles are tested. The source composition (\<srccomp\>) defined in the xml is for the shape file with the MODIS tiles as polygons. If your Framework lack the MODIS tiles, you need to setup the regions, including the MODIS tiling system as described in [this](../blog-setup-regions/) post.
+The xml below identifies all MODIS SIN tiles that overlap with the African Sub-Sahara region defined in the xml above. The process <span class='package'>LinkDefaultRegionsToMODIS</span> by default identifies all MODIS tiles for all regions. But if you set _overwrite_ = _False_ (the default setting) only default regions that do not have any identified MODIS tiles are tested. The source composition (\<srccomp\>) defined in the xml is for the shape file with the MODIS tiles as polygons. If your Framework lack the MODIS tiles, you need to setup the regions, including the MODIS tiling system as described in [this](../setup-regions/) post.
 
 <button id= "togglelinkmodis" onclick="hiddencode('linkmodis')">Hide/Show regions-modtiles_v80.xml</button>
 
@@ -237,7 +237,7 @@ If you set the download parameter _asscript_ to _True_ the MODIS tiles are both 
 
 Alternatively you can run the process <span class='package'>CheckMODISRegion</span> that by default checks both for downloaded and exploded tiles. You can turn off the checking of either by setting the parameters _checkdownloaded_ or _checkexploded_ to False. If you set both to False the script will report an error as there is nothing to check.
 
-While the process <span class='package'>downloadModisRegionTiles</span> identifies tiles (<span class='file'>.hdf</span>) from the database, the process <span class='package'>downloadModisRegionTiles</span> searches the folder tree for <span class='file'>.hdf</span> files. The former is process is thus faster as it i) retrieves the tiles from the database, and ii) does not have to clean the identified tiles to fit the set timestep.  
+While the process <span class='package'>downloadModisRegionTiles</span> identifies tiles (<span class='file'>.hdf</span>) from the database, the process <span class='package'>downloadModisRegionTiles</span> searches the folder tree for <span class='file'>.hdf</span> files. The former is process is thus faster as it i) retrieves the tiles from the database, and ii) does not have to clean the identified tiles to fit the set timestep.
 
 <button id= "togglecheck" onclick="hiddencode('checkdownload')">Hide/Show modis_checktiles_downloaded_v80.xml</button>
 
@@ -634,4 +634,4 @@ The movie clock is created in the same way as above.
 ```
 BALL
 
-The process <span class='package'>movieclockModisRegionToRegion</span> produces the shell scripts needed for assembling the final frames and for converting them to a movie. 
+The process <span class='package'>movieclockModisRegionToRegion</span> produces the shell scripts needed for assembling the final frames and for converting them to a movie.

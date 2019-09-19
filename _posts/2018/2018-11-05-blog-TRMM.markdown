@@ -11,32 +11,32 @@ image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-11-05 22:03'
 comments: true
 share: true
-movie1: rainfall_3b43_trmm_199801-201807_v7-f
+
+fig1a: avg-trmm-3b43v7-precip_3b43_trmm_1998-2017_v7-f-A
+fig1b: rainfall-a-stats_avg-trmm-3b43v7-precip-precipln
+fig1c: ts-mdsl-trmm-3b43v7-precip_3b43_trmm_1998-2017_v7-f-A
+fig1d: rainfall-a-trend_ts-mdsl-trmm-3b43v7-precip-precipdelta
+
+fig2: trmm-3b43v7-precip-delta_3b43_trmm_1998-2017_slope@p-v7-f-A
+
 TRMM-0100_ancillary-import-3B43v7_1998-1999: TRMM-0100_ancillary-import-3B43v7_1998-1999
 TRMM-0100_ancillary-import-3B43v7_2010-2018: TRMM-0100_ancillary-import-3B43v7_2010-2018
 TRMM-0310_trend_A_1998-2017: TRMM-0310_trend_A_1998-2017
-TRMM-0001_createscaling: TRMM-0001_createscaling
+
 TRMM-0110_mendts: TRMM-0110_mendts
 TRMM-0830_indexcrosscorrelate-Graph_M: TRMM-0830_indexcrosscorrelate-Graph_M
-TRMM-0004_addmovieclock: TRMM-0004_addmovieclock
-TRMM-0920_ExporttoByte_timespanM: TRMM-0920_ExporttoByte_timespanM
-TRMM-0910_ExporttoByte_timespanA_1998-2017: TRMM-0910_ExporttoByte_timespanA_1998-2017
-TRMM-0003_createlegends: TRMM-0003_createlegends
+
 TRMM-0370_autocorr_M: TRMM-0370_autocorr_M
-TRMM-0002_createpalettes: TRMM-0002_createpalettes
 TRMM-0310_trend_A_2003-2016: TRMM-0310_trend_A_2003-2016
-TRMM-0950_movieframes_M: TRMM-0950_movieframes_M
 TRMM-0820_trendcomponents-Graph_M: TRMM-0820_trendcomponents-Graph_M
 TRMM-0100_ancillary-import-3B43v7_2000-2010: TRMM-0100_ancillary-import-3B43v7_2000-2010
 TRMM-0320_changes_A_2003-2016: TRMM-0320_changes_A_2003-2016
-TRMM-0960_movieclock_M: TRMM-0960_movieclock_M
 TRMM-0290_resample-2-annual: TRMM-0290_resample-2-annual
 TRMM-0190_udatedb: TRMM-0190_udatedb
 TRMM-0380_index-x-corr_M: TRMM-0380_index-x-corr_M
 TRMM-0360_decompose_M: TRMM-0360_decompose_M
 TRMM-0810_Graph_M: TRMM-0810_Graph_M
 TRMM-0320_changes_A_1998-2017: TRMM-0320_changes_A_1998-2017
-TRMM-0900_ExporttoByte_M: TRMM-0900_ExporttoByte_M
 TRMM-0120_monthdaytomonth: TRMM-0120_monthdaytomonth
 TRMM-0925_ExporttoSVG: TRMM-0925_ExporttoSVG
 ---
@@ -47,7 +47,7 @@ This post steps through how to order, download, import and process global precip
 
 ## Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../blog-copy-project-eclipse/). The Framework [postgres database must be setup](../blog-setup-db/) and the [processes defined](../blog-setup-processes/). The [default region "TRMM"](../blog-setup-regions) must also be defined.
+You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). The Framework [postgres database must be setup](../setup-db/) and the [processes defined](../setup-processes/). The [default region "TRMM"](../blog-setup-regions) must also be defined.
 
 # TRMM
 
@@ -140,7 +140,7 @@ def WgetErthDataTRMM(srcFPN, dstFP):
             if not 'https' in url:
                 url = url.replace('http','https')
             cmd = '/usr/local/bin/wget --load-cookies ~/.urs_cookies --save-cookies ~/.urs_cookies --keep-session-cookies --directory-prefix=%(dst)s %(url)s' %{'dst': dstFP, 'url':url}
-            os.system(cmd)  
+            os.system(cmd)
         else:
             print ('already done', FN)
 
@@ -239,10 +239,6 @@ As the path to the project file does **not** start with a slash "\\", the path m
 ## Resample TRMM to annual ##
 #TRMM-0290_resample-2-annual.xml
 
-###################################
-###   Time Series Analysis    ###
-###################################
-
 ## Estimate TRMM annual trends (1998-2017 is for the complete timeseries, 2003-2016 for overlap with GRACE ##
 #TRMM-0310_trend_A_1998-2017.xml
 #TRMM-0310_trend_A_2003-2016.xml
@@ -261,40 +257,6 @@ TRMM-0320_changes_A_2001-2017.xml
 
 ## Cross correlation between monthly climate indexes and TRMM  ##
 #TRMM-0380_index-x-corr_M.xml
-
-###################################
-###            Layout           ###
-###################################
-
-## Create scaling for TRMM data ##
-#TRMM-0001_createscaling.xml
-
-## Create the TRMM palettes ##
-#TRMM-0002_createpalettes.xml
-
-# Create legends for TRMM ##
-#TRMM-0003_createlegends.xml
-
-## Create TRMM movieclock ##
-#TRMM-0004_addmovieclock.xml
-
-###################################
-###        Export media         ###
-###################################
-
-## Export png images ##
-#TRMM-0900_ExporttoByte_M.xml
-#TRMM-0910_ExporttoByte_timespanA_1998-2017.xml
-#TRMM-0920_ExporttoByte_timespanM.xml
-
-## Export the global land vector to fit the TRMM data
-#TRMM-0925_ExporttoSVG.xml
-
-## Create TRMM movieframes (1998 to 2017) ##
-#TRMM-0950_movieframes_M.xml
-
-## Create moviecloc, the process creates two shell scripts that must by run ##
-#TRMM-0960_movieclock_M.xml
 ```
 {% endraw %}
 {% endcapture %}
@@ -352,7 +314,7 @@ The process loads the complete dataset and checks the complete time series one c
 
 ### Renaming and editing the date format
 
-The original TRMM data have filenames that include the date of acquisition, but with the month represented by the first day of the month. In Karttur´s GeoImaginge Framework, [data representing a month is denoted by year + month (YYYYMM)](../blog-xml/). The Framework code for this date format is "M" (or "MS" in agreement with the Pandas coding). (The Framework, however, can use the first day of each month for representing monthly data, with the code "montlhyday").
+The original TRMM data have filenames that include the date of acquisition, but with the month represented by the first day of the month. In Karttur´s GeoImaginge Framework, [data representing a month is denoted by year + month (YYYYMM)](../setup-xml/). The Framework code for this date format is "M" (or "MS" in agreement with the Pandas coding). (The Framework, however, can use the first day of each month for representing monthly data, with the code "montlhyday").
 
 To change the date format YYYYMMDD ("monthlyday") to YYYYMM ("M"), run the process [<span class='package'>MonthlyDayToMonthlyAncillary</span>](../../subprocess/subproc-MonthlyDayToMonthlyAncillary/):
 
@@ -377,6 +339,19 @@ You can calculate the trend for any period; the example under the <span class='b
 {% capture foo %}{{page.TRMM-0310_trend_A_1998-2017}}{% endcapture %}
 {% include xml/TRMM-0310_trend_A_1998-2017.html foo=foo %}
 
+![SMAP palette]({{ site.commonurl }}/images/{{ site.data.images[page.fig1b].file}}){: .pull-left}
+
+  ![SMAP palette]({{ site.commonurl }}/images/{{ site.data.images[page.fig1d].file}}){: .pull-right}
+
+<figure class="half">
+  <a href="{{ site.commonurl }}/images/{{ site.data.images[page.fig1a].file }}"><img src="{{ site.commonurl }}/images/{{ site.data.images[page.fig1a].file }}" alt="image"></a>
+
+  <a href="{{ site.commonurl }}/images/{{ site.data.images[page.fig1c].file }}">
+  <img src="{{ site.commonurl }}/images/{{ site.data.images[page.fig1c].file }}" alt="image"></a>
+
+	<figcaption>Maps of global rainfall; the panels shows the average annual rainfall (mm) 1998 to 2017 and the the annual trend (mm/yr) (Theil Sen) for the same period. </figcaption>
+</figure>
+
 ### Analyse precipitation changes
 
 You can use the results from the analysis of precipitation trends to identify regions where the change has been significant, and how strong the changes have been. The process for that is [<span class='package'>signiftrendsancillary</span>](../../subprocess/subproc-signiftrendsancillary/).
@@ -384,78 +359,9 @@ You can use the results from the analysis of precipitation trends to identify re
 {% capture foo %}{{page.TRMM-0320_changes_A_1998-2017}}{% endcapture %}
 {% include xml/TRMM-0320_changes_A_1998-2017.html foo=foo %}
 
-## Layout
-
-If you want to create graphical outputs you need to define layouts for the TRMM data, including for scaling the data to Byte (0-255) range and define color palettes. if you want to produce an animated movie you can also define a movie clock and timeline for each composition you want animate (you can also use the default movie clock and timeline).
-
-### Scaling
-
-Annual precipitation across the globe varies from 0 to over 8000 mm. Linearly scaling this range into the byte range of 0-255 is not useful. Some non-linear function is required. Either you can transform the data as a pre-process, or apply a power function on the fly when exporting the data. The scaling must be preset and defined in the database prior to export. The  [<span class='package'>createscaling</span>](../../subprocess/subproc-createscaling) defined in the (hidden) xml file below defines a power function for rescaling the TRMM precipitation data on the fly when exporting layout maps.
-
-{% capture foo %}{{page.TRMM-0001_createscaling}}{% endcapture %}
-{% include xml/TRMM-0001_createscaling.html foo=foo %}
-
-### Palettes
-
-The default Karttur palette for precipitation comes in two versions, one for linear data, and one for logarithmic data. The former can, however, also be used after applying a power function as part of the layout export process as done in previous section.
-
-Because of the relative complexity of the precipitation palettes, the default palettes for precipitation variation and error are defined separately, as is the palette for precipitation change. All the standard precipitation palettes are created from the xml below calling[<span class='package'>addrasterpalette</span>](../../subprocess/subproc-addrasterpalette) process:
-
-{% capture foo %}{{page.TRMM-0002_createpalettes}}{% endcapture %}
-{% include xml/TRMM-0002_createpalettes.html foo=foo %}
-
-## Export color maps
-
-Having defined a palette and the scaling for the different layers, you can export the layers as color maps (colored GeoTiff images). The process for doing that is [<span class='package'>exporttobyte</span>](../../subprocess/subproc-exporttobyte).
-
-### Export monthly precipitaiton
-
-{% capture foo %}{{page.TRMM-0920_ExporttoByte_timespanM}}{% endcapture %}
-{% include xml/TRMM-0920_ExporttoByte_timespanM.html foo=foo %}
-
-### Export precipitation statistics and trends
-
-{% capture foo %}{{page.TRMM-0910_ExporttoByte_timespanA_1998-2017}}{% endcapture %}
-{% include xml/TRMM-0910_ExporttoByte_timespanA_1998-2017.html foo=foo %}
-
-### Export shoreline vector
-
-{% capture foo %}{{page.TRMM-0925_ExporttoSVG}}{% endcapture %}
-{% include xml/TRMM-0925_ExporttoSVG.html foo=foo %}
-
-## Defining a movieclock
-
-Details on defining and creating a movieclock within Karttur´s GeoImagine Framework is covered in the post on [SMAP processing](../blog-SMAP/).
-
-An animation requires a pre-defined movieclock (but usually the "default" movieclock is OK), and that the time series data is exported and then converted to movie frames.
-
-A movieclock object defines the colors, types and sizes of the elements building the clock and timeline in the animation.  Basically you do not need to define any of the elements, they are all defaulted. But if you want other widhts, margins, colors etc, all can be set using the process [<span class='package'>addmovieclock</span>](../../subprocess/subproc-addmovieclock).
-
-{% capture foo %}{{page.TRMM-0004_addmovieclock}}{% endcapture %}
-{% include xml/TRMM-0004_addmovieclock.html foo=foo %}
-
-## Movie frames
-
-To create movie frames, you must first have exported the images, and then you can run the process [<span class='package'>movieframesancillary</span>](../../subprocess/subproc-movieframesancillary).
-
-{% capture foo %}{{page.TRMM-0950_movieframes_M}}{% endcapture %}
-{% include xml/TRMM-0950_movieframes_M.html foo=foo %}
-
-As default the script produces a shell script file that you must execute manually to produce the movie frames. The advantage with the script file is that you can edit the area of the map to appear in the movie as well as the embossed watermark text. The link to the script file is reported by the process. If you want to make the processing fully automated, you must set the parameter _asscript_ to _False_.
-
-## Movie clock
-
-The final step before producing the time series animation is to create the movie-clock that fits with your movie frames. You need to set the dimensions of the movie clock manually as parameters in the process [<span class='package'>movieclockancillary</span>](../../subprocess/subproc-movieclockancillary).
-
-{% capture foo %}{{page.TRMM-0960_movieclock_M}}{% endcapture %}
-{% include xml/TRMM-0960_movieclock_M.html foo=foo %}
-
-The process uses a combination of python image processing and <span class='terminalapp'>ImageMagick</span> commands.
-
-The process also produces two shell script files. The first (in the subfolder <span class='file'>frames</span>) overlays the movieclock and the image frames, and the second (in the subfolder <span class='file'>movie</span>) produces the movie using <span class='terminalapp'>ffmpeg</span>. If you set the parameter _asscript_ to _True_ the module will execute the scripts internally.
-
 <figure>
-<iframe src="{{ site.commonurl }}/movies/{{ site.data.movies[page.movie1].file }}" width="{{ site.data.movies[page.movie1].width }}" height="{{ site.data.movies[page.movie1].height }}" frameborder="0">
-</iframe>
-<figcaption> {{ site.data.movies[page.movie1].caption }} </figcaption>
+<img src="{{ site.commonurl }}/images/{{ site.data.images[page.fig2].file }}">
+<figcaption> {{ site.data.images[page.fig2].caption }} </figcaption>
 </figure>
+
+The [next](../blog-TRMM-layout) post explains how to create the map layouts and legends, and also include a movie animation of the global rainfall dynamics 1988 to 2017.

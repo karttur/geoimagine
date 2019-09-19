@@ -2,7 +2,7 @@
 layout: post
 title: Running processes
 modified: '2018-10-13 T18:17:25.000Z'
-categories: blog
+categories: setup
 excerpt: "How to run processes in Karttur´s GeoImagine Framework"
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-13 T18:17:25.000Z'
@@ -33,7 +33,7 @@ The package <span class='package'>kartturmain</span> contains the modules that t
 
 ## Running processes from Eclipse
 
-To run any process in the Framework you need to give the path to either a text file listing xml files, or the path to a single xml file. To execute the process(es) you first call *ReadXMLProcesses* and then *RunProcesses*. *ReadXMLProcesses* reads the xml coded commands and creates the process object, that is then sent to *RunProcesses* that identifies and executes the process.
+To run any process in the Framework you need to give the path to either a text file listing xml files, or the path to a single xml file. When a process is executed the function *ReadXMLProcesses* reads the xml coded commands and creates the process object, that is then sent to the function *RunProcesses* that identifies and executes the process.
 
 ```
 from geoimagine.kartturmain.readXMLprocesses import ReadXMLProcesses, RunProcesses
@@ -117,4 +117,4 @@ export_data.xml
 
 ### Examples
 
-The blog posts on processing of different data sources (e.g. [GRACE](../blog-GRACE/), [SMAP](../blog-SMAP), [FAO refevap](../blog-FAO-refevap), [TRMM](../blog-TRMM) etc.) contain complete examples for how to run both single and chained processes. But before you can actually run any processes you need to setup the Framework [database links](../blog-setup-dblink), [define the database](../blog-setup-db), and [insert the processes](../blog-setup-processes).
+The blog posts on processing of different data sources (e.g. [GRACE](../../blog/blog-GRACE/), [SMAP](../../blog/blog-SMAP), [FAO refevap](../../blog/blog-FAO-refevap), [TRMM](../../blog/blog-TRMM) etc.) contain complete examples for how to run both single and chained processes. But before you can actually run any processes you need to setup the Framework [database connections](../setup-dblink/), [define and setup the database](../setup-db/), and [setup the processes](../setup-processes/).

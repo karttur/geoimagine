@@ -2,7 +2,7 @@
 layout: post
 title: Transfer data to Karttur's GeoImagine Framework
 modified: '2018-10-20 T18:17:25.000Z'
-categories: blog
+categories: setup
 excerpt: "Transfer data to Karttur's GeoImagine Framework"
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-20 T18:17:25.000Z'
@@ -12,7 +12,7 @@ share: true
 
 # Introduction
 
-Most processes in Karttur's GeoImagine Framework require that you have some identified source data on which to operate. Data dependent processes loop over data representing different locations in time and space (e.g. Landsat satellite images from different places and times). All the processing is then built up sequentially using the output data from the previous process as input data in the next. For example, the output from the Landsat import process can be used for constructing a vegetation index (VI), time series of VI are then used for analysing the seasonal pattern of growth, that in turn is used for studying the trend in the onset of the growing season:
+Most processes in Karttur's GeoImagine Framework require that you have some identified source data on which to operate. All data dependent processes require definitions of the spatial and temporal domains, and the requested process loops over the defined data layers in both time and space. Processing can then be built as sequences where the output data from the previous process is used as input data in the next. For example, the output from the Landsat import process can be used for constructing a vegetation index (VI), time series of VI are then used for analysing the seasonal pattern of growth, that in turn is used for studying the trend in the onset of the growing season:
 
 Landsat image --> reflectance bands --> vegetation index --> annual growth cycle --> growing season onset --> multiyear trend in growing season onset.
 
@@ -22,7 +22,7 @@ There is another alternative for transferring data, namely to dump the database,
 
 ## Prerequisites
 
-You must have setup the Karttur's GeoImagine Framework as described in the previous posts. You must also have a dataset produced by the Framework itself, that is to say, that follows the strict hierarchical folder and naming convention of the Framework as outlined in [this](../blog-xml/) post.
+You must have setup the Karttur's GeoImagine Framework as described in the previous posts. You must also have a dataset produced by the Framework itself, that is to say, that follows the strict hierarchical folder and naming convention of the Framework as outlined in [this](../setup-xml/) post.
 
 # Transferring data layers
 
@@ -40,7 +40,7 @@ For copying you can use any file manager that you like, or your system file expl
 
 ## Define data layers
 
-All layers that you want to import to the Framework must be defined in an xml file. The xml file must define the temporal coverage (in the \<period\> tag), the path (in the \<dstpath\> tag) and the composition (in the \<dstcomp\> tag). For details the see the post on [Processes, compositions and XML structure](../blog-xml/). Apart form the standard composition attributes (_source_, _product_, _folder_, _band_, _prefix_ and _suffix_), also the data format and scaling must be given, including:
+All layers that you want to import to the Framework must be defined in an xml file. The xml file must define the temporal coverage (in the \<period\> tag), the path (in the \<dstpath\> tag) and the composition (in the \<dstcomp\> tag). For details the see the post on [Framework key concepts](../setup-xml/). Apart form the standard composition attributes (_source_, _product_, _folder_, _band_, _prefix_ and _suffix_), also the data format and scaling must be given, including:
 
 - celltype ("raster", "vector", "topo" or "specimen")
 - scalefac (default: 1.0)
@@ -79,6 +79,6 @@ With the data storage device attached and the data defined and identified in an 
 
 Other posts in this blog include examples on how to transfer data using [<span class='package'>updateb</span>](../../subprocess/subproc-updatedb/), including for:
 
-- [TRMM](../blog-TRMM-transfer/)
-- [FAO reference evapotranspiration](../blog-FAOrefet-transfer/)
-- [Vertical Water Balance](../blog-VWB-transfer/)
+- [Transfer TRMM](../../blog/blog-TRMM-transfer/)
+- [Transfer FAO reference evapotranspiration](../../blog/blog-FAOrefet-transfer/)
+- [Transfer Vertical Water Balance](../../blog/blog-VWB-transfer/)
