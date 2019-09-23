@@ -2,7 +2,7 @@
 layout: post
 title: Import Project to Eclipse
 modified: '2018-10-10 T18:17:25.000Z'
-categories: setup
+categories: prepare
 excerpt: "Import Karttur's entire GeoImagine Framework as a PyDev project to Eclipse"
 tags:
   - Clone Karttur's GeoImagine Framework

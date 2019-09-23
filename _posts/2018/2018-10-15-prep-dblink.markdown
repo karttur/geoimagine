@@ -1,11 +1,11 @@
 ---
 layout: post
 title: Database connections
-modified: '2018-10-15 T18:17:25.000Z'
-categories: setup
+categories: prepare
 excerpt: "Setup database connections for Karttur's GeoImagine Framework"
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-15 T18:17:25.000Z'
+modified: '2018-10-15 T18:17:25.000Z'
 comments: true
 share: true
 general_grant_v80_sql: general_grant_v80_sql

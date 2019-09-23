@@ -1,21 +1,20 @@
 ---
 layout: post
 title: Conda virtual environments II
-modified: '2018-10-09 T18:17:25.000Z'
-categories: setup
+categories: prepare
 excerpt: "Create Conda environment for Karttur's GeoImagaine project"
 tags:
   - Conda environment
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2018-10-09
- T18:17:25.000Z'
+date: '2018-10-09 T18:17:25.000Z'
+modified: '2018-10-09 T18:17:25.000Z'
 comments: true
 share: true
-
 figure1: eclipse_select_import
 figure2: eclipse_import_project_from_file_system_or_archive
 ---
 <script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
+
 # Introduction
 
 With conda, you can create, update, export and import virtual Python environments that have different versions of Python and/or packages installed in them. If you use <span class='app'>Eclipe</span> as your Integrated Development Envrionment (IDE) you can easily reset your Python source to a virtual version created in conda. You can also share an environment by first exporting and then importing it.
@@ -30,11 +29,21 @@ Karttur's GeoImagine Framework requires a large set of python packages to work. 
 
 This is easily done in conda, the recommended system for the [Framework SPIDE python setup](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/). This tutorial will take your through the steps of creating, exporting and importing a virtual python environment in conda.
 
+## Create conda encironment
+
 ## Activate your conda environment
+
+To list your conda environments, open a <span class='app'>Terminal</span> session and type:
+
+<span class='terminal'>$ conda env list</span>
 
 When you have created a new virtual environment ('geoimagine002'), activate it:
 
 <span class='terminal'>$ conda activate geoimagine002</span>
+
+If you want to return to the base environment
+
+<span class='terminal'>$ conda deactivate </span>
 
  Look for the line <span class='terminal'>user config file:</span> in the results.
 
@@ -479,3 +488,5 @@ prefix: /Applications/anaconda3/envs/geoimagine1
 # Resources
 
 [Eclipse / Pydev features: Import existing project](https://sites.google.com/site/bcgeopython/examples/eclipse-pydev/eclipse-pydev-features-import-existing-project)
+
+[Managing conda environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)

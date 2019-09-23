@@ -2,7 +2,7 @@
 layout: post
 title: Additional packages
 modified: '2018-10-17 T18:17:25.000Z'
-categories: blog
+categories: depreciated
 excerpt: "Add additional python packages to Anaconda"
 tags:
   - GDAL
@@ -24,6 +24,8 @@ comments: true
 share: true
 ---
 <script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
+
+This post was originally written prior to setting up the [conda virtual environment](../prep/prep-conda-environ/).
 
 # Introduction
 

@@ -1,8 +1,7 @@
 ---
 layout: post
 title: Framework key concepts
-modified: '2018-10-12 T18:17:25.000Z'
-categories: setup
+categories: prepare
 excerpt: "Key concepts: processes and compositions, and how they are represented in xml."
 tags:
   - processes
@@ -15,6 +14,7 @@ tags:
   - dstcomp
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-12 T18:17:25.000Z'
+modified: '2018-10-12 T18:17:25.000Z'
 comments: true
 share: true
 ---

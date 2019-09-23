@@ -1,14 +1,14 @@
 ---
 layout: post
 title: Copy and paste Karttur's GeoImagine Framework
-modified: '2018-10-11 T18:17:25.000Z'
-categories: setup
+categories: prepare
 excerpt: "Copy and paste selected packages and modules of Karttur's GeoImagine Framework in Eclipse"
 tags:
   - Copy and paste Karttur's GeoImagine Framework
   - Setup Karttur's GeoImagine Framework
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-11 T18:17:25.000Z'
+modified: '2018-10-11 T18:17:25.000Z'
 comments: true
 share: true
 ---

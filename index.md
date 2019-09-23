@@ -16,9 +16,18 @@ To search for a particular package or process, use these links to browse the con
 - [Root processes](rootprocesses/index.html)
 - [Sub processes](subprocesses/index.html)
 
+The [prepare](../prep/) section
+
 The [setup](../setup/) section contains a set of step-by-step posts on how to setup the complete Framework. Your machine must be set up with a Spatial Data Integrated Development Environment (SPIDE) as described in my blog on [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/).
 
 The [blog](../blog/) contains various examples processing different kinds of data in the Framework.
+
+<h1>Prepare<h1>
+<ul class="post-list">
+{% for post in site.categories.prepare limit:20 %}
+  <li><article><a href="{{ site.url }}{{ post.url }}">{{ post.title }} <span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span>{% if post.excerpt %} <span class="excerpt">{{ post.excerpt | remove: '\[ ... \]' | remove: '\( ... \)' | markdownify | strip_html | strip_newlines | escape_once }}</span>{% endif %}</a></article></li>
+{% endfor %}
+</ul>
 
 <h1>Setup<h1>
 <ul class="post-list">

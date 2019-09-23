@@ -1,8 +1,8 @@
 ---
 layout: post
 title: Additional packages
-modified: '2018-10-17 T18:17:25.000Z'
-categories: setup
+
+categories: depreciated
 excerpt: "Add additional python packages to Anaconda"
 tags:
 - landsatxplore
@@ -16,11 +16,14 @@ tags:
 - wget
 
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2018-10-17 T18:17:25.000Z'
+date: '2018-10-16 T18:17:25.000Z'
+modified: '2019-09-20 T18:17:25.000Z'
 comments: true
 share: true
 ---
 <script src="https://karttur.github.io/common/assets/js/karttur/togglediv.js"></script>
+
+This post was originally written prior to setting up the [conda virtual environment](../prep/prep-conda-environ/).
 
 # Introduction
 

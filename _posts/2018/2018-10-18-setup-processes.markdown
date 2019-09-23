@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Setup processes
+title: Setup processes (setup_processes)
 modified: '2018-10-18 T18:17:25.000Z'
 categories: setup
 excerpt: "Setup the processes for Karttur's GeoImagine Framework"
@@ -15,21 +15,19 @@ share: true
 
 # Introduction
 
-This post will demonstrate how to add the process parameters in Karttur's GeoImagine Framework Spatial Data Integrated Development Environment (SPIDE). The processes as such are not added, only the parameters required for running the processes are added to the databases.
+This post demonstrates how to add the process parameters in Karttur's GeoImagine Framework Spatial Data Integrated Development Environment (SPIDE). The processes as such are not added, only the parameters required for running the processes are added to the databases.
 
 # Prerequisites
 
-You must have the complete SPIDE installed as described in the post [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must also have setup Karttur's GeoImagine Framework, either by [importing](../blog-importy-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/). You must also have setup the complete Framework database as described in [this](../setup-db/) post.
+You must have the complete Spatial Data Integrated Development Environment (SPIDE) installed as described in the blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must have setup Karttur's GeoImagine Framework, either by [importing](..prep//prep-import-project-eclipse/) or by [copying (drag and drop)](..prep/rep-copy-project-eclipse/). You must also have [prepared a solution](../prep/prep-dblink/) for how to link the Framework processes and the postgres database.
 
-How to run processes, including the setup described in this post, is covered in an [earlier](../setup-run/) post. The xml files required for running the processes described in the post are included in the [<span class='package'>setup_processes</span>](https://github.com/karttur/geoimagine-setup_processes/) package. To understand the structure of the xml file you can read [this](../setup-xml/) post.
-
-If your PyDev project does not compile and stop because imports are not found, check which package that is lacking and use the post on [Additional packages](../blog-add-packages) for support on adding the missing package to you PyDev project.
+If you get stuck, please have a look at the pages on describing the [Framework key concept](../prep/prep-concepts/) and [running processes](../prep/prep-run/).
 
 # Framework processes
 
 All functionalities of Karttur's GeoImagine Framework are called processes and operate based on parameters defined in the Framework database. Thus a process must be defined in the database before it can be used. Processes are grouped in roots, where a root is usually associated either with a typical class of functions (e.g. overlay, scalar, export) or data sources (e.g Landsat, Sentinel, MODIS etc).
 
-If you followed the tutorial on [set up the database](../setup-db/) one root group ([_manageprocess_](../../rootproc-manageprocess/)) and one process ([_addsubproc_](../../subprocess/subproc-addsubproc/)) were inserted in the database. This added the capability of defining all other processes.
+If you followed the tutorial on how to [set up the database](../setup-db/) one root group ([_manageprocess_](../../rootproc-manageprocess/)) and one process ([_addsubproc_](../../subprocess/subproc-addsubproc/)) were inserted in the database. This added the capability of defining all other processes.
 
 A complete list of both root and sub processes are available from the top menu, or [here](../../rootprocesses/) and [here](../../subprocesses/).
 
