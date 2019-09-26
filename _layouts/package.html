@@ -16,11 +16,27 @@
 
     <div class="entry-wrapper">
       <header class="entry-header">
-        <h2>{% if page.packageid %}Rootprocess: {{ page.packageid }}{% endif %}</h2>
-        <h4>{% if page.excerpt %}Excerpt: {{ page.excerpt }}{% endif %}</h4>
+        <h2>Package: {{ page.packageid }}</h2>
+        <h5>Repository:
+            <a href="https://github.com/karttur/{{ page.githuburl }}" rel="alternate" title="{{ site.title }}">
+            {{ page.githuburl }}</a>
+        </h5>
+        <h5>{% if page.rootprocess %} Rootprocess: <a href="../../rootproc-{{ page.packageid }}" rel="alternate" title="{{ site.title }}"> {{ page.rootprocess }}</a>{% endif %}</h5>
+
+        {% if page.modules %}
+        <p><b>Modules:</b></p>
+        <ul>
+          {% for tags in page.modules %}
+            <li>{{ tags }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if page.excerpt %}<b>Excerpt:</b> {{ page.excerpt }}{% endif %}
+
         {% if page.packageurl %}
-          <a href="https://github.com/karttur/{{ page.githuburl }}" rel="alternate" title="{{ site.title }}">
-            link to GitHub repository with complete package</a>
+          <p><a href="https://github.com/karttur/{{ page.githuburl }}" rel="alternate" title="{{ site.title }}">
+            <b>Link to GitHub repository {{ page.githuburl }}, with complete package</b></a></p>
         {% endif %}
 
       </header>

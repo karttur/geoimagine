@@ -1,8 +1,8 @@
 ---
 layout: package
 categories: package
-date: 2019-04-23
-modified: 2019-04-23
+date: 2019-09-26
+modified: 2019-09-26
 packageurl: package-ancillary
 githuburl: geoimagine-ancillary
 packageid: ancillary
@@ -12,4 +12,9 @@ version: (0, 3, 1)
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 comments: True
 share: True
+rootprocess: ancillary
+modules:
+    - ancillary.py (main module)
+    - ancillary_import_v73.py (support for different source data formats)
+    - dataprep (preparation of MGRS grid extents)
 ---

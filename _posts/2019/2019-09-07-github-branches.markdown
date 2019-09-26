@@ -24,7 +24,7 @@ figure25: github-framework_karttur_25_update-submodules
 
 ## Introduction
 
-To understand the basics about Git branches, the offical GitHub [Hello World]() project cotains all principal steps for creating a branch, editing the code using the branch, and then compare, accept and merge the changes to the "master" branch.
+To understand the basics about Git branches, the offical GitHub [Hello World]() project contains all principal steps for creating a branch, editing the code using the branch, and then compare, accept and merge the changes to the "master" branch.
 
 The Yotuube instruction [Github Tutorial For Beginners](https://www.youtube.com/watch?v=0fKg7e37bQE) is more comprehensive and also introduces the Git command line tool.
 
