@@ -99,6 +99,7 @@ Apart from the above packages, you also need to install some packages using othe
  - reportlab
  - seasonal
  - sentinelsat
+ - stldecompose (LOESS decomposition)
  - svgis
  - svgwrite
  - wget
