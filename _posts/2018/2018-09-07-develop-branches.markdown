@@ -1,11 +1,11 @@
 ---
 layout: post
 title: GitHub branches
-modified: '2019-09-07 T08:17:25.000Z'
-categories: setup
+categories: develop
 excerpt: GitHub branches
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2019-09-07 T08:17:25.000Z'
+date: '2018-09-07 T08:17:25.000Z'
+modified: '2018-09-07 T08:17:25.000Z'
 comments: true
 share: true
 figure1: github-framework_karttur_01_openperspective

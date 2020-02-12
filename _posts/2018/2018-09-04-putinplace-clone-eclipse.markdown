@@ -1,11 +1,11 @@
 ---
 layout: post
 title: Git clone with Eclipse
-modified: '2019-09-04 T08:17:25.000Z'
-categories: setup
+categories: putinplace
 excerpt: Clone Karttur's GeoImagine Framework from GitHub using Eclipse
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2019-09-04 T08:17:25.000Z'
+date: '2018-09-04 T08:17:25.000Z'
+modified: '2018-09-04 T08:17:25.000Z'
 comments: true
 share: true
 figure1: github-framework_karttur_01_openperspective
@@ -24,7 +24,11 @@ figure25: github-framework_karttur_25_update-submodules
 
 ## Introduction
 
-This post explains how to clone Karttur's GeoImagine Python project from GitHub.com with <span class='app'>Eclipse</span>. The advantages include that the project is directly linked (imported) to <span class='app'>Eclipse</span> and that you can easily access Framework upgrades from within <span class='app'>Eclipse</span>, but you can not push any changes back. Alternatively you can also clone the GeoImagine Python project using <span class='app'>GitHub Desktop</span> or the Git command-line tool <span class='terminalapp'>git</span> as outlined in the [next](../github-download-complete/) post. The advantage with the latter solutions is that you then separate the cloning and working with the code, and <span class='app'>GitHub Desktop</span> is better than <span class='app'>Eclipse</span> for handling GitHub repositories, and if you prefer the command line, <span class='terminalapp'>git</span> is the natural choise.
+This post explains how to clone Karttur's GeoImagine Python project from GitHub.com with <span class='app'>Eclipse</span>. The advantages include that the project is directly linked (imported) to <span class='app'>Eclipse</span> and that you can easily access Framework upgrades from within <span class='app'>Eclipse</span>, but you can not push any changes back.
+
+The alternatives are to clone or download a complete copy of the Framework using [<span class='app'>GitHub Desktop</span>](../putinplace-clone-desktop-git) or the [Git commandline tool](../putinplace-git-dcommandline) and then either [import the complete Framework](../putinplace-import-project-eclipse) or [build a backbone project and copy selected packages](../putinplace-copy-project-eclipse). The advantage with the latter solutions is that you then separate the cloning and working with the code, and <span class='app'>GitHub Desktop</span> is better than <span class='app'>Eclipse</span> for handling GitHub repositories, and if you prefer the command line, <span class='terminalapp'>git</span> is the natural choice.
+
+The remaining part of this post is similar to the post [Clone PyDev project from GitHub](https://karttur.github.io/setup-ide/setup-ide/install-with-conda-env/) in the blog on [Install and setup SPIDE](https://karttur.github.io/setup-ide/).
 
 ## Prerequisits
 
@@ -119,23 +123,26 @@ You should now have Karttur´s GeoImagine Framework installed on your local mach
 
 #### Update submodules
 
+The GitHub repo that holds the complete GeoImagine Framework is just an empty container with links to other repos that hold the actual codes (one repo per submodule or PyDev package). This is a special case, and requires that you update the submodules from inside <span class='app'>Eclipse</span> to clone the actual content of each submodule (and fill the packages with the actual code).
+
 ![My Map]({{ site.commonurl }}/images/github-framework_karttur_0X_eclipse-perspectives.jpg)
 {: .pull-right}
 Switch perspective in <span class='app'>Eclipse</span> main window by clicking the Git icon in the upper right corner. If the icon for Git perspective is missing follow the same menu path as outlined above for switching to the PyDev perspective.
 
-In the <span class='tab'>Git Repositories</span> view, expand the project (i.e. click the filled arrow to the left of the project) to see the content. You should then see the folder for _Submodules_. Right click the _Submodules_ and select Update Submodule from the pop-out menu.
+In the <span class='tab'>Git Repositories</span> view, expand the project (i.e. click the filled arrow to the left of the project) to see the content (see figure below). You should then see the folder for _Submodules_. If you look inside a submodule, it is most probably empty. That is, as mentioned above, because the Framework repo is just an empty container that links to the repos with the actual code. To clone the complete content of the submodlues (i.e. the Python packages that build up the complete Framework), right click the _Submodules_ and select Update Submodule from the pop-out menu.
 
 <figure>
 <img src="{{ site.commonurl }}/images/{{ site.data.images[page.figure25].file }}">
 <figcaption> {{ site.data.images[page.figure25].caption }} </figcaption>
 </figure>
 
-If everything worked out correctly, you should now be able to start using Karttur's GeoImagine Framework. But remember, you have to have [setup the complete SPIDE](https://karttur.github.io/setup-ide/) as well as created a customised Python environment that is linked to <span class='app'>Eclipse</span> as the Python interpreter. The instructions for how to create a virtual python environment in [Anaconda](https://anaconda.org) is covered in my post on [Conda virtual environments](../setup-conda-environ/).
+It will take a while for the data to download, but then
+should have a complete copy, or clone, of the PyDev project repo from GitHub.com.
 
-If your <span class='app'>Eclipse</span> menu items changes, you can always run the Python scripts by using _F9_ or _Ctrl+F9_ for unit-tests, as described in the [pydev manual for run](http://www.pydev.org/manual_101_run.html).
+### Karttur´s GeoImagine Framework
 
-Once you have installed all the required component for SPIDE and your Eclipse frame project is up and running, the next step is to create the solution used by Karttur´s GeoImagine Framework for [Database connection](../setup-dblink/).
+If you want to continue with Karttur's GeoImagine Framework there are some additional steps required. As these steps are very specific they are covered in a separate blog on [Karttur's GeoImagine Framework](https://karttur.github.io/geoimagine/). To continue directly from here in that blog, go to the post on [prepare the database connection](https://karttur.github.io/geoimagine/prepare/prep-dblink/).
 
-### Editing the code
+### A note on editing the code
 
 You can work with the cloned code and develop/improve it. But you can not push the changes back to the GitHub online repository (unless you have the login and password for Karttur´s GitHub pages). If you could, it would mean that the code of the _master_ branches of the individual packages would change. All changes (updates) on the GeoImagine Framework is done using branches in each package repository, for which I have yet to write the instructions.

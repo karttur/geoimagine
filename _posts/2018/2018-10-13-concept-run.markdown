@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Running processes
-categories: prepare
+categories: concept
 excerpt: "How to run processes in Karttur´s GeoImagine Framework"
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-13 T18:17:25.000Z'

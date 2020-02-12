@@ -6,9 +6,9 @@ image: rainfall-delta_3B43_trmm_2001-2016_mk-z-ts-model
 search_omit: true
 ---
 
-Karttur's GeoImagine Framework offers a semi-automated processing environment for spatial data, mainly intended for Big Data satellite image processing.
+Karttur's GeoImagine Framework offers a semi-automated processing environment for spatial data, mainly intended for Big Data processing of satellite images and other spatial datasets. To work with the Framework your machine must first be set up with a Spatial Data Integrated Development Environment (SPIDE) as described in my blog on [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/).
 
-The core of the Framework are object oriented processes. Processes are assembled in groups (called roots), where each group is associated with either a particular data source (e.g. MODIS, Sentinel, Landsat, ancillary etc), or particular kinds of processes (e.g. time series processing, scalar, overlay, export etc). many root processes are also associated with a specific, purpose-built, python package. When installing and setting up the Framework, a single root with a single process is installed - allowing the user to define and install all other processes associated with the Framework.
+At the core of the Framework are object oriented processes. These processes are assembled in groups (called roots), where each group is associated with either a particular data source (e.g. MODIS, Sentinel, Landsat, ancillary etc), or particular kinds of processes (e.g. time series processing, scalar, overlay, export etc). many root processes are also associated with a specific, purpose-built, Python package. When installing and setting up the Framework, a single root with a single process is installed - allowing the user to define and install all other processes associated with the Framework.
 
 To search for a particular package or process, use these links to browse the content of Karttur's GeoImagine Framework:
 
@@ -16,29 +16,61 @@ To search for a particular package or process, use these links to browse the con
 - [Root processes](rootprocesses/index.html)
 - [Sub processes](subprocesses/index.html)
 
-The [prepare](../prep/) section
+<h1>Preparations</h1>
 
-The [setup](../setup/) section contains a set of step-by-step posts on how to setup the complete Framework. Your machine must be set up with a Spatial Data Integrated Development Environment (SPIDE) as described in my blog on [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/).
+If you intend to setup a clone, or your own version, of Karttur's GeoImagine Framework you first need to create a Python environment. It is strongly recommended that you do that as a [Conda virtual environment](../prep/prep-conda-environ/).
 
-The [blog](../blog/) contains various examples processing different kinds of data in the Framework.
+The second step is to [Get Karttur's GeoImagine Framework into Eclipse](../putinplace), where [<span class='app'>Eclipse</span> (for PyDev)](https://karttur.github.io/setup-ide/setup-ide/install-eclipse) is also part of the SPIDE installation.
 
-<h1>Prepare<h1>
+Then you also have to [prepare the database connections](../prep/prep-dblink) for the PostgreSQL database installed as part of the SPIDE. Before actually running any of the processes it will help if you get acquainted with the [conceptual backbone](../concept). After that you can follow the step-by-step posts in the  [setup](../setup/) section.
+
+The [blog](../blog/) contains various examples processing different kinds of data in the Framework. Under [Develop](../develop/) you find instructions for how to setup your own version of the Framework.
+
+<h2>Python environment and database connection<h2>
 <ul class="post-list">
-{% for post in site.categories.prepare limit:20 %}
+{% for post in site.categories.prep reversed %}
   <li><article><a href="{{ site.url }}{{ post.url }}">{{ post.title }} <span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span>{% if post.excerpt %} <span class="excerpt">{{ post.excerpt | remove: '\[ ... \]' | remove: '\( ... \)' | markdownify | strip_html | strip_newlines | escape_once }}</span>{% endif %}</a></article></li>
 {% endfor %}
 </ul>
 
-<h1>Setup<h1>
+<h2>Get Framework<h2>
 <ul class="post-list">
-{% for post in site.categories.setup limit:20 %}
+{% for post in site.categories.putinplace reversed %}
   <li><article><a href="{{ site.url }}{{ post.url }}">{{ post.title }} <span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span>{% if post.excerpt %} <span class="excerpt">{{ post.excerpt | remove: '\[ ... \]' | remove: '\( ... \)' | markdownify | strip_html | strip_newlines | escape_once }}</span>{% endif %}</a></article></li>
 {% endfor %}
 </ul>
 
-<h1>Blog<h1>
+<h2>Concept<h2>
+<ul class="post-list">
+{% for post in site.categories.concept reversed %}
+  <li><article><a href="{{ site.url }}{{ post.url }}">{{ post.title }} <span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span>{% if post.excerpt %} <span class="excerpt">{{ post.excerpt | remove: '\[ ... \]' | remove: '\( ... \)' | markdownify | strip_html | strip_newlines | escape_once }}</span>{% endif %}</a></article></li>
+{% endfor %}
+</ul>
+
+<h2>Setup<h2>
+<ul class="post-list">
+{% for post in site.categories.setup reversed %}
+  <li><article><a href="{{ site.url }}{{ post.url }}">{{ post.title }} <span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span>{% if post.excerpt %} <span class="excerpt">{{ post.excerpt | remove: '\[ ... \]' | remove: '\( ... \)' | markdownify | strip_html | strip_newlines | escape_once }}</span>{% endif %}</a></article></li>
+{% endfor %}
+</ul>
+
+<h2>Blog<h2>
 <ul class="post-list">
 {% for post in site.categories.blog limit:5 %}
+  <li><article><a href="{{ site.url }}{{ post.url }}">{{ post.title }} <span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span>{% if post.excerpt %} <span class="excerpt">{{ post.excerpt | remove: '\[ ... \]' | remove: '\( ... \)' | markdownify | strip_html | strip_newlines | escape_once }}</span>{% endif %}</a></article></li>
+{% endfor %}
+</ul>
+
+<h2>Develop<h2>
+<ul class="post-list">
+{% for post in site.categories.develop reversed %}
+  <li><article><a href="{{ site.url }}{{ post.url }}">{{ post.title }} <span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span>{% if post.excerpt %} <span class="excerpt">{{ post.excerpt | remove: '\[ ... \]' | remove: '\( ... \)' | markdownify | strip_html | strip_newlines | escape_once }}</span>{% endif %}</a></article></li>
+{% endfor %}
+</ul>
+
+<h2>Depreciated<h2>
+<ul class="post-list">
+{% for post in site.categories.depreciated %}
   <li><article><a href="{{ site.url }}{{ post.url }}">{{ post.title }} <span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span>{% if post.excerpt %} <span class="excerpt">{{ post.excerpt | remove: '\[ ... \]' | remove: '\( ... \)' | markdownify | strip_html | strip_newlines | escape_once }}</span>{% endif %}</a></article></li>
 {% endfor %}
 </ul>

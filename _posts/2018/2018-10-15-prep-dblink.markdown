@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Database connections
-categories: prepare
+categories: prep
 excerpt: "Setup database connections for Karttur's GeoImagine Framework"
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-15 T18:17:25.000Z'
@@ -18,11 +18,11 @@ This post goes through the steps needed for creating a (fairly) secure link betw
 
 # Prerequisites
 
-To follow this post you must have the complete Spatial Data Integrated Development Environment (SPIDE) installed as described in the blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/). You must also have setup Karttur's GeoImagine Framework, either by [importing](../blog-import-project-eclipse/) or by [copying (drag and drop)](../setup-copy-project-eclipse/).
+To follow this post you must have the complete Spatial Data Integrated Development Environment (SPIDE) installed as described in the blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/).
 
 # Connect Python and PostgreSQL
 
-Karttur´s GeoImagine Framework relies on a postgres database that holds information on all processes parameters as well as all data. The installation of the postgres database should already have been done as described in the blogpost [Install postgreSQL and postGIS](https://karttur.github.io/setup-ide/setup-ide/install-postgres/). Then you must also have installed and setup <span class='package'>psycopg</span> for connecting Python to postgres, plus created a security solution for the connection as desribed in the post [Connect Python and PostgreSQL using psycopg2](https://karttur.github.io/setup-ide/setup-ide/connect-with-psycopg2/).
+Karttur´s GeoImagine Framework relies on a postgres database that holds information on all processes parameters as well as all data. The installation of the postgres database should already have been done as described in the blogpost [Install postgreSQL and postGIS](https://karttur.github.io/setup-ide/setup-ide/install-postgres/). Then you must also have installed and setup <span class='package'>psycopg</span> for connecting Python to postgres. If you followed the post on [Conda virtual environments](../prep-conda-environ), <span class='package'>psycopg</span> will be part of your Python environment.
 
 ## Principal solution
 
@@ -44,20 +44,20 @@ At present the Framework contains the following roles (apart from the superusers
 - managelayout
 - manageexport
 
-The actual running of the process and setting up of the roles is covered in the [next](../setup-db/) post. This post only describes how to define the roles in the xml file and the <span class='file'>.netrc</span> file used for storing the passwords associated with each role.
+The actual running of the process and setting up of the roles is covered in the setup post on [Set up the database (setup_db)](../../setup/setup-db/). And is done from within the Framework itself. This post only describes how to define the roles, both in an xml file (that will be accessed from the Framework when defining the roles in the post as explained in the post on [Set up the database (setup_db)](../../setup/setup-db/)) and in the system default <span class='file'>.netrc</span> file used for storing the passwords associated with each role.
 
 ### Defining roles
 
-The xml file that defines the database roles is included in the [<span class='package'>setup_db</span>](../../package/package-setup_db/) package under the path [<span class='file'>doc/xmlsql/general_grant_v80_sql.xml</span>](../../../geoimagine-setup-db/doc/xmlsql/). You need to edit this file and set your own passwords for each role. If you want to change the principal system solution with one role for each schema, say to a single role dealing with everything, you can do that by giving all the rights to the same role. And then also give this role as the "HOST" in each of the modules under in the package [<span class='package'>postgresdb</span>](../../package/package-postgresdb/).
+The xml file that defines the database roles is included in the [GitHub repo geoimagine-setup_db](https://github.com/karttur/geoimagine-setup_db) package under the path [<span class='file'>doc/xmlsql/general_grant_v80_sql.xml</span>](https://github.com/karttur/geoimagine-setup_db/tree/master/doc/xmlsql). The content of this xml file is also available under <span class='button'>"Hide/show"</span> button below. You need to create your own copy of this file and set your own passwords for each role. If you want to change the principal system solution with one role for each schema, say to a single role dealing with everything, you can do that by giving all the rights to the same role. And then also give this role as the "HOST" in each module under the package [<span class='package'>postgresdb</span>](../../package/package-postgresdb/).
 
-Note that the process <span class='package'>grant</span> is not defined in the database, but a stand alone process and can only be run from the package [<span class='package'>setup_db</span>](../../package/package-setup_db/).
+Note that the process <span class='package'>grant</span> is not defined in the database, but a stand alone process and can only be run from the package [<span class='package'>setup_db</span>](../../package/package-setup_db/). Explained in detail in the setup post on [Set up the database (setup_db)](../../setup/setup-db/).
 
 {% capture foo %}{{page.general_grant_v80_sql}}{% endcapture %}
 {% include xml/general_grant_v80_sql.html foo=foo %}
 
 ### Login and password (.netrc)
 
-Karttur's GeoImagine Framework standard solution for database access at runtime is to read the credentials from a <span class='file'>.netrc</span> file. You have to create your own <span class='file'>.netrc</span> file that gives the same roles and passwords as you gave in the xml file above. The <span class='file'>.netrc</span> file should be in your home folder and you can edit it by using <span class='terminalapp'>pico</span>.
+Karttur's GeoImagine Framework standard solution for database access at runtime is to read the credentials from a <span class='file'>.netrc</span> file. You have to create your own <span class='file'>.netrc</span> file that gives the same roles and passwords as you gave in the xml file above. The <span class='file'>.netrc</span> file should be in your home folder and you can edit it by using <span class='terminalapp'>pico</span>. You can copy, paste and edit the text under the <span class='button'>"Hide/show"</span> button below to your own <span class='file'>.netrc</span> file.
 
 <span class='terminal'>$ pico .netrc</span>
 

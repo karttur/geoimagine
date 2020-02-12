@@ -1,13 +1,13 @@
 ---
 layout: post
 title: Conda virtual environments II
-categories: prepare
+categories: prep
 excerpt: "Create Conda environment for Karttur's GeoImagaine project"
 tags:
   - Conda environment
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2018-10-09 T18:17:25.000Z'
-modified: '2018-10-09 T18:17:25.000Z'
+date: '2018-08-05 T18:17:25.000Z'
+modified: '2020-02-10 T18:17:25.000Z'
 comments: true
 share: true
 figure1: eclipse_select_import
@@ -17,45 +17,74 @@ figure2: eclipse_import_project_from_file_system_or_archive
 
 # Introduction
 
-With conda, you can create, update, export and import virtual Python environments that have different versions of Python and/or packages installed in them. If you use <span class='app'>Eclipe</span> as your Integrated Development Envrionment (IDE) you can easily reset your Python source to a virtual version created in conda. You can also share an environment by first exporting and then importing it.
+This post is an extended version of the [post on Conda virtual environments in the blog on setting up the Spatial Data Integrated Development Environment (SPIDE)](https://karttur.github.io/setup-ide/setup-ide/conda-environ/).
+
+With conda, you can create, update, export and import virtual Python environments that have different versions of Python and/or packages installed in them. If you use <span class='app'>Eclipe</span> as your Integrated Development Environment (IDE) you can easily reset your Python source to a virtual version created in conda. You can also share an environment by first exporting and then importing it.
 
 # Prerequisites
 
-Anaconda/conda must be installed as described in [this](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/) post. If you [created a conda virtual environment when setting up the SPIDE](https://karttur.github.io/setup-ide/setup-ide/conda-environ/) you can skip to the section called "Install additional packages in your environments".
+Anaconda/conda must be installed as described in [this](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/) post. If you [created a conda virtual environment when setting up the SPIDE](https://karttur.github.io/setup-ide/setup-ide/conda-environ/) you can skip to the section "Install additional packages in your environments".
 
 # Conda virtual environments
 
-Karttur's GeoImagine Framework requires a large set of python packages to work. You have to install these packages and then link them to the Framework Spatial Data IDE (SPIDE). Most packages depend on other, more basic, packages. When installing many packages there is a risk of conflicting requirements regarding the versions of shared packages. To avoid having your complete system corrupted, it is recommended that you build the python system and packages using a "virtual" environment. In essence this means that you build a system that is working as a stand-alone solution unlinked from the core system.
+Karttur's GeoImagine Framework requires a large set of Python packages to work. You have to install these packages and then link them to the SPIDE. Many high level packages depend on other, more basic, packages. When installing many packages there is a large risk of forcing conflicting requirements regarding the versions of shared (i.e. more basic) packages. Sequentially installing (high level) packages can easily lead to a corrupt system due to conflicting requirements regarding shared packages.
 
-This is easily done in conda, the recommended system for the [Framework SPIDE python setup](https://karttur.github.io/setup-ide/setup-ide/install-anaconda/). This tutorial will take your through the steps of creating, exporting and importing a virtual python environment in conda.
+To avoid having your complete system corrupted, it is recommended that you build the Python system and packages using a "virtual" environment. In essence this means that you build a system that is working as a stand-alone solution not affecting the core (or 'base') system. This is easily done in conda. This tutorial will take you through the steps of creating a virtual python environment in conda.
 
-## Create conda encironment
+## Check your conda installation and environment
 
-## Activate your conda environment
+Open a <span class='app'>Terminal</span> window, and confirm that Anaconda is installed by typing at the prompt:
 
-To list your conda environments, open a <span class='app'>Terminal</span> session and type:
+<span class='terminal'>$ conda -V</span>
 
-<span class='terminal'>$ conda env list</span>
+By default, the active environment---the one you are currently using---is shown in parentheses () or brackets [] at the beginning of your command prompt. If you have not installed any virtual environments, the _default_ environment is _base_:
 
-When you have created a new virtual environment ('geoimagine002'), activate it:
+<span class='terminal'>(base) $</span>,
 
-<span class='terminal'>$ conda activate geoimagine002</span>
+if you have defined, and activated, a virtual environment it will be shown instead:
 
-If you want to return to the base environment
+<span class='terminal'>(myenv) $</span>.
 
-<span class='terminal'>$ conda deactivate </span>
+If you do not see this, run:
 
- Look for the line <span class='terminal'>user config file:</span> in the results.
+<span class='terminal'>conda info</span>
 
- You can create the <span class='file'>.condarc</span> file using a text editor (e.g. [<span class='atom'>Atom</span>](https://karttur.github.io/setup-blog/2017/12/21/setup-blog-tools.html#install-atom)), directly from the command line ( <span class='terminal'>~$ pico .condarc</span>) or by running the command:
+and the first returned line should tell which environment that is active.
 
- <span class='terminal'>$ conda config</span>
+To update or manage your conda installation you need to deactivate any customized environment and return to the base environment. The best way to do that is to use the _activate_ command with no environment specified:
 
-You can set a lot of parameters and functions in .condarc (as described [here](https://docs.conda.io/projects/conda/en/latest/user-guide/configuration/use-condarc.html), but for now you will use it for defining a set of default packages that will always be included when creating a new environment.
+<span class='terminal'>$ conda activate</span>
+
+Alternatively you can _deactivate_ the present environment, but if you do that while in _base_, it might crash your conda setup. Thus I do not write out the command for that.
+
+When in the _base_ environment the terminal prompts should look like this:
+
+<span class='terminal'>(base) $</span>
+
+To update your Anaconda distribution, type:
+
+<span class='terminal'>$ conda update conda</span>
+
+<span class='terminal'>$ conda update anaconda</span>
+
+## .condarc
+
+To create a virtual environment from scratch you need to have a <span class='file'>.condarc</span> configuration file in you personal folder.
+
+<span class='file'>.condarc</span> is not included by default when you [install conda](../install-anaconda/). To find out if you have a <span class='file'>.condarc</span> file open a <span class='app'>terminal</span> window and type:
+ <span class='terminal'>$ conda info</span>
+
+Look for the line <span class='terminal'>user config file:</span> in the results.
+
+If you do not have a <span class='file'>.condarc</span> file, you can create it by using a text editor (e.g. [<span class='app'>Atom</span>](https://karttur.github.io/setup-blog/2017/12/21/setup-blog-tools.html)), directly from the command line ( <span class='terminal'>~$ pico .condarc</span>) or by running the command:
+
+<span class='terminal'>$ conda config</span>
+
+You can set a lot of parameters and functions in <span class='file'>.condarc</span> (as described in the conda document [Using the .condarc conda configuration file](https://docs.conda.io/projects/conda/en/latest/user-guide/configuration/use-condarc.html)), but for now you will only use it for defining a set of default packages that by default will be included when creating a new environment (but you can omit this default if required).
 
 ### Default packages
 
-The manual for setting default packages to install with every new environment is described [here](https://docs.conda.io/projects/conda/en/latest/user-guide/configuration/use-condarc.html#config-add-default-pkgs). Lists of available packages for different conda distributions are found [here](https://docs.anaconda.com/anaconda/packages/pkg-docs/).
+The manual for setting default packages to install with every new environment is also described in the conda document [Using the .condarc conda configuration file](https://docs.conda.io/projects/conda/en/latest/user-guide/configuration/use-condarc.html#config-add-default-pkgs). Consult the conda document [Anaconda package lists](https://docs.anaconda.com/anaconda/packages/pkg-docs/) to see available packages for different conda distributions.
 
 For creating virtual conda python environments for Karttur's GeoImagine Framework, add the following lines to your <span class='file'>.condarc</span> file:
 
@@ -73,32 +102,33 @@ create_default_packages:
   - xmltodict
 ```
 
-The above list will also install several other packages that are required by the Framework. Not as support packages but as core packages, including for instance <span class='package'>GDAL</span>, <span class='package'>fiona</span>and <span class='package'>shapely</span>.
+The above list will also install several other packages that are required by the Framework, including for instance <span class='package'>GDAL</span>, <span class='package'>fiona</span> and <span class='package'>shapely</span>, that are packages for geographic data processing and topology.
 
-The advantage with installing the core components in a single command is that conda will solve conflicts among dependancies. It is best to install all packages at once, so that all of the dependencies are installed at the same time.
+The advantage with installing the core components in a single command is that conda will solve conflicts among dependencies. In other words, it is best to install all packages at once, so that all of the dependencies are installed at the same time.
 
 ## Create a new environment
 
 If you now create a new environment:
 
-<span class='terminal'>$ conda create --name geoimagine0</span>,
+<span class='terminal'>$ conda create ----name geoimagineXYZ</span>,
 
-the rather short list of default packages will create a rather long list of package to install:
+the rather short list of default packages will create a rather long list of package to install.
 
-<button id= "toggleCondaCreate" onclick="hiddencode('CondaCreate')">Hide/Show conda create terminal response</button>
+<button id= "togglecondacreate" onclick="hiddencode('condacreate')">Hide/Show conda create command and response</button>
 
-<div id="CondaCreate" style="display:none">
+<div id="condacreate" style="display:none">
+
 {% capture text-capture %}
 {% raw %}
 
 ```
-$ conda create --name geoimagine1
+$ conda create --name geoimagine001
 Collecting package metadata: done
 Solving environment: done
 
 ## Package Plan ##
 
-  environment location: /Applications/anaconda3/envs/geoimagine1
+  environment location: /Applications/anaconda3/envs/geoimagine001
 
   added / updated specs:
     - geopandas
@@ -110,6 +140,11 @@ Solving environment: done
     - scipy
     - statsmodels
     - xmltodict
+
+
+The following packages will be downloaded:
+...
+...
 
 The following NEW packages will be INSTALLED:
 
@@ -217,7 +252,7 @@ Proceed ([y]/n)?
 {% include widgets/toggle-code.html  toggle-text=text-capture  %}
 </div>
 
-Just press <span class='terminal'>y</span> and let conda setup your environment. The terminal response should then be like this:
+Just press <span class='terminal'>y</span> when conda asks <span class='terminal'>Proceed ([y]/n)?</span> and let conda setup your environment. The terminal response should then be like this:
 
 ```
 Proceed ([y]/n)? y
@@ -228,7 +263,7 @@ Executing transaction: done
 #
 # To activate this environment, use
 #
-#     $ conda activate geoimagine1
+#     $ conda activate geoimagine001
 #
 # To deactivate an active environment, use
 #
@@ -237,32 +272,59 @@ Executing transaction: done
 
 If something goes wrong you just simply delete the virtual environment:
 
-<span class='terminal'>$ conda remove --name geoimagine0 --all</span>
+<span class='terminal'>$ conda remove ----name geoimagine001 --all</span>
 
 or
 
-<span class='terminal'>$ conda env remove --name geoimagine0</span>
+<span class='terminal'>$ conda env remove ----name geoimagine001</span>
 
-To verify that the environment was removed:
-
-<span class='terminal'>$ conda info --envs</span>
-
-The conda base setup is not affected when you delete a virtual environment.
+The conda base setup is not affected by either installing or deleting a virtual environment.
 
 ## Activate your environment
 
-Activate your environment in the terminal:
+To list available environments type:
 
-<span class='terminal'>$ conda activate geoimagine0</span>
+<span class='terminal'>$ conda info -e</span>
+
+If you want to activate a specific environment (other than 'base' that is now the default) type at the terminal:
+
+<span class='terminal'>$ conda activate geoimagine001</span>
 
 The prompt should change to say
 
-With the new virtual environment active, list the installed packages:
+<span class='terminal'>(geoimagine001) ... $</span>
 
-<span class='terminal'>(geoimagine002) ... $ conda list</span>
+You can now make additional installations to your environment. But first have to locate your virtual environment to learn its path. You need to know that in order to link it as the Python interpreter in <span class='app'>Eclipse</span>.
 
+### Locate your virtual environments
 
-The returned list should correspond to the list of installed packages in the post on [Conda virtual environments](https://karttur.github.io/setup-ide/setup-ide/conda-environ/).
+You can tell conda to put your virtual environment under any path, but by default it is put under your <span class='app'>Anaconda</span> installation at:
+
+<span class='file'>../anacondaX/envs</span>, which in my example (for Anaconda3) then becomes
+<span class='file'>../anaconda3/envs/geoimagine001</span>.
+
+If you explore that path you can find the packages installed under
+<span class='file'>../anaconda3/envs/geoimagine001/lib/python3.7/site-packages</span>. (where python3.7 is the Python version I installed, but can differ if you installed another version).
+
+### Set your Python interpreter in Eclipse
+
+With <span class='app'>Eclipse</span> workbench up and running, select from the top menu:
+
+<span class='menu'>Eclipse : preferences</span>
+
+In the <span class='tab'>Preferences</span> window that opens, click the PyDev expansion icon (\>) in the menu to the left. In the expanded sub-list click the expansion icon for <span class='button'>Interpreters</span> and click <span class='button'>Python interpreter</span>. In the window that opens, click the <span class='button'>Browse for python/pypy exe</span> button in the upper right corner. The dialog window <span class='tab'>Select Interpreters</span> opens.
+
+Click the <span class='button'>Browse</span> button next to the textbox <span class='textbox'>Interpreter Executable</span>.
+
+If you created a virtual environment, navigate to where you stored it and find the Python binary file (e.g. .../anaconda3/envs/geoimagine001/bin/python) and choose that file. Then edit the textbox <span class='textbox'>Interpreter Name</span> to something like 'Python3.x geoimagine001'.
+
+If you did not setup a virtual Python environment you can use the Anaconda default (or 'base') environment as your Python interpreter. Click the <span class='button'>Browse</span> button and navigate to where you [installed Anaconda](https://karttur.github.io/setup-ide/setup-ide/install-anaconda), and drill down to the Python binary:
+
+<span class='file'>.../anaconda3/bin/python</span>
+
+Regardless of which interpreter you selected, click <span class='button'>Finish/OK</span>, and the dialog window <span class='tab'>Selection Needed</span> appears. Accept the default selection (all listed items), and click <span class='button'>Finish/OK</span> again. All the selected Libraries and their associated Packages will be linked to your project, and show up in the lower frame of the <span class='tab'>Preferences</span> window. When finished, click <span class='button'>Apply and Close</span>.
+
+At this stage you can continue with [setting up Karttur's GeoImagine Framework](../../setup). Dependent on how you set it up and what functions you require, you will need to to install additional Python packages to your virtual environment. The topic of the reminder of this post. 
 
 ### Install additional packages in your environments
 
@@ -278,7 +340,7 @@ or tell <span class='terminalapp'>conda</span> under which environment to instal
 
 <span class='terminal'>$ conda install --name geoimagine002 -c omnia svgwrite</span>
 
-Once the installation is finished you should see the installed packages under the <span class='file'>site-packages<(span)> path and in the <span class='terminal'>$ conda list</span>
+Once the installation is finished you should see the installed packages under the <span class='file'>site-packages</span> path and with the <span class='terminal'>$ conda list</span>
 
 ### Install non-listed conda packages
 
@@ -301,19 +363,19 @@ For the example with _plotnine_, it is available for installation from a conda -
 
 <span class='terminal'>$ conda install -c conda-forge plotnine</span>
 
-If your package is available, it is likely that it is listed under a "-forge" command. This means that when <span class='terminal'>conda install </span> tries to solve the environment it will first report any conflicts with existing packages, and then forge conflicts. There are three alternative conflicts:
+If your package is available, it is likely that it is listed under a "-forge" command. This means that when <span class='terminal'>conda install</span> tries to solve the environment it will first report any conflicts with existing packages, and then forge conflicts. There are three alternative conflicts:
 
 - SUPERSEED
 - UPGRADE
 - DOWNGRADE
 
-Superseed means that the new package comes with a dependency that is already installed, but that the dependency will be replaced by the alternative found with the new package. It _should_ be exactly the same package with the same content as the existing dependency, but it will nevertheless be replaces. For all cases I have encountered it has worked out fine to accept the superseed. Otherwise this is the reason you are using a (virtual) environment. You just repeat the setup until the point where it went wrong, and then try another solution.
+**Superseed** means that the new package comes with a dependency that is already installed, but that the dependency will be replaced by the alternative found with the new package. It _should_ be exactly the same package with the same content as the existing dependency, but it will nevertheless be replaces. For all cases I have encountered it has worked out fine to accept the **superseed**. Otherwise this is the reason you are using a (virtual) environment. You just repeat the setup until the point where it went wrong, and then try another solution.
 
-If the -forge installation reports that a package is to be UPGRADE(D) that *might* work. If it reports that a package is in for a DOWNGRADE then proceeding with the installation is likely to cause problems with other packages. One solution is then to export your environment and try other versions or alternatives. Change the conflicting packages to use the same version of the common dependency (you have to look in the documentation to find versions that can go together).
+If the <span class='terminal'>-forge</span> installation reports that a package is to be **upgrade(d)** that _might_ work. If it reports that a package is in for a **downgrade** then proceeding with the installation is likely to cause problems with other packages. One solution is then to export your environment and try other versions or alternatives. Change the conflicting packages to use the same version of the common dependency (you have to look in the documentation to find versions that can go together).
 
 #### Install using pip
 
-If the package you want to install is neither available with <span class='terminal'>$ conda install</span>, nor available as a span class='terminal'>$ conda -forge</span> installation, you need to use an alternative package manager (as described [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages)). This more or less always boils down to <span class='terminalapp'>pip</span>.
+If the package you want to install is neither available with <span class='terminal'>$ conda install</span>, nor available as a <span class='terminal'>$ conda -forge</span> installation, you need to use an alternative package manager (as described [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages)). This more or less always boils down to <span class='terminalapp'>pip</span>.
 
 The package _sentinelsat_, used for searching and downloading satellte data from the European Space Agency (ESA) is only avalailable suing <span class='terminalapp'>pip</span>:
 

@@ -1,12 +1,11 @@
 ---
 layout: post
 title: GitHub Submodules
-modified: '2019-09-02 T18:17:25.000Z'
-categories: setup
+categories: develop
 excerpt: Organize GitHub repositories with python packages as submodules
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2019-09-02
- T18:17:25.000Z'
+date: '2018-09-02 T18:17:25.000Z'
+modified: '2020-02-10 T18:17:25.000Z'
 comments: true
 share: true
 figure15: github-framework_karttur_15_new-other
@@ -16,23 +15,23 @@ figure17: github-framework_karttur_17_pydev-package2
 
 ## Introduction
 
-**These instructions are for creating a GithHub repository with a frame project linking together all python packages that constitute Karttur's GeoImagine Framework. If you are looking for how to clone the ready version of the complete framework, continue to the [next](../github-clone-eclipse/) post.**
+**These instructions are for creating a GithHub repository with a frame project linking together all python packages that constitute Karttur's GeoImagine Framework. If you are looking for how to clone the ready version of the complete framework, continue to the post [Git clone with Eclipse](../../prepare/prepare-clone-eclipse/) post.**
 
 Developing my code and learning more about version control and <span class='app'>Eclipse</span>, I have come to the point where I need to setup Karttur´s GeoImagine Framework as a distributed version control system, or Git. There are different options for how to go about this. I chose to use [GitHub](https://github.com) and <span class='app'>Eclipse</span> submodules, keeping separate GitHub repositories (repos) for each python package and then joining all repos as submodules in a main-frame repo that functions like a container for the packages.
 
 This post describes how to use submodules in a Git project for assembling a hierarchical PyDev project, and details how Karttur's GeoImagine Framework is organised on GitHub.
 
-If you are primarily interested in Git submodules I recommend a more general instruction, like [Git Submodules basic explanation](https://gist.github.com/gitaarik/8735255), [Working with submodules](https://github.blog/2016-02-01-working-with-submodules/) or the youtube introduction [Git Tutorial: All About Submodules](https://www.youtube.com/watch?v=8Z4Cmhji_FQ).
+If you are primarily interested in Git submodules I recommend a more general instruction, like [Using submodules in Git - Tutorial](https://www.vogella.com/tutorials/GitSubmodules/article.html), [Git Submodules basic explanation](https://gist.github.com/gitaarik/8735255), [Working with submodules](https://github.blog/2016-02-01-working-with-submodules/) or the youtube introduction [Git Tutorial: All About Submodules](https://www.youtube.com/watch?v=8Z4Cmhji_FQ).
 
 ## Prerequisites
 
-To follow the instructions in this post you need a [GitHub](https://github.com) account with a repository containing an empty PyDev project for <span class='app'>Eclipse</span>, created as explained in the [previous](../setup-github-eclipse/) post. You also need to have the [<span class='terminalapp'>git</span> command line tool](../git-commandline/) installed.
+To follow the instructions in this post you need a [GitHub](https://github.com) account with a repository containing an empty PyDev project for <span class='app'>Eclipse</span>, created as explained in the post on [Setup Eclipse teamed with GitHub repository](../develop-github-eclipse/). You also need to have the [<span class='terminalapp'>git</span> command line tool](../develop-commandline/) installed.
 
 If you want to work towards a functional setup of Karttur's GeoImagine Framework, all you need to do is clone all the _geoimagine-"package"_ [python packages (repositories) on Karttur's GitHub pages](https://karttur.github.io/geoimagine/packages/) as submodules. To create a fully functional GeoImagine Framework you must also have installed the Spatial Data Integrated Development Environment (SPIDE) as outlined for Mac OSX in my blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/), and summarised for Ubuntu in the post [Spatial Data Integrated Development Environment for Ubuntu 18.04](https://karttur.github.io/setup-ide/blog/ubuntu-setup-spide/).
 
 ## Setup Eclipse PyDev project with GitHub
 
-As a result of the [previous](../setup-github-eclipse/) blog, you should have a file and folder structure representing your local GitHub clone that looks like this (comments starting with "#" added for explanation in this text):
+As a result of the previous post [Setup Eclipse teamed with GitHub repository](../develop-github-eclipse/), you should have a file and folder structure representing your local GitHub clone that looks like this (comments starting with "#" added for explanation in this text):
 
 ```
 kt-gi-test01
@@ -46,7 +45,7 @@ where <span class='file'>kt-gi-test01</span> is the local clone of the GitHub re
 
 ### Managing your local project
 
-Karttur's GeoImagine Framework is built from approximately 40 python packages, all specifically written to be part of the Framework. These packages need to be added to the combined GitHub / <span class='app'>Eclipse</span> project as submodules. But before we can link the packages/submodules, you must create a frame (core or top) python package. Then all of the packages will be placed inside the frame package.
+Karttur's GeoImagine Framework is built from approximately 40 python packages, all specifically written to be part of the Framework. These packages need to be added to the combined GitHub / <span class='app'>Eclipse</span> project as submodules. But before we can link the packages/submodules, you must create a frame (core or top) python package. Then all of the packages will be linked to the frame package.
 
 #### Create the project python frame package
 
@@ -178,14 +177,14 @@ git submodule add https://github.com/karttur/geoimagine-zipper zipper
 
 ### Start using Karttur's GeoImaginge Framework
 
-If everything worked out correctly, you should now be able to start using Karttur's GeoImagine Framework. But remember, you have to have [setup the complete SPIDE](https://karttur.github.io/setup-ide/) as well as created a customised Python environment that is linked to <span class='app'>Eclipse</span> as the Python interpreter. The instructions for how to create a virtual python environment in [Anaconda](https://anaconda.org) is covered in my post on [Conda virtual environments](../setup-conda-environ/).
+If everything worked out correctly, you should now be able to start using Karttur's GeoImagine Framework. But remember, you have to have [setup the complete SPIDE](https://karttur.github.io/setup-ide/) as well as created a customised Python environment that is linked to <span class='app'>Eclipse</span> as the Python interpreter. The instructions for how to create a virtual python environment in [Anaconda](https://anaconda.org) is covered in my post on [Conda virtual environments](../../prepare/prep-conda-environ/).
 
-Once you have installed all the required component for SPIDE and your Eclipse frame project is up and running, the next step is to create the solution used by Karttur´s GeoImagine Framework for [Database connection](../setup-dblink/).
+Once you have installed all the required component for SPIDE and your Eclipse frame project is up and running, the next step is to prepare the solution used by Karttur´s GeoImagine Framework for [Database connection](../../prepare/prep-dblink/).
+
+### Runtime problem
 
 If your <span class='app'>Eclipse</span> menu items changed and the run alternative disappeared, you can always run the Python scripts by using _F9_ or _Ctrl+F9_ for unit-tests, as described in the [pydev manual for run](http://www.pydev.org/manual_101_run.html).
 
 ### Editing the code
 
-You can work with the cloned code and develop/improve it. But you can not push the changes back to the GitHub online repository (unless you have the login and password for Karttur´s GitHub pages). If you could, it would mean that the code of the _master_ branches of the individual packages would change.
-
-The [next](../github-clone-complete) post describes how to clone the complete project/repository created in this post.
+You can work with the cloned code and develop/improve it. But unless you have access to the login and password of the online Git repo you can not push the changes back to GitHub.

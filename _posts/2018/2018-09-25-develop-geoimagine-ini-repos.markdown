@@ -1,11 +1,11 @@
 ---
 layout: post
 title: Git clone with GitHub Desktop and terminal
-modified: '2019-09-05 T08:17:25.000Z'
-categories: setup
+categories: develop
 excerpt: Clone Karttur's GeoImagine Framework from GitHub using GitHub Desktop and the terminal
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2019-09-05 T08:17:25.000Z'
+date: '2018-09-05 T08:17:25.000Z'
+modified: '2018-09-05 T08:17:25.000Z'
 comments: true
 share: true
 
@@ -18,8 +18,6 @@ This post describes the solution I created for the publishing (commit) of all py
 WARNING, running the Python script with _overwrite_ set to _True_ will reset all the local repositories. If you have online repos with updates not reflected in your local installation, they might be lost.
 
 ### Python package
-
-
 
 The cloning done in this post (using <span class='app'>GitHub Deskop</span> or the command line tool <span class='terminalapp'>git</span>) is no different compared to using <span class='app'>Eclipse</span> as in the [previous](../github-clone-complete) post. But because you can not (unless you are me, TG) stage, commit and push changes back to the online GitHub repository, using <span class='app'>Eclipse</span> for cloning has no real point. In general <span class='app'>GitHub Deskop</span> is a superior app for Git management compared to Eclipse. And if you prefer to run Git from the command-line, then there is <span class='terminalapp'>git</span>).
 

@@ -1,11 +1,11 @@
 ---
 layout: post
 title: Git commandline
-modified: '2019-08-31 T18:17:25.000Z'
-categories: setup
+categories: develop
 excerpt: Install Git command line tool
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2019-08-31 T18:17:25.000Z'
+date: '2018-08-31 T18:17:25.000Z'
+modified: '2020-02-11 T18:17:25.000Z'
 comments: true
 share: true
 figure15: github-framework_karttur_15_new-other
@@ -17,7 +17,7 @@ figure17: github-framework_karttur_17_pydev-package2
 
 Joint or shared (coding) projects benefit largely from a repository service that keeps track of versions and changes. Git, initially developed by Linus Torvalds for creating Linux OS, is today the most widely used distributed version control system. This post summarises how to install the command-line tool <span class='terminalapp'>git</span> for Git control.
 
-There are two ways two securely connect from a local (machine) Git and an online [GitHub](https://github.com) repository: HTTPS or SSH. At time of writing this post (September 2019) the HTTPS solution is recommended on the GitHub help page [Set up Git](https://help.github.com/en/articles/set-up-git). Only HTTPS is covered in this post.
+There are two ways two securely connect from a local (machine) Git and an online [GitHub](https://github.com) repository: HTTPS or SSH. At time of updating this post (February 2020) the HTTPS solution is recommended on the GitHub help page [Set up Git](https://help.github.com/en/articles/set-up-git). Only HTTPS is covered in this post.
 
 ## Setup Git for command-line use
 
@@ -72,4 +72,4 @@ There are different options regarding how to set your password if you are clonin
 
 ### Try it out
 
-To try <span class='terminalapp'>git</span> out and learn about Git control on [GitHub.com](https://github.com/) the youtube video [Github Tutorial For Beginners](https://www.youtube.com/watch?v=0fKg7e37bQE) is instructive. And another article on command-line tool [Using submodules in Git - Tutorial](https://www.vogella.com/tutorials/GitSubmodules/article.html).
+To try <span class='terminalapp'>git</span> out and learn about Git control on [GitHub.com](https://github.com/) the youtube video [Github Tutorial For Beginners](https://www.youtube.com/watch?v=0fKg7e37bQE) is instructive. 

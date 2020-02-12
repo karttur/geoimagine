@@ -1,11 +1,11 @@
 ---
 layout: post
 title: Setup Eclipse teamed with GitHub repository
-modified: '2019-09-01 T18:17:25.000Z'
-categories: setup
+categories: develop
 excerpt: How to use a GitHub repository as a shared project enviroment in Eclipse
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2019-09-01 T18:17:25.000Z'
+date: '2018-09-01 T18:17:25.000Z'
+modified: '2020-02-11 T18:17:25.000Z'
 comments: true
 share: true
 figure1: github-framework_karttur_01_openperspective
@@ -27,7 +27,9 @@ figure14: github-framework_karttur_14_git-staging
 
 # Introduction
 
-Joint or shared (coding) projects benefit largely from a repository service that keeps track of versions and changes. Git, initially developed by Linus Torvalds for creating Linux OS, is today the most widely used distributed version control system. This post covers setting up an <span class='app'>Eclipse</span> PyDev project using a GitHub repository (or _repo_ for short). The PyDev project is just an empty container and will be used in the [next](../github-submodules) post for linking other PyDev packages, stored as repositories, as GitHub submodules. If you are completely new to Git there are a plethora of introductions available. A  pedagogic youtube introduction is [Github Tutorial For Beginners](https://www.youtube.com/watch?v=0fKg7e37bQE), and if you prefer reading then [Learn Git with Bitbucket Cloud](https://www.atlassian.com/git/tutorials/what-is-git) is an alternative.
+Joint or shared (coding) projects benefit largely from a repository service that keeps track of versions and changes. Git, initially developed by Linus Torvalds for creating Linux OS, is today the most widely used distributed version control system. This post covers setting up an <span class='app'>Eclipse</span> PyDev project using a GitHub repository (or _repo_ for short). The PyDev project is just an empty container and will be used in the [next](../develop-submodules) post for linking PyDev packages, stored as individual repositories, as GitHub submodules.
+
+If you are completely new to Git there are a plethora of introductions available. A  pedagogic youtube introduction is [Github Tutorial For Beginners](https://www.youtube.com/watch?v=0fKg7e37bQE), and if you prefer reading then [Learn Git with Bitbucket Cloud](https://www.atlassian.com/git/tutorials/what-is-git) is an alternative.
 
 This post covers the following steps:
 
@@ -36,25 +38,25 @@ This post covers the following steps:
 3. Add a clone of a GitHub repo to <span class='app'>Eclipse</span>
 4. Create a PyDev Project in <span class='app'>Eclipse</span> and team it up with the added GitHub repo
 
-The youtube video [How To Add Eclipse Project To GitHub](https://www.youtube.com/wat ch?v=LPT7v69guVY) covers much the same as this post regarding setting up GitHub and teaming up a GitHub repository with an <span class='app'>Eclipse</span>  project. Except that in this post you are going to setup a PyDev project whereas the video is for a Java project.
+The youtube video [How To Add Eclipse Project To GitHub](https://www.youtube.com/watch?v=LPT7v69guVY&t=4s) covers much the same as this post regarding setting up GitHub and teaming up a GitHub repository with an <span class='app'>Eclipse</span>  project. Except that in this post you are going to setup a PyDev project whereas the video is for a Java project.
 
 ## Prerequisites
 
 To follow the instructions in this post you need a [GitHub](https://github.com) account. If you need a hands-on introduction to GitHub, including setting up an account and creating a repository, the [official GitHub Guide Hello World](https://guides.github.com/activities/hello-world/) is a good place to start.
 
-If you want to work towards a functional setup of the GeoImagine Framework you should aim for using Karttur´s [python packages uplodaded as separate repositories](https://karttur.github.io/geoimagine/packages/) as submodules. This is easily done by simply using the public python GeoImagine packages available on [Karttur's GitHub pages](http://github.io/karttur/), but that is not due until the [next](../github-submodules) post. To create a fully functional GeoImagine Framework you must also have installed the Spatial Data Integrated Development Environment (SPIDE) as outlined in my blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/).
+If you want to work towards a functional setup of the GeoImagine Framework you should aim for using Karttur´s [python packages uplodaded as separate repositories](https://karttur.github.io/geoimagine/packages/) as submodules. This is easily done by simply using the public python GeoImagine packages available on [Karttur's GitHub pages](https://github.com/karttur), but that is not due until the [next](../github-submodules) post. To create a fully functional GeoImagine Framework you must also have installed the Spatial Data Integrated Development Environment (SPIDE) as outlined in my blog [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/).
 
 ## Open GitHub account and sign in
 
 If you do not have a GitHub account, you have to sign up at [github.com](https://github.com) and create an account. Note the user name and password as you need them later in order to setup both <span class='app'>GitHub Desktop</span> and the command line tool for GitHub on your local machine. Once you have an account on GitHub, sign in.
 
-At this stage you can download and setup [<span class='app'>GitHub Desktop</span>](https://desktop.github.com/). Even if I usually prefer to use <span class='app'>Terminal</span> commands, I find <span class='app'>GitHub Desktop</span> very useful for handling GitHub repositories. These instructions assumes that you have it installed.
+At this stage you can download and setup [<span class='app'>GitHub Desktop</span>](https://desktop.github.com/). Even if I usually prefer to use <span class='app'>Terminal</span> commands, I find <span class='app'>GitHub Desktop</span> very useful for handling GitHub repositories. The rest of these instructions will assume that you have it installed.
 
 ## Create and empty repository in GitHub
 
-To store your project in <span class='app'>Eclipse</span> you need an empty repository to start with. Later, you are going to use this repository as a container for linking together all the PyDev packages that, combined, constitute your project (for instance Karttur's GeoImagine Framework). For now it will just be an empty repository. In this tutorial I named the example repository _kt-gi-test01_.
+To store your project in <span class='app'>Eclipse</span> you need an empty repository to start with. Later you are going to use this repository as a container for linking together all the PyDev packages that, combined, constitute your project (for instance Karttur's GeoImagine Framework). For now it will just be an empty repository. In this tutorial I named the example repository _kt-gi-test01_.
 
-Create a GitHub repository as described in the GitHub page [Create a repo](https://help.github.com/en/articles/create-a-repo). You can add a ReadMe file if you want to, or leave the repository completely empty. If you instead create your repository in <span class='app'>GitHub Desktop</span> commit and push it to your online GitHub account.
+Create a GitHub repository as described in the GitHub page [Create a repo](https://help.github.com/en/articles/create-a-repo). You can add a ReadMe file if you want to, or leave the repository completely empty. Aleterantively you can also create your repository from <span class='app'>GitHub Desktop</span>, and then commit and push it to your online GitHub account.
 
 ## Add GitHub repo to <span class='app'>Eclipse</span>
 

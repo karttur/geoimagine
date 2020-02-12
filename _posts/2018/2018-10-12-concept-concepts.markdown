@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Framework key concepts
-categories: prepare
+categories: concept
 excerpt: "Key concepts: processes and compositions, and how they are represented in xml."
 tags:
   - processes
