@@ -5,7 +5,11 @@ excerpt: "An archive of articles on how to develop Karttur's GeoImagine Framewor
 search_omit: true
 ---
 
-The Framework is built in Python using the Eclipse Integrated Development Environment (IDE) and postreSQL as database. The setup of the IDE with all its components is covered in the [Setup IDE Blog](https://karttur.github.io/setup-ide/). If you want to setup Karttur's GeoImagine Framework you have to start with building the Eclipse Spatial Data IDE (SPIDE).
+Karttur's GeoImagine Framework is built in Python using the <span class='app'>Eclipse</span> Integrated Development Environment (IDE) and postreSQL as database. The setup of this integrated Spatial Data IDE (SPIDE) with all its components is covered in the blog [Install and setup SPIDE](https://karttur.github.io/setup-ide/).
+
+This development section of the blog on the [GeoImagine Framework](../) primarily covers how to create a GitHub repository for storing and accessing the complete Framework as a hierarchical set of repositories (repos for short). Each repo contains one package and all packages are attached to the  Framework container as submodules.
+
+Some additional development posts deal with particular aspects for the Framework.
 
 <ul class="post-list">
 {% for post in site.categories.develop reversed %}
