@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: article
 title: Additional packages
 categories: depreciated
 excerpt: "Add additional python packages to Anaconda"

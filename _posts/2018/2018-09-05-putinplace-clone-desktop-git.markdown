@@ -1,11 +1,13 @@
 ---
-layout: post
+layout: article
 title: Git clone with GitHub Desktop and terminal
 categories: putinplace
 excerpt: Clone Karttur's GeoImagine Framework from GitHub using GitHub Desktop and the terminal
+previousurl: prep/prep-conda-environ
+nexturl: null
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-09-05 T08:17:25.000Z'
-modified: '2018-09-05 T08:17:25.000Z'
+modified: '2020-02-12 T08:17:25.000Z'
 comments: true
 share: true
 figure1: github-framework_karttur_101_github-repo-top

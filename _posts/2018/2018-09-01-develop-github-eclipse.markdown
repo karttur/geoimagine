@@ -1,8 +1,10 @@
 ---
-layout: post
+layout: article
 title: Setup Eclipse teamed with GitHub repository
 categories: develop
 excerpt: How to use a GitHub repository as a shared project enviroment in Eclipse
+previousurl: null
+nexturl: develop/develop-submodules
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-09-01 T18:17:25.000Z'
 modified: '2020-02-11 T18:17:25.000Z'
@@ -24,6 +26,8 @@ figure121: github-framework_karttur_121_package-explorer
 figure13: github-framework_karttur_13_eclipse-proj-menu
 figure14: github-framework_karttur_14_git-staging
 ---
+
+**These instructions are for creating a GithHub repository with a frame project linking together all python packages that constitute Karttur's GeoImagine Framework. If you are looking for how to clone the ready version of the complete framework, continue to the post [Git clone with Eclipse](../../prep/prepare-clone-eclipse/) post.**
 
 # Introduction
 

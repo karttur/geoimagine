@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: article
 title: Git commandline
 categories: develop
 excerpt: Install Git command line tool
@@ -72,4 +72,4 @@ There are different options regarding how to set your password if you are clonin
 
 ### Try it out
 
-To try <span class='terminalapp'>git</span> out and learn about Git control on [GitHub.com](https://github.com/) the youtube video [Github Tutorial For Beginners](https://www.youtube.com/watch?v=0fKg7e37bQE) is instructive. 
+To try <span class='terminalapp'>git</span> out and learn about Git control on [GitHub.com](https://github.com/) the youtube video [Github Tutorial For Beginners](https://www.youtube.com/watch?v=0fKg7e37bQE) is instructive.

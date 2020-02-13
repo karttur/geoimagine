@@ -1,11 +1,11 @@
 ---
-layout: post
+layout: article
 title: The Seasonal python package
-modified: '2018-10-24 T18:17:25.000Z'
 categories: develop
 excerpt: Edit the python package seasonal.
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2019-03-15 12:24'
+date: '2018-09-26 12:24'
+modified: '2019-10-24 T18:17:25.000Z'
 comments: true
 share: true
 figure1: avg-grace-ave_ave-cmwater_global_2003-2016_RL05-filled

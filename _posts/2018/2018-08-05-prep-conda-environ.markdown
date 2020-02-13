@@ -1,8 +1,10 @@
 ---
-layout: post
+layout: article
 title: Conda virtual environments II
 categories: prep
 excerpt: "Create Conda environment for Karttur's GeoImagaine project"
+previousurl: null
+nexturl: putinplace
 tags:
   - Conda environment
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
@@ -324,7 +326,7 @@ If you did not setup a virtual Python environment you can use the Anaconda defau
 
 Regardless of which interpreter you selected, click <span class='button'>Finish/OK</span>, and the dialog window <span class='tab'>Selection Needed</span> appears. Accept the default selection (all listed items), and click <span class='button'>Finish/OK</span> again. All the selected Libraries and their associated Packages will be linked to your project, and show up in the lower frame of the <span class='tab'>Preferences</span> window. When finished, click <span class='button'>Apply and Close</span>.
 
-At this stage you can continue with [setting up Karttur's GeoImagine Framework](../../setup). Dependent on how you set it up and what functions you require, you will need to to install additional Python packages to your virtual environment. The topic of the reminder of this post. 
+At this stage you can continue with [setting up Karttur's GeoImagine Framework](../../setup). Dependent on how you set it up and what functions you require, you will need to to install additional Python packages to your virtual environment. The topic of the reminder of this post.
 
 ### Install additional packages in your environments
 

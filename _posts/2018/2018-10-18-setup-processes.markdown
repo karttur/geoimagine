@@ -1,9 +1,11 @@
 ---
-layout: post
+layout: article
 title: Setup processes (setup_processes)
 modified: '2018-10-18 T18:17:25.000Z'
 categories: setup
 excerpt: "Setup the processes for Karttur's GeoImagine Framework"
+previousurl: setup/setup-db
+nexturl: setup/setup-regions
 tags:
  - addsubproc
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A

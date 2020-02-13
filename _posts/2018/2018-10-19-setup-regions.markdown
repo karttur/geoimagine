@@ -4,6 +4,8 @@ title: Regions
 modified: '2018-10-19 T18:17:25.000Z'
 categories: setup
 excerpt: "Setup the regions for Karttur's GeoImagine Framework"
+previousurl: setup/setup-processes
+nexturl: setup/setup-transfer
 tags:
  - defaultregionfromvector
  - regioncategories

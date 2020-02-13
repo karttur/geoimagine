@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: article
 title: Additional packages
 modified: '2018-10-17 T18:17:25.000Z'
 categories: depreciated

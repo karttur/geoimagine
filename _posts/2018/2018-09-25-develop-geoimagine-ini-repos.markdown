@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: article
 title: Git clone with GitHub Desktop and terminal
 categories: develop
 excerpt: Clone Karttur's GeoImagine Framework from GitHub using GitHub Desktop and the terminal
@@ -8,7 +8,6 @@ date: '2018-09-05 T08:17:25.000Z'
 modified: '2018-09-05 T08:17:25.000Z'
 comments: true
 share: true
-
 ---
 
 ## Introduction

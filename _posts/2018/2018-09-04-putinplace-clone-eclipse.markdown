@@ -1,11 +1,13 @@
 ---
-layout: post
+layout: article
 title: Git clone with Eclipse
 categories: putinplace
 excerpt: Clone Karttur's GeoImagine Framework from GitHub using Eclipse
+previousurl: null
+nexturl: prep/prep-dblink/
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-09-04 T08:17:25.000Z'
-modified: '2018-09-04 T08:17:25.000Z'
+modified: '2020-02-12 T08:17:25.000Z'
 comments: true
 share: true
 figure1: github-framework_karttur_01_openperspective
@@ -141,7 +143,7 @@ should have a complete copy, or clone, of the PyDev project repo from GitHub.com
 
 ### Karttur´s GeoImagine Framework
 
-If you want to continue with Karttur's GeoImagine Framework there are some additional steps required. As these steps are very specific they are covered in a separate blog on [Karttur's GeoImagine Framework](https://karttur.github.io/geoimagine/). To continue directly from here in that blog, go to the post on [prepare the database connection](https://karttur.github.io/geoimagine/prepare/prep-dblink/).
+If you want to continue with Karttur's GeoImagine Framework there are some additional steps required. As these steps are very specific they are covered in a separate blog on [Karttur's GeoImagine Framework](https://karttur.github.io/geoimagine/). To continue directly from here in that blog, go to the post on [prepare the database connection](https://karttur.github.io/geoimagine/prep/prep-dblink/).
 
 ### A note on editing the code
 

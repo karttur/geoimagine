@@ -1,15 +1,16 @@
 ---
-layout: post
+layout: article
 title: Import Project to Eclipse
-modified: '2018-10-10 T18:17:25.000Z'
 categories: putinplace
 excerpt: "Import Karttur's entire GeoImagine Framework as a PyDev project to Eclipse"
+previousurl: putinplace/clone-desktop-git
+nexturl: prep/prep-dblink
 tags:
   - Clone Karttur's GeoImagine Framework
   - Setup Karttur's GeoImagine Framework
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2018-10-10
- T18:17:25.000Z'
+date: '2018-10-10 T18:17:25.000Z'
+modified: '2020-02-10 T18:17:25.000Z'
 comments: true
 share: true
 figure1: eclipse_select_import

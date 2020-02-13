@@ -1,11 +1,13 @@
 ---
-layout: post
+layout: article
 title: Database connections
 categories: prep
 excerpt: "Setup database connections for Karttur's GeoImagine Framework"
+previousurl: null
+nexturl: setup/setup-db
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-10-15 T18:17:25.000Z'
-modified: '2018-10-15 T18:17:25.000Z'
+modified: '2020-12-12 T18:17:25.000Z'
 comments: true
 share: true
 general_grant_v80_sql: general_grant_v80_sql

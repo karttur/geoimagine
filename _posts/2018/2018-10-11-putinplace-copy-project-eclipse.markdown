@@ -1,8 +1,10 @@
 ---
-layout: post
+layout: article
 title: Copy and paste Karttur's GeoImagine Framework
 categories: putinplace
 excerpt: "Copy and paste selected packages and modules of Karttur's GeoImagine Framework in Eclipse"
+previousurl: putinplace/clone-desktop-git
+nexturl: prep/prep-dblink
 tags:
   - Copy and paste Karttur's GeoImagine Framework
   - Setup Karttur's GeoImagine Framework
@@ -48,4 +50,4 @@ The easiest way to add the resources (packages and modules) that you require is 
 
 ## Package naming
 
-If you cloned Karttur's GeoImagine Framework as descried in the post [Git clone with GitHub Desktop and terminal](../putinplace-clone-desktop-git/) all the packages in your local clone will have the correct name. The repos actually holding the individual packages are all named with prefix "geoimagine" followed by a hyphen ("-") and then the actual name of the package. Thus, if you cloned or downloaded one of the submodules directly the naming is not correct. That is, however, easily fixed by removing the "geoimagine-" from the downloaded/cloned folder. 
+If you cloned Karttur's GeoImagine Framework as descried in the post [Git clone with GitHub Desktop and terminal](../putinplace-clone-desktop-git/) all the packages in your local clone will have the correct name. The repos actually holding the individual packages are all named with prefix "geoimagine" followed by a hyphen ("-") and then the actual name of the package. Thus, if you cloned or downloaded one of the submodules directly the naming is not correct. That is, however, easily fixed by removing the "geoimagine-" from the downloaded/cloned folder.

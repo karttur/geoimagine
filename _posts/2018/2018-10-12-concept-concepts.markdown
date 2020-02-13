@@ -1,8 +1,10 @@
 ---
-layout: post
+layout: article
 title: Framework key concepts
 categories: concept
 excerpt: "Key concepts: processes and compositions, and how they are represented in xml."
+previousurl: /
+nexturl: concept/concept-run
 tags:
   - processes
   - compositions

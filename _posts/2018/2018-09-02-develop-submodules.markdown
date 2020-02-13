@@ -1,8 +1,10 @@
 ---
-layout: post
+layout: article
 title: GitHub Submodules
 categories: develop
 excerpt: Organize GitHub repositories with python packages as submodules
+previousurl: develop/develop-github-eclipse
+nexturl: prep/prep-dblink/
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-09-02 T18:17:25.000Z'
 modified: '2020-02-10 T18:17:25.000Z'
@@ -13,9 +15,9 @@ figure16: github-framework_karttur_16_pydev-package
 figure17: github-framework_karttur_17_pydev-package2
 ---
 
-## Introduction
+**These instructions are for creating a GithHub repository with a frame project linking together all python packages that constitute Karttur's GeoImagine Framework. If you are looking for how to clone the ready version of the complete framework, continue to the post [Git clone with Eclipse](../../prep/prepare-clone-eclipse/) post.**
 
-**These instructions are for creating a GithHub repository with a frame project linking together all python packages that constitute Karttur's GeoImagine Framework. If you are looking for how to clone the ready version of the complete framework, continue to the post [Git clone with Eclipse](../../prepare/prepare-clone-eclipse/) post.**
+## Introduction
 
 Developing my code and learning more about version control and <span class='app'>Eclipse</span>, I have come to the point where I need to setup Karttur´s GeoImagine Framework as a distributed version control system, or Git. There are different options for how to go about this. I chose to use [GitHub](https://github.com) and <span class='app'>Eclipse</span> submodules, keeping separate GitHub repositories (repos) for each python package and then joining all repos as submodules in a main-frame repo that functions like a container for the packages.
 
@@ -177,14 +179,6 @@ git submodule add https://github.com/karttur/geoimagine-zipper zipper
 
 ### Start using Karttur's GeoImaginge Framework
 
-If everything worked out correctly, you should now be able to start using Karttur's GeoImagine Framework. But remember, you have to have [setup the complete SPIDE](https://karttur.github.io/setup-ide/) as well as created a customised Python environment that is linked to <span class='app'>Eclipse</span> as the Python interpreter. The instructions for how to create a virtual python environment in [Anaconda](https://anaconda.org) is covered in my post on [Conda virtual environments](../../prepare/prep-conda-environ/).
+If everything worked out correctly, you should now be able to start using (your customized version of) Karttur's GeoImagine Framework. But remember, you have to have [setup the complete SPIDE](https://karttur.github.io/setup-ide/) as well as created a customised Python environment that is linked to <span class='app'>Eclipse</span> as the Python interpreter. The instructions for how to create a virtual python environment in [Anaconda](https://anaconda.org) is covered in my post on [Conda virtual environments](../../prep/prep-conda-environ/).
 
-Once you have installed all the required component for SPIDE and your Eclipse frame project is up and running, the next step is to prepare the solution used by Karttur´s GeoImagine Framework for [Database connection](../../prepare/prep-dblink/).
-
-### Runtime problem
-
-If your <span class='app'>Eclipse</span> menu items changed and the run alternative disappeared, you can always run the Python scripts by using _F9_ or _Ctrl+F9_ for unit-tests, as described in the [pydev manual for run](http://www.pydev.org/manual_101_run.html).
-
-### Editing the code
-
-You can work with the cloned code and develop/improve it. But unless you have access to the login and password of the online Git repo you can not push the changes back to GitHub.
+Once you have installed all the required component for SPIDE and your Eclipse frame project is up and running, the next step is to prepare the solution for [Database connection](../../prep/prep-dblink/).
