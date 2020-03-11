@@ -8,7 +8,7 @@ search_omit: true
 
 Karttur's GeoImagine Framework offers a semi-automated processing environment for spatial data, mainly intended for Big Data processing of satellite images and other spatial datasets. To work with the Framework your machine must first be set up with a Spatial Data Integrated Development Environment (SPIDE) as described in my blog on [Install and setup spatial data IDE](https://karttur.github.io/setup-ide/).
 
-At the core of the Framework are object oriented processes. These processes are assembled in groups (called roots), where each group is associated with either a particular data source (e.g. MODIS, Sentinel, Landsat, ancillary etc), or particular kinds of processes (e.g. time series processing, scalar, overlay, export etc). many root processes are also associated with a specific, purpose-built, Python package. When installing and setting up the Framework, a single root with a single process is installed - allowing the user to define and install all other processes associated with the Framework.
+At the core of the Framework are object oriented processes. These processes are assembled in groups (called roots), where each group is associated with either a particular data source (e.g. MODIS, Sentinel, Landsat, ancillary etc), or a particular kind of process (e.g. time series processing, scalar, overlay, export etc). Many root processes are also associated with a specific, purpose-built, Python package. 
 
 To search for a particular package or process, use these links to browse the content of Karttur's GeoImagine Framework:
 

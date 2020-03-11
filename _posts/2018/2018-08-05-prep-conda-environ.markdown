@@ -282,6 +282,17 @@ or
 
 The conda base setup is not affected by either installing or deleting a virtual environment.
 
+
+### addons
+
+pip install landsatxplore
+
+conda install -c omnnia svgwrite
+
+pip install sentinelsat
+
+conda install -c conda-forge matplotlib
+
 ## Activate your environment
 
 To list available environments type:

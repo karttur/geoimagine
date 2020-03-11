@@ -109,6 +109,13 @@ Check that the cloned repo actually contain all the GeoImagine Framework python 
 
 <span class='terminal'>$ git submodule update</span>
 
+#### Update submodules
+
+To update all submodules to latest individual _commit_ of each, run the command:
+
+<span class='terminal'>$ git submodule foreach git pull origin master</span>
+
+
 ### import or copy project to <span class='app'>Eclipse</span>
 
 Regardless of which route you chose for cloning the GitHub repo containing the PyDev project and packages, you should now have a complete, working, clone in your local machine. The next step is to either [import](../putinplace-import-project-eclipse) or [copy](../putinplace-copy-project-eclipse) the Framework project to <span class='app'>Eclipse</span>.
