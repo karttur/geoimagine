@@ -1,13 +1,13 @@
 ---
 layout: article
-title: Git clone with GitHub Desktop and terminal
+title: Fork your own Framework
 categories: putinplace
 excerpt: Clone Karttur's GeoImagine Framework from GitHub using GitHub Desktop and the terminal
 previousurl: prep/prep-conda-environ
 nexturl: null
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
-date: '2018-09-05 T08:17:25.000Z'
-modified: '2020-02-12 T08:17:25.000Z'
+date: '2018-09-06 T08:17:25.000Z'
+modified: '2020-03-14 T08:17:25.000Z'
 comments: true
 share: true
 figure1: github-framework_karttur_101_github-repo-top
@@ -19,15 +19,13 @@ figure5: github-framework_karttur_105_clone-a-repo-desktop
 
 ## Introduction
 
-As you (most likely) do not have the right to edit, manage and update Karttur´s GitHub repositories and it's GeoImagine Framework packages, you can not make use of <span class='app'>Eclipse</span> ability to stage, commit and push changes. It is instead recommended that you clone GeoImagine Framework using Git command line or <span class='app'>GitHub Desktop</span> to a stand alone project outside of <span class='app'>Eclipse</span>. And then [import](../putinplace-import-project-eclipse) or [copy](../putinplace-copy-project-eclipse) the Framework project to <span class='app'>Eclipse</span> separately.
+This post describes how to setup your own mirror (or _fork_) of Karttur´s GeoImagine Framework on GitHub.com, clone it to you local system, track your own changes as well as updates at Karttur's upstream repo and suggest improvements. The most efficient setup is using [git terminal tool](../../develop/develop-commandline), but it also works with [GitHub Desktop](https://desktop.github.com); both alternatives are described in the post [Git clone with GitHub Desktop and terminal]((../putinplace-clone-desktop-git)). But in this post you will first _fork_ the complete Framework and then clone it from a GitHub account that you have access to. This means that you can push any changes you make to your online repo, and then send a pull request to Karttur with a suggestion to incorporate your changes in the original code. Further, you can follow, and update your own mirror with, changes made in the Framework at [github.com/karttur](https://github.com/karttur).
 
-### Cloning
-
-The cloning done in this post (using <span class='app'>GitHub Deskop</span> or the command line tool <span class='terminalapp'>git</span>) is no different compared to using <span class='app'>Eclipse</span> as in the post on [Git clone with Eclipse](../putinplace-clone-eclipse). But because you can not (unless you are me, TG) stage, commit and push changes back to the online GitHub repository, using <span class='app'>Eclipse</span> for cloning has no real point. In general <span class='app'>GitHub Deskop</span> is a superior app for Git management compared to Eclipse. And if you prefer to run Git from the commandline, then there is <span class='terminalapp'>git</span>).
+This post is a summary of my blog on [git command line](https://karttur.github.io/git-vcs/) contains detailed tutorials on how to use <span class='terminalapp'>git</span>, including a tutorial on [Forking repositories](https://karttur.github.io/git-vcs/git/git-forks/), and then ends with a post on [git for Karttur's GeoImagine Framework](https://karttur.github.io/git-vcs/git/git-karttur-geoimagine-clone/). 
 
 ## Prerequisits
 
-For cloning Karttur's GeoImagine Framework from [GitHub.com](https://github.com) all you need is a GitHub account. You then either use [<span class='app'>GitHub Desktop</span>](https://desktop.github.com) or the [<span class='terminalapp'>git</span> commandline tool](../../develop/develop-commandline/).
+To _fork_ a mirror of Karttur's GeoImagine Framework that you can control, you must have your own GitHub account. [GitHub.com](https://github.com). You then either use [<span class='app'>GitHub Desktop</span>](https://desktop.github.com) or the [<span class='terminalapp'>git</span> commandline tool](../../develop/develop-commandline/).
 
 ## Karttur's GitHub repository
 

@@ -282,17 +282,6 @@ or
 
 The conda base setup is not affected by either installing or deleting a virtual environment.
 
-
-### addons
-
-pip install landsatxplore
-
-conda install -c omnnia svgwrite
-
-pip install sentinelsat
-
-conda install -c conda-forge matplotlib
-
 ## Activate your environment
 
 To list available environments type:
@@ -355,7 +344,7 @@ or tell <span class='terminalapp'>conda</span> under which environment to instal
 
 Once the installation is finished you should see the installed packages under the <span class='file'>site-packages</span> path and with the <span class='terminal'>$ conda list</span>
 
-### Install non-listed conda packages
+#### Install non-listed conda packages
 
 If you want to install a package that is not listed as an available package for your conda distribution (see above) you should first search for it as it might have been a recent addition.
 
@@ -394,7 +383,93 @@ The package _sentinelsat_, used for searching and downloading satellte data from
 
 <span class='terminal'>(geoimagine0) ... $ pip install sentinelsat</span>
 
-Again you can check that the package was installed in the correct place by exploring the <span class='file'>site-packages<(span)> path.
+Again you can check that the package was installed in the correct place by exploring the <span class='file'>site-packages</span> path.
+
+#### Additional installations
+
+The complete GeoImagine Framework requires a handful of additional installations:
+
+- landsatexplore
+- plotnine
+- pypng
+- seasonal
+- sentinelsat
+- svgis
+- svgwrite
+
+##### landsatxplore
+
+[Landsatxplore](https://pypi.org/project/landsatxplore/) is a package for searching and downloading Landsat satellite image scenes from [EarthExplorer](https://earthexplorer.usgs.gov). There are alternative packages that can be used for the same task, but Karttur's GeoImagine Framework is set up for using Landsatxplore. If you want to use Landsat data from EarthExplorer you need to register as an EarthExplorer user.
+
+[Landsatxplore](https://pypi.org/project/landsatxplore/) is not available at any conda channel and you need to use the <span class='terminalapp'>pip</span> installation manager.
+
+<span class='terminal'>$ pip install landsatxplore</span>
+
+#### plotnine
+
+[plotnine](https://plotnine.readthedocs.io/en/stable/) is a powerful graphics editor that you can use for composing maps and layouts in Python. It is like a Python version of the popular "Grammar of graphics" concept used by _ggplot_. The grammar allows users to compose plots by explicitly mapping data to the visual objects that make up the plot. plotnine is available on several conda channels, and can for instance be installed using the command:
+
+<span class='terminal'>$ conda install -c conda-forge plotnine</span>
+
+#### pypng
+
+The Pure Python PNG (pypng) image encoder/decoder is a stand alone module that is used for writing png images. In the Framework, pypng is used both for generating image maps, including movie frames, and other graphical output (e.g. legends). Use [<span class='terminalapp'>pip install</span>](https://pypi.org/project/pypng/) to get pypng added to your project.
+
+<span class='terminal'>$ pip install pypng</span>
+
+#### seasonal
+
+The seasonal package estimate and remove trend and periodicity in time-series. In the Framework it is used for time-series decomposition and trend estimations.
+
+**NOTE** that in the Framework __the seasonal package is edited to include more options and with altered default settings__.
+
+The seasonal package is installed with [<span class='terminalapp'>pip install</span>](https://pypi.org/project/seasonal/)
+
+<span class='terminal'>$ pip install seasonal</span>
+
+#### sentinelsat
+
+In the Framework Sentinelsat is used for searching, downloading and retrieving the metadata and the actual data of Sentinel satellite images from the Copernicus Open Access Hub.
+
+Sentinelsat is installed with [<span class='terminalapp'>pip install</span>](https://pypi.org/project/sentinelsat/).
+
+<span class='terminal'>$ pip install sentinelsat</span>
+
+#### svgis
+
+SVGIS converts vector geodata to Scalable Vector Graphics (SVG). SVG can be styled using Cascaded Style Sheets (CSS) and also read and manipulated by drawing programs. In the Framework SVGIS is primarily used for exporting vector data to use as overlays in map layouts.
+
+SVGIS is installed with [<span class='terminalapp'>pip install</span>](https://pypi.org/project/svgis/)
+
+<span class='terminal'>$ pip install svgis</span>
+
+#### svgwrite
+
+SVGwrite is a more general library for writing SVG formated vector graphics. It is used for creating legends and other layout items for maps. The preferred installation is using [<span class='terminalapp'>conda</span>](https://anaconda.org/omnia/svgwrite):
+
+<span class='terminal'>$ conda install -c omnia svgwrite</span>
+
+svgwrite is also available as [<span class='terminalapp'>pip install</span>](https://pypi.org/project/svgwrite/)
+
+<span class='terminal'>$ pip install svgwrite</span>
+
+#### matplotlib
+
+[matplotlib](https://matplotlib.org) is a python 2D plotting library producing figures in a variety of formats and interactive environments across platforms. matplotlib can be used in Python scripts, the Python and IPython shell, web application servers etc. Conda forge installation [<span class='terminalapp'>conda</span>](https://anaconda.org/conda-forge/matplotlib):
+
+<span class='terminal'>$ conda install -c conda-forge matplotlib</span>
+
+matplotlib is also available as [<span class='terminalapp'>pip install</span>](https://pypi.org/project/matplotlib/)
+
+<span class='terminal'>$ pip install matplotlib</span>
+
+#### wget
+
+Wget is a command-line tool for retrieving files using HTTP, HTTPS, FTP and FTPS (the most widely-used Internet protocols). In Karttur´s GeoImagine Framework, wget is used for accessing online available data from e.g.[https://earthdata.nasa.gov](https://earthdata.nasa.gov), including MODIS and SMAP. To install Wget on Mac osx you can use <span class='app'>Homebrew</span>.
+
+<span class='terminal'>$ brew install wget</span>
+
+The installation of <span class='app'>Homebrew</span> itself is covered in the blog post on [ImageMagick](https://karttur.github.io/setup-theme-blog/blog/install-imagemagick/).
 
 ### Export and import environments
 
@@ -409,40 +484,48 @@ and then export
 
 <span class='terminal'>(geoimagine) ... $ conda env export > geoimagine0.yml</span>.
 
-The exported <span class='file'>.yml</span> file below shows the complete installation of all packages required for Karttur's GeoImagine Farmework.
+The exported <span class='file'>.yml</span> file below shows the complete installation of all packages required for Karttur's GeoImagine Framework.
+
+<button id= "toggleexport" onclick="hiddencode('export')">Hide/Show conda exported packages</button>
+
+<div id="export" style="display:none">
+
+{% capture text-capture %}
+{% raw %}
 
 ```
-name: geoimagine1
+name: geoimagineXYZ
 channels:
   - omnia
   - conda-forge
-  - anaconda
   - defaults
 dependencies:
-  - affine=2.2.2=py37_0
-  - attrs=19.1.0=py37_1
+  - affine=2.3.0=py_0
+  - attrs=19.3.0=py_0
   - blas=1.0=mkl
-  - bzip2=1.0.6=h1de35cc_5
-  - ca-certificates=2019.5.15=0
+  - bzip2=1.0.8=h1de35cc_0
+  - ca-certificates=2019.11.28=hecc5488_0
   - cairo=1.14.12=hc4e6be7_4
-  - certifi=2019.3.9=py37_0
+  - certifi=2019.11.28=py37hc8dfbb8_1
+  - cfitsio=3.470=hb33e7b4_2
   - click=7.0=py37_0
   - click-plugins=1.1.1=py_0
   - cligj=0.5.0=py37_0
-  - curl=7.64.1=ha441bb4_0
-  - cycler=0.10.0=py37_0
-  - descartes=1.1.0=py37_0
+  - curl=7.67.0=ha441bb4_0
+  - cycler=0.10.0=py_2
+  - descartes=1.1.0=py_4
   - expat=2.2.6=h0a44026_0
-  - fiona=1.8.4=py37h9a122fd_0
+  - fiona=1.8.11=py37heeaa653_0
   - fontconfig=2.13.0=h5d5b041_1
   - freetype=2.9.1=hb4e5f40_0
   - freexl=1.0.5=h1de35cc_0
-  - gdal=2.3.3=py37hbe65578_0
-  - geopandas=0.4.1=py_0
-  - geos=3.7.1=h0a44026_0
+  - gdal=3.0.2=py37hbe65578_0
+  - geopandas=0.6.1=py_0
+  - geos=3.8.0=h0a44026_0
+  - geotiff=1.5.1=h0b0f252_0
   - gettext=0.19.8.1=h15daf44_3
   - giflib=5.1.4=h1de35cc_1
-  - glib=2.56.2=hd9629dc_0
+  - glib=2.63.1=hd977a24_0
   - hdf4=4.2.13=h39711bb_2
   - hdf5=1.10.4=hfa1e0ec_0
   - icu=58.2=h4b95b61_1
@@ -450,75 +533,77 @@ dependencies:
   - jpeg=9b=he5867d9_2
   - json-c=0.13.1=h3efe00b_0
   - kealib=1.4.7=hf5ed860_6
-  - kiwisolver=1.1.0=py37h0a44026_0
-  - krb5=1.16.1=hddcf347_7
+  - kiwisolver=1.1.0=py37h770b8ee_0
+  - krb5=1.16.4=hddcf347_0
   - libboost=1.67.0=hebc422b_4
-  - libcurl=7.64.1=h051b688_0
+  - libcurl=7.67.0=h051b688_0
   - libcxx=4.0.1=hcfea43d_1
   - libcxxabi=4.0.1=hcfea43d_1
   - libdap4=3.19.1=h3d3e54a_0
   - libedit=3.1.20181209=hb402a30_0
   - libffi=3.2.1=h475c297_4
-  - libgdal=2.3.3=h0950a36_0
+  - libgdal=3.0.2=h42cfeda_0
   - libgfortran=3.0.1=h93005f0_2
   - libiconv=1.15=hdd342a3_7
   - libkml=1.3.0=hbe12b63_4
   - libnetcdf=4.6.1=hd5207e6_2
   - libpng=1.6.37=ha441bb4_0
   - libpq=11.2=h051b688_0
-  - libspatialindex=1.8.5=h2c08c6b_2
-  - libspatialite=4.3.0a=h644ec7d_19
-  - libssh2=1.8.2=ha12b0ac_0
-  - libtiff=4.0.10=hcb84e12_2
-  - libxml2=2.9.9=hab757c2_0
-  - llvmlite=0.28.0=py37h8c7ce04_0
-  - mapclassify=2.0.1=py_0
-  - matplotlib=3.1.0=py37h54f8f79_0
-  - mizani=0.5.4=py_0
+  - libspatialindex=1.9.3=h0a44026_0
+  - libspatialite=4.3.0a=h5142b36_0
+  - libssh2=1.9.0=ha12b0ac_1
+  - libtiff=4.1.0=hcb84e12_0
+  - libxml2=2.9.9=hf6e021a_1
+  - llvmlite=0.31.0=py37h1341992_0
+  - lz4-c=1.8.1.2=h1de35cc_0
+  - matplotlib=3.1.3=py37_0
+  - matplotlib-base=3.1.3=py37h9aa3819_0
+  - mizani=0.6.0=py_0
   - mkl=2019.4=233
-  - mkl_fft=1.0.12=py37h5e564d8_0
-  - mkl_random=1.0.2=py37h27c97d8_0
-  - munch=2.3.2=py37_0
-  - ncurses=6.1=h0a44026_1
-  - numba=0.43.1=py37h6440ff4_0
-  - numpy=1.16.4=py37hacdab7b_0
-  - numpy-base=1.16.4=py37h6575580_0
-  - olefile=0.46=py37_0
+  - mkl-service=2.3.0=py37hfbe908c_0
+  - mkl_fft=1.0.15=py37h5e564d8_0
+  - mkl_random=1.1.0=py37ha771720_0
+  - munch=2.5.0=py_0
+  - ncurses=6.2=h0a44026_0
+  - numba=0.48.0=py37h6c726b0_0
+  - numpy=1.18.1=py37h7241aed_0
+  - numpy-base=1.18.1=py37h6575580_1
   - openjpeg=2.3.0=hb95cd4c_1
-  - openssl=1.1.1=h1de35cc_0
-  - palettable=3.1.1=py_0
-  - pandas=0.24.2=py37h0a44026_0
+  - openssl=1.1.1d=h0b31af3_0
+  - palettable=3.3.0=py_0
+  - pandas=1.0.1=py37h6c726b0_0
   - patsy=0.5.1=py37_0
   - pcre=8.43=h0a44026_0
-  - pillow=6.0.0=py37hb68e598_0
-  - pip=19.1.1=py37_0
+  - pip=20.0.2=py37_1
   - pixman=0.38.0=h1de35cc_0
-  - plotnine=0.5.1=py_0
+  - plotnine=0.6.0=py_0
   - poppler=0.65.0=ha097c24_1
   - poppler-data=0.4.9=0
-  - proj4=5.2.0=h0a44026_1
-  - psycopg2=2.7.6.1=py37ha12b0ac_0
-  - pyparsing=2.4.0=py_0
-  - pyproj=1.9.6=py37h9c430a6_0
-  - python=3.7.3=h359304d_0
-  - python-dateutil=2.8.0=py37_0
-  - pytz=2019.1=py_0
-  - rasterio=1.0.21=py37h9a122fd_0
+  - postgresql=11.2=h051b688_0
+  - proj=6.2.1=hfd5b9e3_0
+  - psycopg2=2.8.4=py37ha12b0ac_0
+  - pyparsing=2.4.6=py_0
+  - pyproj=2.4.1=py37h1526c70_0
+  - python=3.7.6=h359304d_2
+  - python-dateutil=2.8.1=py_0
+  - python_abi=3.7=1_cp37m
+  - pytz=2019.3=py_0
+  - rasterio=1.1.0=py37heeaa653_0
   - readline=7.0=h1de35cc_5
-  - reportlab=3.5.19=py37hdea1bd8_0
-  - rtree=0.8.3=py37_0
-  - scipy=1.2.1=py37h1410ff5_0
-  - setuptools=41.0.1=py37_0
-  - shapely=1.6.4=py37he8793f5_0
-  - six=1.12.0=py37_0
-  - snuggs=1.4.3=py_0
-  - sqlalchemy=1.3.3=py37h1de35cc_0
-  - sqlite=3.28.0=ha441bb4_0
-  - statsmodels=0.9.0=py37h1d22016_0
+  - rtree=0.9.3=py37_0
+  - scipy=1.4.1=py37h9fa6033_0
+  - setuptools=46.0.0=py37_0
+  - shapely=1.6.4=py37h6e5b138_0
+  - six=1.14.0=py37_0
+  - snuggs=1.4.7=py_0
+  - sqlite=3.31.1=ha441bb4_0
+  - statsmodels=0.11.0=py37h1de35cc_0
   - svgwrite=1.1.6=py37_0
+  - tbb=2018.0.5=h04f5b5a_0
+  - tiledb=1.6.3=h29f752d_0
   - tk=8.6.8=ha441bb4_0
-  - tornado=6.0.2=py37h1de35cc_0
-  - wheel=0.33.4=py37_0
+  - tornado=6.0.4=py37h9bfed18_1
+  - wheel=0.34.2=py37_0
   - xerces-c=3.2.2=h44e365a_0
   - xmltodict=0.12.0=py_0
   - xz=5.2.4=h1de35cc_4
@@ -527,28 +612,28 @@ dependencies:
   - pip:
     - chardet==3.0.4
     - fionautil==0.5.4
-    - geojson==2.4.1
-    - geomet==0.2.0.post2
-    - html2text==2018.1.9
-    - idna==2.8
-    - landsatxplore==0.0.5
-    - pypng==0.0.19
-    - requests==2.22.0
+    - geojson==2.5.0
+    - geomet==0.2.1.post1
+    - html2text==2020.1.16
+    - idna==2.9
+    - landsatxplore==0.6
+    - pypng==0.0.20
+    - requests==2.23.0
     - seasonal==0.3.1
     - sentinelsat==0.13
-    - svgis==0.4.6
     - tinycss==0.4
-    - tqdm==4.32.1
-    - urllib3==1.25.3
-    - utm==0.4.2
-prefix: /Applications/anaconda3/envs/geoimagine1
+    - tqdm==4.43.0
+    - urllib3==1.25.8
+prefix: /Applications/anaconda3/envs/geoimagineXYZ
 ```
+{% endraw %}
+{% endcapture %}
+{% include widgets/toggle-code.html  toggle-text=text-capture  %}
+</div>
 
 ### Import
 
-
-
-## Test if the following works (not installed with create_default_packages)
+#### Test if the following works (not installed with create_default_packages)
 
 - array
 - struct
