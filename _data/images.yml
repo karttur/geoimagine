@@ -1397,3 +1397,91 @@ github-framework_karttur_105_clone-a-repo-desktop:
   caption: Clone a Repository, GithHub Desktop
   credit: null
   source: null
+
+GRASS7_1stStartup_welcome01:
+  file: GRASS7_1stStartup_welcome01.png
+  source: GRASS7_1stStartup_welcome01.png
+  author: Thomas Gumbricht
+  caption: GRASS7 initial startup page
+  credit: null
+  source: null
+
+GRASS7_1stStartup_database:
+  file: GRASS7_1stStartup_database.png
+  source: GRASS7_1stStartup_database.png
+  author: Thomas Gumbricht
+  caption: Define new GRASS Location
+  credit: null
+  source: null
+
+GRASS7_1stStartup_create-location:
+  file: GRASS7_1stStartup_create-location.png
+  source: GRASS7_1stStartup_create-location.png
+  author: Thomas Gumbricht
+  caption: Define new GRASS Location
+  credit: null
+  source: null
+
+GRASS7_1stStartup_define-location:
+  file: GRASS7_1stStartup_define-location.png
+  source: GRASS7_1stStartup_define-location.png
+  author: Thomas Gumbricht
+  caption: Define new GRASS Location
+  credit: null
+  source: null
+
+GRASS7_1stStartup_import-data:
+  file: GRASS7_1stStartup_import-data.png
+  source: GRASS7_1stStartup_import-data.png
+  author: Thomas Gumbricht
+  caption: Import data used for defining projection and region
+  credit: null
+  source: null
+
+GRASS7_1stStartup_import-success:
+  file: GRASS7_1stStartup_import-success.png
+  source: GRASS7_1stStartup_import-success.png
+  author: Thomas Gumbricht
+  caption: Import data used for defining projection and region
+  credit: null
+  source: null
+
+GRASS7_empty-GUI:
+  file: GRASS7_empty-GUI.png
+  source: GRASS7_empty-GUI.png
+  author: Thomas Gumbricht
+  caption: GRASS 7 Graphical User Interface (GUI)
+  credit: null
+  source: null
+
+GRASS7_map-display-amazonia-DEM:
+  file: GRASS7_map-display-amazonia-DEM.png
+  source: GRASS7_map-display-amazonia-DEM.png
+  author: Thomas Gumbricht
+  caption: GRASS 7 Map Display
+  credit: null
+  source: null
+
+GRASS7_empty-terminal:
+  file: GRASS7_empty-terminal.png
+  source: GRASS7_empty-terminal.png
+  author: Thomas Gumbricht
+  caption: GRASS 7 terminal commandline
+  credit: null
+  source: null
+
+GRASS7_Amazonia-Startup_welcome01:
+  file: GRASS7_Amazonia-Startup_welcome01.png
+  source: GRASS7_Amazonia-Startup_welcome01.png
+  author: Thomas Gumbricht
+  caption: GRASS7 startup page with existing location
+  credit: null
+  source: null
+
+GRASS7_Amazonia-drainage:
+  file: GRASS7_Amazonia-drainage.png
+  source: GRASS7_Amazonia-drainage.png
+  author: Thomas Gumbricht
+  caption: GRASS7 accumualtion layer from r.mapcalc over Amazonia
+  credit: null
+  source: null
