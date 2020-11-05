@@ -1398,90 +1398,142 @@ github-framework_karttur_105_clone-a-repo-desktop:
   credit: null
   source: null
 
-GRASS7_1stStartup_welcome01:
-  file: GRASS7_1stStartup_welcome01.png
-  source: GRASS7_1stStartup_welcome01.png
+earthexplorer_01:
+  file: earthexplorer_01.png
   author: Thomas Gumbricht
-  caption: GRASS7 initial startup page
+  caption: USGS Earthexplorer ((https://earthexplorer.usgs.gov/)
   credit: null
   source: null
 
-GRASS7_1stStartup_database:
-  file: GRASS7_1stStartup_database.png
-  source: GRASS7_1stStartup_database.png
+earthexplorer_02:
+  file: earthexplorer_02.png
   author: Thomas Gumbricht
-  caption: Define new GRASS Location
+  caption: Select a geocoding methods in Earthexplorer
   credit: null
   source: null
 
-GRASS7_1stStartup_create-location:
-  file: GRASS7_1stStartup_create-location.png
-  source: GRASS7_1stStartup_create-location.png
+earthexplorer_03:
+  file: earthexplorer_03.png
   author: Thomas Gumbricht
-  caption: Define new GRASS Location
+  caption: WRS path and row search area in Earthexplorer
   credit: null
   source: null
 
-GRASS7_1stStartup_define-location:
-  file: GRASS7_1stStartup_define-location.png
-  source: GRASS7_1stStartup_define-location.png
+earthexplorer_04:
+  file: earthexplorer_04.png
   author: Thomas Gumbricht
-  caption: Define new GRASS Location
+  caption: Select date range and season in Earthexplorer
   credit: null
   source: null
 
-GRASS7_1stStartup_import-data:
-  file: GRASS7_1stStartup_import-data.png
-  source: GRASS7_1stStartup_import-data.png
+earthexplorer_04a:
+  file: earthexplorer_04a.png
   author: Thomas Gumbricht
-  caption: Import data used for defining projection and region
+  caption: Select maximum cloud cover in Earthexplorer
   credit: null
   source: null
 
-GRASS7_1stStartup_import-success:
-  file: GRASS7_1stStartup_import-success.png
-  source: GRASS7_1stStartup_import-success.png
+earthexplorer_05:
+  file: earthexplorer_05.png
   author: Thomas Gumbricht
-  caption: Import data used for defining projection and region
+  caption: Data set button
   credit: null
   source: null
 
-GRASS7_empty-GUI:
-  file: GRASS7_empty-GUI.png
-  source: GRASS7_empty-GUI.png
+earthexplorer_06:
+  file: earthexplorer_06.png
   author: Thomas Gumbricht
-  caption: GRASS 7 Graphical User Interface (GUI)
+  caption: Select data set in Earthexplorer, the surface reflectance corrected Landsat data are under Landsat -> Landsat Collection 1 Level-2 (On-demand)
   credit: null
   source: null
 
-GRASS7_map-display-amazonia-DEM:
-  file: GRASS7_map-display-amazonia-DEM.png
-  source: GRASS7_map-display-amazonia-DEM.png
+earthexplorer_06a:
+  file: earthexplorer_06a.png
   author: Thomas Gumbricht
-  caption: GRASS 7 Map Display
+  caption: The panchromatic and thermal bands are not processed to surface reflection (becuase it is not applicable), just click OK.
   credit: null
   source: null
 
-GRASS7_empty-terminal:
-  file: GRASS7_empty-terminal.png
-  source: GRASS7_empty-terminal.png
+earthexplorer_07:
+  file: earthexplorer_07.png
   author: Thomas Gumbricht
-  caption: GRASS 7 terminal commandline
+  caption: Additional Criteria button
   credit: null
   source: null
 
-GRASS7_Amazonia-Startup_welcome01:
-  file: GRASS7_Amazonia-Startup_welcome01.png
-  source: GRASS7_Amazonia-Startup_welcome01.png
+earthexplorer_08:
+  file: earthexplorer_08.png
   author: Thomas Gumbricht
-  caption: GRASS7 startup page with existing location
+  caption: Earthexplorer Additional Search Criteria for Landsat 8 data.
   credit: null
   source: null
 
-GRASS7_Amazonia-drainage:
-  file: GRASS7_Amazonia-drainage.png
-  source: GRASS7_Amazonia-drainage.png
+earthexplorer_09:
+  file: earthexplorer_09.png
   author: Thomas Gumbricht
-  caption: GRASS7 accumualtion layer from r.mapcalc over Amazonia
+  caption: Result button
+  credit: null
+  source: null
+
+earthexplorer_10:
+  file: earthexplorer_10.png
+  author: Thomas Gumbricht
+  caption: Earthexplorer Search Results for Landsat 8 data.
+  credit: null
+  source: null
+
+earthexplorer_11:
+  file: earthexplorer_11.png
+  author: Thomas Gumbricht
+  caption: Exclude Data Set for Results in Earthexplorer.
+  credit: null
+  source: null
+
+earthexplorer_12:
+  file: earthexplorer_12.png
+  author: Thomas Gumbricht
+  caption: Order Landsat scene in Eartexplorer, if the shopping cart symbol is dimmed you are not logged in to USGS EROS.
+  credit: null
+  source: null
+
+earthexplorer_13:
+  file: earthexplorer_13.png
+  author: Thomas Gumbricht
+  caption: Ordered scenes indicaed by green in Eartexplorer.
+  credit: null
+  source: null
+
+earthexplorer_14:
+  file: earthexplorer_14.png
+  author: Thomas Gumbricht
+  caption: Ordered scenes indicaed by green in Eartexplorer.
+  credit: null
+  source: null
+
+earthexplorer_15:
+  file: earthexplorer_15.png
+  author: Thomas Gumbricht
+  caption: Earthexplorer On demand processing message.
+  credit: null
+  source: null
+
+earthexplorer_16:
+  file: earthexplorer_16.png
+  author: Thomas Gumbricht
+  caption: Earthexplorer Submit Product Selections.
+  credit: null
+  source: null
+
+earthexplorer_17:
+  file: earthexplorer_17.png
+  author: Thomas Gumbricht
+  caption: Earthexplorer Submitted order id.
+  credit: null
+  source: null
+
+earthexplorer_18:
+  file: earthexplorer_18.png
+  author: Thomas Gumbricht
+  caption: Earthexplorer online order tracking.
   credit: null
   source: null

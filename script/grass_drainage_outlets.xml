@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='utf-8'?>
+<basindelineate>
+	<userproj userid = 'karttur' projectid = 'karttur' tractid= 'amazonia' siteid = '*' plotid = '*' system = 'MODIS'></userproj>
+
+	<!-- Define processing -->
+	<process processid ='BasinDelineate'>
+		<overwrite>Y</overwrite>
+		<delete>N</delete>
+		<parameters
+		stage = '1'
+		adjacentdist = '330'
+		outlet = 'mouth'
+		distill = 'mouth'
+		clusteroutlet = 'maximum'
+		basinthreshold='2000'
+		watershed='MFD5'
+		verbose = '1'
+		proj4CRS = '+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs'
+		grass ='1'
+		>
+
+		</parameters>
+		<srcpath volume = "GRASS2020"></srcpath>
+		<dstpath volume = "GRASS2020"></dstpath>
+
+		<srccomp>
+		  <basin-mouth-outlet-pt source = "SRTM" product = "drainage" folder = "basin" band = "basin-mouth-outlet-pt" prefix = "basin-mouth-outlet-pt" suffix = "cgiar-250">
+			</basin-mouth-outlet-pt>
+
+			<shorewall-pt source = "SRTM" product = "drainage" folder = "basin" band = "shorewall-pt" prefix = "shorewall-pt" suffix = "cgiar-250">
+			</shorewall-pt>
+
+			<!--
+			<basin-MFD-outlet-pt source = "SRTM" product = "drainage" folder = "basin" band = "basin-MFD-outlet-pt" prefix = "basin-MFD-outlet-pt" suffix = "cgiar-250">
+			</basin-MFD-outlet-pt>
+			<basin-SFD-outlet-pt source = "SRTM" product = "drainage" folder = "basin" band = "basin-SFD-outlet-pt" prefix = "basin-SFD-outlet-pt" suffix = "cgiar-250">
+			</basin-SFD-outlet-pt>
+			-->
+			<!--
+			To force add outlet points use the tag <basin-ADD-outlet-pt>
+			<basin-ADD-outlet-pt source = "SRTM" product = "drainage" folder = "basin" band = "basin-SFD-outlet-pt" prefix = "basin-SFD-outlet-pt" suffix = "cgiar-250">
+			</basin-DD-outlet-pt>
+			-->
+		</srccomp>
+
+		<dstcomp>
+			<basin-outlet>
+			</basin-outlet>
+			<!--
+			To force a non-default destination path and name, you can enter all components explicitly
+			<basin-outlet band = "basin-mfd+mfd-max" prefix = "basin-mfd+mfd-max">
+			</basin-outlet>
+			-->
+		</dstcomp>
+	</process>
+
+</basindelineate>
+
+
+

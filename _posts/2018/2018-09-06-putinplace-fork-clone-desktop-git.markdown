@@ -7,7 +7,7 @@ previousurl: prep/prep-conda-environ
 nexturl: null
 image: avg-trmm-3b43v7-precip_3B43_trmm_2001-2016_A
 date: '2018-09-06 T08:17:25.000Z'
-modified: '2020-03-14 T08:17:25.000Z'
+modified: '2020-03-12 T08:17:25.000Z'
 comments: true
 share: true
 figure1: github-framework_karttur_101_github-repo-top
@@ -21,7 +21,7 @@ figure5: github-framework_karttur_105_clone-a-repo-desktop
 
 This post describes how to setup your own mirror (or _fork_) of Karttur´s GeoImagine Framework on GitHub.com, clone it to you local system, track your own changes as well as updates at Karttur's upstream repo and suggest improvements. The most efficient setup is using [git terminal tool](../../develop/develop-commandline), but it also works with [GitHub Desktop](https://desktop.github.com); both alternatives are described in the post [Git clone with GitHub Desktop and terminal]((../putinplace-clone-desktop-git)). But in this post you will first _fork_ the complete Framework and then clone it from a GitHub account that you have access to. This means that you can push any changes you make to your online repo, and then send a pull request to Karttur with a suggestion to incorporate your changes in the original code. Further, you can follow, and update your own mirror with, changes made in the Framework at [github.com/karttur](https://github.com/karttur).
 
-This post is a summary of my blog on [git command line](https://karttur.github.io/git-vcs/) contains detailed tutorials on how to use <span class='terminalapp'>git</span>, including a tutorial on [Forking repositories](https://karttur.github.io/git-vcs/git/git-forks/), and then ends with a post on [git for Karttur's GeoImagine Framework](https://karttur.github.io/git-vcs/git/git-karttur-geoimagine-clone/). 
+This post is a summary of my blog on [git command line](https://karttur.github.io/git-vcs/) contains detailed tutorials on how to use <span class='terminalapp'>git</span>, including a tutorial on [Forking repositories](https://karttur.github.io/git-vcs/git/git-forks/), and then ends with a post on [git for Karttur's GeoImagine Framework](https://karttur.github.io/git-vcs/git/git-karttur-geoimagine-clone/). This post is a summary of the blog [git command line]( )
 
 ## Prerequisits
 

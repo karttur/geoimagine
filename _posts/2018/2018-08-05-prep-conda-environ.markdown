@@ -389,6 +389,7 @@ Again you can check that the package was installed in the correct place by explo
 
 The complete GeoImagine Framework requires a handful of additional installations:
 
+- graphics
 - landsatexplore
 - plotnine
 - pypng
@@ -396,6 +397,16 @@ The complete GeoImagine Framework requires a handful of additional installations
 - sentinelsat
 - svgis
 - svgwrite
+
+##### graphics
+
+[graphics.py](https://pypi.org/project/graphics.py/) is a package for drawing graphics, needed if you are using the ortho spectral interpreter.
+
+[graphics.py](https://pypi.org/project/graphics.py/) is not available at any conda channel and you need to use the <span class='terminalapp'>pip</span> installation manager.
+
+The application rely on [tkinter](https://tkdocs.com) a cross-platform graphics driver. There are problems running tkinter on Mac OSX 14 (Mojave) under Python 3.6. This combination caases an automatic logout of the logged in user. It works if you update either to OSX 15 (Catalina) of Python 3.8. The latest versions when writing this in October 2020.
+
+<span class='terminal'>$ pip install graphics.py</span>
 
 ##### landsatxplore
 
